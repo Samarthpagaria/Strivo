@@ -2,6 +2,14 @@
   "name": "strivo",
   "version": "1.0.0",
   "description": "",
+  "homepage": "https://github.com/Samarthpagaria/Strivo#readme",
+  "bugs": {
+    "url": "https://github.com/Samarthpagaria/Strivo/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Samarthpagaria/Strivo.git"
+  },
   "license": "ISC",
   "author": "Samarth Pagaria",
   "type": "module",
