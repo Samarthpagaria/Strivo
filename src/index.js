@@ -3,9 +3,30 @@ import { DB_NAME } from "./constants.js";
 import "dotenv/config";
 import express from "express";
 import connectDB from "./db/index.js";
-connectDB();
+import { app } from "./app.js";
 
-const app = express();
+// So this connectDb is an async function which returns a promise
+// So we can use .then() method to handle the promise resolution
+connectDB()
+  .then(() => {
+    app.on("error", (error) => {
+      console.log("Errrr: " + error);
+      throw error;
+    });
+    const server = app.listen(process.env.PORT || 8000, () => {
+      console.log(`Server is running on port : ${process.env.PORT || 8000}`);
+    });
+    server.on("connection", (socket) => {
+      console.log("A new client has connected!");
+    });
+
+    server.on("close", () => {
+      console.log("The server is shutting down.");
+    });
+  })
+  .catch((error) => {
+    console.log("Mongodb DB connection failed !! ", error);
+  });
 
 /*
 --- this is the syntax if want to write database connection in the main index.js file -----
