@@ -18,4 +18,10 @@ app.use(urlencoded({ extended: true })); // Correct. It takes the encoded string
 
 app.use(express.static("public"));
 app.use(cookieParser());
+
+//routes will be here and also imported
+import userRouter from "./routes/user.routes.js";
+
+//routes declaration
+app.use("/api/v1/users", userRouter);
 export { app };
