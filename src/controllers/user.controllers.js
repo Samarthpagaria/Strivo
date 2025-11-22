@@ -3,6 +3,24 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import jwt from "jsonwebtoken";
+
+const generateAccessAndRefreshTokens = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+
+    const accesstoken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accesstoken, refreshToken };
+  } catch (error) {
+    throw new ApiError(500, "Error generating tokens");
+  }
+};
+
 const registerUser = asyncHandler(async (req, res, next) => {
   // Registration logic here
   //get user details from req.body
@@ -37,13 +55,24 @@ const registerUser = asyncHandler(async (req, res, next) => {
     );
   }
   console.log("Multer req.files ====================", req.files);
+
   const avatarLocalPath = req.files?.avatar[0]?.path;
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  //const coverImageLocalPath = req.files?.coverImage[0]?.path; ====this will give error if cover image is not provided
+
+  let coverImageLocalPath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
+    coverImageLocalPath = req.files?.coverImage[0]?.path;
+  }
+
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar image is required.");
   }
   const avatar = await uploadOnCloudinary(avatarLocalPath);
-  const coverIamge = await uploadOnCloudinary(coverImageLocalPath);
+  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
   if (!avatar) {
     throw new ApiError(400, "Avatar image is required.");
   }
@@ -67,5 +96,71 @@ const registerUser = asyncHandler(async (req, res, next) => {
     .json(new ApiResponse(200, createdUser, "User registered successfully."));
 });
 
-export { registerUser };
+const loginUser = asyncHandler(async (req, res) => {
+  /*TODO:Login Logic here
+  1.Get the data from the user body
+  2.Check whether the user has send data or not
+  3.check if user exist 
+  4.if exist then compare the password
+  5.if password match then generate all the related tokens(access and refresh token)
+  6.Send cookeies
+  */
+  const { email, username, password } = req.body;
+  if (!username && !email) {
+    throw new ApiError(400, "Email or Username is required.");
+  }
+  const user = await User.findOne({ $or: [{ username }, { email }] });
+  if (!user) {
+    throw new ApiError(404, "User not found with given credentials.");
+  }
+  const isPasswordCorrect = await user.isPasswordCorrect(password); //here as we can see not using User because the model does not have access to the methods created in schema ,so we need to use the user which we got from the database to access the methods
+  if (!isPasswordCorrect) {
+    throw new ApiError(401, "Invalid credentials.");
+  }
+
+  const { accesstoken, refreshToken } = await generateAccessAndRefreshTokens(
+    user._id
+  );
+
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  return res
+    .status(200)
+    .cookie("accessToken", accesstoken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        { user: loggedInUser, accesstoken, refreshToken },
+        "User logged in successfully."
+      )
+    );
+});
+
+const logoutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    { $set: { refreshToken: 1 } },
+    { new: true }
+  );
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .status(200)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User Logged out successfully"));
+});
+
+
+export { registerUser, loginUser, logoutUser };
 //TODO:read Api Error file and also read about the some in js --->also read all console.log
