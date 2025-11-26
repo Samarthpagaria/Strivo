@@ -54,7 +54,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
         updatedAt: 1,
         owner: 1,
         "ownerDetails.username": 1,
-        "ownerDetails.name": 1,
+        "ownerDetails.fullName": 1,
         "ownerDetails.email": 1,
         "ownerDetails.avatar": 1,
       },
