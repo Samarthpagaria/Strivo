@@ -9,7 +9,12 @@ const Header = () => {
     <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
       <div className="container mx-auto flex justify-between items-center">
         <div>
-          <img src={logo} alt="strivo logo" className="w-20 h-16" />
+          <img
+            src={logo}
+            alt="strivo logo"
+            className="w-20 h-16 "
+            draggable="false"
+          />
         </div>
         <div className="flex-1 max-w-2xl px-4">
           <div className="flex items-center max-w-xl mx-auto bg-gray-100 rounded-full px-4 py-2">

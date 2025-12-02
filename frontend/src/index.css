@@ -1,5 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@layer base {
+  ::selection {
+    background-color: #fc7100c9; /* your orange */
+    color: white;              /* optional text color */
+  }
+}
 
 @custom-variant dark (&:is(.dark *));
 
