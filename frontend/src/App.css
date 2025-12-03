@@ -1,0 +1,15 @@
+/* Container styles */
+.container {
+  width: 100%;
+  max-width: 1890px;
+  margin: 0 auto;
+  /* background-color: aqua; */
+  padding: 0 1rem;
+}
+
+/* For larger screens where max-width is active */
+@media (min-width: 1900px) {
+  .container {
+    padding: 0;
+  }
+}
