@@ -3,8 +3,15 @@ import logo from "../assets/logo.png";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { HoverBorderGradient } from "../components/ui/hover-border-gradient";
+import { useState } from "react";
 const Header = () => {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+  const handleSearch = () => {
+    if (!searchQuery.trim()) return;
+    navigate(`/results?q=${searchQuery}`);
+  };
+
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
       <div className="flex justify-between items-center px-4 container mx-auto">
@@ -21,6 +28,11 @@ const Header = () => {
             <Search className="text-gray-500 mr-2 h-5 w-5 shrink-0" />
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
+              onKeyDown={(e) => (e.key === "Enter" ? handleSearch() : null)}
               placeholder="Search..."
               className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 placeholder-gray-500"
             />

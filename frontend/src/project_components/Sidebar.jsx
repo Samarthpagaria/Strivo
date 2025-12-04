@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const MenuItem = ({ children, label, onClick, isExpanded }) => (
   <div className="relative group ">
@@ -15,6 +16,8 @@ const MenuItem = ({ children, label, onClick, isExpanded }) => (
 );
 
 const Sidebar = ({ isExpanded, setIsExpanded }) => {
+  const navigate = useNavigate();
+
   return (
     <div className=" h-full flex items-center">
       <aside
@@ -28,7 +31,11 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
           <div className="flex-1 overflow-y-auto">
             {/* Top group */}
             <nav className="space-y-1 flex-grow" aria-label="Main">
-              <MenuItem label="Home" isExpanded={isExpanded}>
+              <MenuItem
+                label="Home"
+                isExpanded={isExpanded}
+                onClick={() => navigate("/")}
+              >
                 <svg
                   width={24}
                   height={24}
@@ -46,7 +53,11 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
                 </svg>
               </MenuItem>
 
-              <MenuItem label="Notifications" isExpanded={isExpanded}>
+              <MenuItem
+                label="Notifications"
+                isExpanded={isExpanded}
+                onClick={() => navigate("/notifications")}
+              >
                 <svg
                   width={24}
                   height={24}
@@ -66,11 +77,15 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
             </nav>
 
             {/* Divider */}
-            <div className="my-4 border-t border-gray-100" />
+            <div className="my-4 border-t border-gray-400" />
 
             {/* Second group */}
             <nav className="space-y-1 flex-grow" aria-label="Library">
-              <MenuItem label="Subscriptions" isExpanded={isExpanded}>
+              <MenuItem
+                label="Subscriptions"
+                isExpanded={isExpanded}
+                onClick={() => navigate("/subscriptions")}
+              >
                 <svg
                   width={24}
                   height={24}
@@ -145,7 +160,11 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
                 </svg>
               </MenuItem>
 
-              <MenuItem label="Playlist" isExpanded={isExpanded}>
+              <MenuItem
+                label="Playlist"
+                isExpanded={isExpanded}
+                onClick={() => navigate("/playlists")}
+              >
                 <svg
                   width={24}
                   height={24}
@@ -162,8 +181,32 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
                   />
                 </svg>
               </MenuItem>
-
-              <MenuItem label="Liked Videos" isExpanded={isExpanded}>
+              <MenuItem
+                label="Liked Videos"
+                isExpanded={isExpanded}
+                onClick={() => navigate("/liked_videos")}
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M16.1111 3C19.6333 3 22 6.3525 22 9.48C22 15.8138 12.1778 21 12 21C11.8222 21 2 15.8138 2 9.48C2 6.3525 4.36667 3 7.88889 3C9.91111 3 11.2333 4.02375 12 4.92375C12.7667 4.02375 14.0889 3 16.1111 3Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </MenuItem>
+              <MenuItem
+                label="Liked Tweets"
+                isExpanded={isExpanded}
+                onClick={() => navigate("/liked_tweets")}
+              >
                 <svg
                   width={24}
                   height={24}
@@ -188,7 +231,11 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
                 </svg>
               </MenuItem>
 
-              <MenuItem label="Watch History" isExpanded={isExpanded}>
+              <MenuItem
+                label="Watch History"
+                isExpanded={isExpanded}
+                onClick={() => navigate("/history")}
+              >
                 <svg
                   width={24}
                   height={24}
@@ -209,9 +256,13 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
           </div>
           {/* Bottom area (settings/help) */}
           <div className="mt-auto pt-4">
-            <div className="my-4 border-t border-gray-100" />
+            <div className="my-4 border-t border-gray-400" />
             <nav className="space-y-1" aria-label="Settings & support">
-              <MenuItem label="Docs" isExpanded={isExpanded}>
+              <MenuItem
+                label="Docs"
+                isExpanded={isExpanded}
+                onClick={() => navigate("/docs")}
+              >
                 <svg
                   width={24}
                   height={24}
@@ -229,7 +280,11 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
                 </svg>
               </MenuItem>
 
-              <MenuItem label="Support" isExpanded={isExpanded}>
+              <MenuItem
+                label="Support"
+                isExpanded={isExpanded}
+                onClick={() => navigate("/support")}
+              >
                 <svg
                   width={24}
                   height={24}
@@ -247,7 +302,11 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
                 </svg>
               </MenuItem>
 
-              <MenuItem label="Settings" isExpanded={isExpanded}>
+              <MenuItem
+                label="Settings"
+                isExpanded={isExpanded}
+                onClick={() => navigate("/settings")}
+              >
                 <svg
                   width={24}
                   height={24}
