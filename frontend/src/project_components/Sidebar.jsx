@@ -2,12 +2,17 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const MenuItem = ({ children, label, onClick, isExpanded }) => (
-  <div className="relative group ">
+  <div className="relative group">
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-300 hover:backdrop-blur-3xl focus:bg-gray-400 focus:outline-none transition-colors font-medium text-[15px] text-neutral-900 text-sm"
+      className="w-full flex items-center gap-3 px-3 py-2 
+      rounded-full text-sm font-medium
+      text-foreground/80 
+      hover:text-primary hover:bg-muted/70 
+      focus:bg-muted  focus:text-primary 
+      transition-colors "
     >
-      <span className="w-6 h-6 flex items-center justify-center  text-neutral-900 shrink-0">
+      <span className="w-6 h-6 flex items-center justify-center text-foreground/80 shrink-0">
         {children}
       </span>
       {isExpanded && <span className="truncate">{label}</span>}
@@ -21,9 +26,10 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
   return (
     <div className=" h-full flex items-center">
       <aside
-        className={`bg-neutral-100/80 backdrop-blur-3xl fixed shadow-md h-[80vh] overflow-hidden rounded-xl py-2 transition-all duration-300 ${
-          isExpanded ? "w-50 " : "w-16"
-        }`}
+        className={`fixed h-[80vh] overflow-hidden 
+  bg-background/5 border  border-border backdrop-blur-lg
+  shadow-lg rounded-2xl py-3 transition-all duration-300
+  ${isExpanded ? "w-50" : "w-16"}`}
         onMouseEnter={() => setIsExpanded(true)}
         onMouseLeave={() => setIsExpanded(false)}
       >
@@ -77,7 +83,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
             </nav>
 
             {/* Divider */}
-            <div className="my-4 border-t border-gray-400" />
+            <div className="my-4 border-t border-border/70" />
 
             {/* Second group */}
             <nav className="space-y-1 flex-grow" aria-label="Library">
@@ -256,7 +262,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
           </div>
           {/* Bottom area (settings/help) */}
           <div className="mt-auto pt-4">
-            <div className="my-4 border-t border-gray-400" />
+            <div className="my-4 border-t border-border/70" />
             <nav className="space-y-1" aria-label="Settings & support">
               <MenuItem
                 label="Docs"

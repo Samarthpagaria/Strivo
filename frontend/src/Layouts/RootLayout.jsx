@@ -19,7 +19,7 @@ const RootLayout = () => {
   return (
     <div className="container">
       <Header />
-      <div className="flex h-screen w-screen pt-16">
+      <div className="flex h-screen w-[100%] pt-16">
         {/* Sidebar Section */}
         <Sidebar
           isExpanded={isSidebarExpanded}
