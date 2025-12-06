@@ -2,11 +2,17 @@
 import { RouterProvider } from "react-router-dom";
 import { router } from "./route/router";
 import "./App.css";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GlobalProvider } from "./ContentApi/GlobalProvider";
 function App() {
+  const queryClient = new QueryClient();
   return (
     <>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <GlobalProvider>
+          <RouterProvider router={router} />
+        </GlobalProvider>
+      </QueryClientProvider>
     </>
   );
 }
