@@ -1,5 +1,6 @@
 import React from "react";
 import LoginCard from "../project_components/LoginCard";
+import { SignupForm } from "../project_components/SignupForm";
 
 const Register = () => {
   return (
@@ -8,7 +9,7 @@ const Register = () => {
         <LoginCard />
       </div>
       <div className=" w-1/2 flex flex-col items-center justify-center">
-     
+        <SignupForm className="w-full max-w-md" />
       </div>
     </div>
   );
