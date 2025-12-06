@@ -5,9 +5,8 @@ import { NavBar } from "../components/ui/tubelight-navbar";
 const TweetNavbar = ({ className }) => {
   const navItems = [
     { name: "For You", url: "/", icon: Home },
-    { name: "Following", url: "/about", icon: User },
-    { name: "Me", url: "/projects", icon: Briefcase },
-   
+    { name: "Following", url: "/", icon: User },
+    { name: "Me", url: "/", icon: Briefcase },
   ];
 
   return <NavBar items={navItems} className={className} />;
