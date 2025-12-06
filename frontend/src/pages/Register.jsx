@@ -1,6 +1,5 @@
 import React from "react";
 import LoginCard from "../project_components/LoginCard";
-import { SignUp } from "@clerk/clerk-react";
 
 const Register = () => {
   return (
@@ -9,7 +8,7 @@ const Register = () => {
         <LoginCard />
       </div>
       <div className=" w-1/2 flex flex-col items-center justify-center">
-        <SignUp path="/register" routing="path" />
+     
       </div>
     </div>
   );

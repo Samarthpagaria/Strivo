@@ -1,6 +1,6 @@
 import React from "react";
 import LoginCard from "../project_components/LoginCard";
-import { SignIn } from "@clerk/clerk-react";
+;
 
 const Login = () => {
   return (
@@ -14,7 +14,7 @@ const Login = () => {
         className=" w-1/2 flex flex-col items-center justify-center m-2 rounded-2xl 
 "
       >
-        <SignIn path="/login" routing="path" />
+       {/* sign in component */}
       </div>
     </div>
   );
