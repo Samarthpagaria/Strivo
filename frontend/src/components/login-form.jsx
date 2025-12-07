@@ -16,8 +16,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import strivoLogo from "@/assets/strivo_black_logo.png";
-
+import { useState } from "react";
+import { useAuth } from "../ContentApi/AuthContext";
 export function LoginForm({ className, ...props }) {
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+
+  const { login, isLoggingIn } = useAuth();
+  const handleSubmit = () => {
+    const formData = {
+      email: email,
+      username: name,
+      password: password,
+    };
+    login(formData);
+  };
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -34,18 +48,34 @@ export function LoginForm({ className, ...props }) {
         {/* ------------------------------------------------------ */}
 
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
                   id="email"
                   type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
                   placeholder="m@example.com"
                   required
                 />
               </Field>
-
+              <Field>
+                <FieldLabel htmlFor="username">Username</FieldLabel>
+                <Input
+                  id="username"
+                  type="username"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                  placeholder=""
+                  required
+                />
+              </Field>
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
@@ -56,11 +86,19 @@ export function LoginForm({ className, ...props }) {
                     Forgot your password?
                   </Link>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
               </Field>
 
               <Field className="flex flex-col gap-2">
-                <Button type="submit">Login</Button>
+                <Button type="submit">
+                  {isLoggingIn ? "Logging in ...." : "Login"}
+                </Button>
 
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}

@@ -143,23 +143,7 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
-const logoutUser = asyncHandler(async (req, res) => {
-  await User.findByIdAndUpdate(
-    req.user._id,
-    { $unset: { refreshToken: 1 } },
-    { new: true }
-  );
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
-  return res
-    .status(200)
-    .clearCookie("accessToken", options)
-    .status(200)
-    .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User Logged out successfully"));
-});
+ 
 //TODO:Refresh token hona chahiye instead of access token .
 const refreshAccessToken = asyncHandler(async (req, res) => {
   try {

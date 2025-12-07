@@ -15,7 +15,11 @@ export const AuthProvider = ({ children }) => {
     mutationFn: async (formData) => {
       const res = await axios.post(
         "http://localhost:8000/api/v1/users/login",
-        formData
+
+        formData,
+        {
+          withCredentials: true,
+        }
       );
       return res.data;
     },
@@ -35,7 +39,10 @@ export const AuthProvider = ({ children }) => {
     mutationFn: async (formData) => {
       const res = await axios.post(
         "http://localhost:8000/api/v1/users/register",
-        formData
+        formData,
+        {
+          withCredentials: true,
+        }
       );
       return res.data;
     },
@@ -43,7 +50,7 @@ export const AuthProvider = ({ children }) => {
       setUser(data.user);
       setToken(data.accessToken);
       setRefreshToken(data.refreshToken);
-    
+
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
