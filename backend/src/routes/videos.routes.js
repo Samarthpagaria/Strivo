@@ -5,6 +5,7 @@ import {
   togglePublishStatus,
   updateVideo,
   deleteVideo,
+  getHomeFeedVideos,
   getAllVideos,
   getVideo,
   publishAVideo,
@@ -32,5 +33,6 @@ router
   .patch(upload.single("thumbnail"), updateVideo);
 
 router.route("/toggle/publish/:videoId").patch(togglePublishStatus);
+router.route("/home-feed").get(getHomeFeedVideos);
 
 export default router;

@@ -5,6 +5,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { Subscription } from "../models/subscription.model.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
   const {
@@ -101,6 +102,61 @@ const getAllVideos = asyncHandler(async (req, res) => {
   }
 });
 
+const getHomeFeedVideos = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized access");
+  }
+  const subscriptions = await Subscription.find({ subscriber: userId }).select(
+    "channel"
+  );
+  const channelIds = subscriptions.map((s) => s.channel);
+  const subscribedVideos = await Video.aggregate([
+    { $match: { owner: { $in: channelIds }, isPublished: true } },
+    { $sort: { createdAt: -1 } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: { username: 1, fullName: 1, avatar: 1 },
+          },
+        ],
+      },
+    },
+    { $unwind: $owner },
+    { $limit: 20 },
+  ]);
+  const randomVideos = await Video.aggregate([
+    { $match: { isPublished: true } },
+    { $sample: { size: 30 } }, // random 30 videos
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [{ $project: { fullName: 1, username: 1, avatar: 1 } }],
+      },
+    },
+    { $unwind: "$owner" },
+  ]);
+  const combinedFeed = [...subscribedVideos, ...randomVideos];
+  combinedFeed.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { feed: combinedFeed },
+        "Home feed videos fetched successfully"
+      )
+    );
+});
 const publishAVideo = asyncHandler(async (req, res) => {
   const videoFileLocalPath = req.files?.videoFile?.[0]?.path;
 
@@ -334,4 +390,5 @@ export {
   getAllVideos,
   getVideo,
   publishAVideo,
+  getHomeFeedVideos,
 };
