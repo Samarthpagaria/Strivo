@@ -1,4 +1,5 @@
 import React from "react";
+import { MoreVertical } from "lucide-react";
 
 const VideoCard = ({ title, channel, views, uploaded, duration }) => {
   return (
@@ -14,13 +15,16 @@ const VideoCard = ({ title, channel, views, uploaded, duration }) => {
           src="https://picsum.photos/id/10/10/300?grayscale&blur=2"
           className="w-10 h-10 rounded-full"
         />
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-1">
           <h3 className="text-sm font-semibold line-clamp-2">{title}</h3>
           <p className="text-xs text-gray-400">{channel}</p>
           <p className="text-xs text-gray-500">
             {views}.{uploaded}
           </p>
         </div>
+        <button className="p-1 hover:bg-gray-300 rounded-full transition-colors h-fit">
+          <MoreVertical className="w-4 h-4 text-gray-600" />
+        </button>
       </div>
     </div>
   );

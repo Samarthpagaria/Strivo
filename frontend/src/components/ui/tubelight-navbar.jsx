@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-export function NavBar({ items, className }) {
+export function NavBar({ items, className, scrollContainerRef }) {
   const [activeTab, setActiveTab] = useState(items[0].name);
   const [isMobile, setIsMobile] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const handleResize = () => {
@@ -17,12 +19,46 @@ export function NavBar({ items, className }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    const container =
+      scrollContainerRef?.current ||
+      document.getElementById("tweets-scroll-container");
+
+    if (!container) {
+      console.warn("Navbar: Scroll container not found");
+      return;
+    }
+
+    const handleScroll = () => {
+      const currentScrollY = container.scrollTop;
+
+      const delta = currentScrollY - lastScrollY.current;
+      // console.log(`Scroll: ${currentScrollY}, Delta: ${delta}, Visible: ${isVisible}`);
+
+      // Ignore very small scroll movements to prevent jitter
+      if (Math.abs(delta) < 5) return;
+
+      if (currentScrollY < 10) {
+        setIsVisible(true);
+      } else if (delta > 0) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [scrollContainerRef]);
+
   return (
-    <div
-      className={cn(
-        "inline-block mx- sticky top-0 z-10  mb-6 sm:pt-3",
-        className
-      )}
+    <motion.div
+      initial={{ y: 0 }}
+      animate={{ y: isVisible ? 0 : -100 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className={cn("flex justify-center  sm:pt-3 w-full", className)}
     >
       <div className="flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg">
         {items.map((item) => {
@@ -66,6 +102,6 @@ export function NavBar({ items, className }) {
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 }

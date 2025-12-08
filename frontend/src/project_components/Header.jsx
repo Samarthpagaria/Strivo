@@ -16,7 +16,7 @@ const Header = () => {
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
       <div className="flex justify-between items-center px-4 container mx-auto">
-        <div onClick={() => navigate("/")} >
+        <div onClick={() => navigate("/")}>
           <img
             src={logo}
             alt="strivo logo"
