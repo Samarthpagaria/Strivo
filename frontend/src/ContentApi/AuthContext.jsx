@@ -3,7 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 
 import axios from "axios";
 import { useGlobal } from "./GlobalProvider";
-
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 

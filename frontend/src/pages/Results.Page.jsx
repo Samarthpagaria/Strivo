@@ -1,28 +1,37 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import VideoListCard from "../project_components/VideoListCard";
+import React, { useMemo } from "react";
+import { MOCK_VIDEOS } from "../utils/mockData";
 
 function Results() {
   const navigate = useNavigate();
   const { search } = useLocation();
-  const query = new URLSearchParams(search).get("q");
-  const handleOpenVideo = (id) => {
-    navigate(`/watch/${id}`);
-  };
-  return (
-    <div>
-      <h1 className="text-xl font-bold mb-4">Search results for: {query}</h1>
+  const query = new URLSearchParams(search).get("q") || "";
 
-      {/* list of videos based on search */}
-      <div className="space-y-4">
-        {/* Replace with mapped search results */}
-        <div className="space-y-4">
-          {/* Example card, later replace with .map() */}
-          <div
-            className="p-4 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition"
-            onClick={() => handleOpenVideo("12345")} // replace with video._id
-          >
-            Video result example (click to open details)
+  const filteredVideos = useMemo(() => {
+    if (!query) return MOCK_VIDEOS;
+    const lowerQuery = query.toLowerCase();
+    return MOCK_VIDEOS.filter(
+      (video) =>
+        video.title.toLowerCase().includes(lowerQuery) ||
+        video.channel.toLowerCase().includes(lowerQuery) ||
+        video.description.toLowerCase().includes(lowerQuery)
+    );
+  }, [query]);
+
+  return (
+    <div className="w-full max-w-6xl mx-auto px-4 py-4">
+      <div className="flex flex-col gap-4">
+        {filteredVideos.length > 0 ? (
+          filteredVideos.map((video) => (
+            <VideoListCard key={video._id} {...video} />
+          ))
+        ) : (
+          <div className="text-center py-20 text-gray-500">
+            <h2 className="text-xl font-semibold mb-2">No results found</h2>
+            <p>Try searching for something else</p>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

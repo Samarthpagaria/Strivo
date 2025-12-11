@@ -143,7 +143,6 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
- 
 //TODO:Refresh token hona chahiye instead of access token .
 const refreshAccessToken = asyncHandler(async (req, res) => {
   try {
@@ -310,6 +309,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     },
     {
       $project: {
+        _id: 1,
         fullName: 1,
         username: 1,
         subscribersCount: 1,

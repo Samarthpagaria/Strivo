@@ -4,10 +4,12 @@ import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { HoverBorderGradient } from "../components/ui/hover-border-gradient";
 import { useState } from "react";
+import { useSearch } from "../ContentApi/SearchProvider";
 
 const Header = () => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
+  const { searchQuery, setSearchQuery } = useSearch();
+
   const handleSearch = () => {
     if (!searchQuery.trim()) return;
     navigate(`/results?q=${searchQuery}`);
