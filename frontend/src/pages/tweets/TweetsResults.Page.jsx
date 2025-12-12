@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import Tweet from "../../pages/Tweet";
+import TweetsList from "../../project_components/TweetsList.jsx";
 import { MOCK_TWEETS } from "../../utils/mockData";
 
 const TweetResults = ({ query }) => {
@@ -18,15 +18,10 @@ const TweetResults = ({ query }) => {
     <div className="space-y-3">
       <p className="text-sm text-gray-600">Showing tweets for “{query}”</p>
 
-      {filteredTweets.length > 0 ? (
-        filteredTweets.map((tweet) => (
-          <Tweet key={tweet.id || tweet._id} {...tweet} />
-        ))
-      ) : (
-        <div className="p-4 text-center text-gray-500 bg-white rounded-lg shadow-sm">
-          No tweets found matching "{query}"
-        </div>
-      )}
+      <TweetsList
+        tweets={filteredTweets}
+        emptyMessage={`No tweets found matching "${query}"`}
+      />
     </div>
   );
 };

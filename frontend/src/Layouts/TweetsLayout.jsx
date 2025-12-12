@@ -1,26 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import TweetDetails from "../pages/tweets/TweetDetailsPage.Page.jsx";
 import TweetNavbar from "../project_components/TweetNavbar.jsx";
 import TweetPost from "../project_components/TweetPost.jsx";
-import Tweet from "../project_components/Tweet.jsx";
+import TweetsList from "../project_components/TweetsList.jsx";
 import { MOCK_TWEETS } from "../utils/mockData";
 import TweetSearchResults from "../pages/tweets/TweetsResults.Page.jsx";
-
-const TweetsList = ({ tweets }) => (
-  <div>
-    {tweets.length > 0 ? (
-      tweets.map((tweet) => (
-        <Tweet
-          key={tweet.id || tweet._id} // Flexible id check
-          {...tweet}
-        />
-      ))
-    ) : (
-      <div className="text-center p-4 text-gray-500">No tweets found</div>
-    )}
-  </div>
-);
+import { useTweet } from "../ContentApi/TweetContext";
 
 const TweetsLayout = ({ width = "w-80" }) => {
   const { pathname, search } = useLocation();
@@ -33,8 +19,14 @@ const TweetsLayout = ({ width = "w-80" }) => {
   const searchQuery = params.get("q") || ""; // Default to empty string
   const tweetId = params.get("tweetId"); // ?tweetId=777
 
+  //check if we are on the profile channel route ("/@:username")
+  const isProfileChannelRoute = pathname.startsWith("/@");
+
   const isTweetDetails = !!tweetId;
   const isSearchMode = !!searchQuery;
+
+  // using tweet context
+  const { tweetQuery } = useTweet();
 
   // remove only tweetId while keeping q or other queries intact
   const handleTweetBack = () => {
@@ -59,6 +51,11 @@ const TweetsLayout = ({ width = "w-80" }) => {
           <TweetDetails tweetId={tweetId} onBack={handleTweetBack} />
         ) : isSearchMode ? (
           <TweetSearchResults query={searchQuery} />
+        ) : isProfileChannelRoute ? (
+          <TweetsList
+            tweets={tweetQuery.data?.data?.tweets || []}
+            emptyMessage="This user hasn't posted any tweets yet."
+          />
         ) : (
           /* Replaced HomeTweets/SearchResults with unified list */
           <TweetsList tweets={MOCK_TWEETS} />

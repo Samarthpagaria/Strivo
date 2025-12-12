@@ -5,6 +5,7 @@ import Header from "../project_components/Header";
 import Sidebar from "../project_components/Sidebar";
 import TweetsLayout from "./TweetsLayout";
 import ScrollToTop from "../project_components/ScrollToTop";
+import { TweetProvider } from "../ContentApi/TweetContext";
 
 const RootLayout = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
@@ -44,7 +45,9 @@ const RootLayout = () => {
         </div>
 
         {/* Tweets Section */}
-        <TweetsLayout width={isSidebarExpanded ? "w-150" : "w-160"} />
+       <TweetProvider>
+       <TweetsLayout width={isSidebarExpanded ? "w-150" : "w-160"} />
+       </TweetProvider>
       </div>
     </div>
   );
