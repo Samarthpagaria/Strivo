@@ -3,8 +3,8 @@ import { RouterProvider } from "react-router-dom";
 import { router } from "./route/router";
 import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { GlobalProvider } from "./ContentApi/GlobalProvider";
-import { SearchProvider } from "./ContentApi/SearchProvider";
+import { GlobalProvider } from "./ContentApi/GlobalContext";
+import { SearchProvider } from "./ContentApi/SearchContext";
 function App() {
   const queryClient = new QueryClient();
   return (

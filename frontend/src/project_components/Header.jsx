@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { HoverBorderGradient } from "../components/ui/hover-border-gradient";
 import { useState } from "react";
-import { useSearch } from "../ContentApi/SearchProvider";
+import { useSearch } from "../ContentApi/SearchContext";
 
 const Header = () => {
   const navigate = useNavigate();

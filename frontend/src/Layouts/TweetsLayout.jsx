@@ -3,7 +3,7 @@ import { useRef } from "react";
 import TweetDetails from "../pages/tweets/TweetDetailsPage.Page.jsx";
 import TweetNavbar from "../project_components/TweetNavbar.jsx";
 import TweetPost from "../project_components/TweetPost.jsx";
-import Tweet from "../pages/Tweet.jsx";
+import Tweet from "../project_components/Tweet.jsx";
 import { MOCK_TWEETS } from "../utils/mockData";
 import TweetSearchResults from "../pages/tweets/TweetsResults.Page.jsx";
 
