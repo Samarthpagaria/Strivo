@@ -1,5 +1,5 @@
 import { useContext, createContext, useState, useEffect } from "react";
-import { useProfile } from "./ProfileContext";
+import { useProfile } from "./ProfileContext.jsx";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 

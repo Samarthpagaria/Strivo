@@ -16,7 +16,7 @@ import SupportPage from "../pages/Support.Page";
 import SettingsPage from "../pages/Settings.Page";
 import Results from "../pages/Results.Page";
 import VideoDetailsPage from "../pages/VideoDetails.Page";
-import ProfileWrapper from "../Layouts/ProfileWrapper";
+import ChannelProfile from "../pages/ChannelProfile";
 import MyChannelProfile from "../pages/myChannel/myChannelProfile";
 export const router = createBrowserRouter([
   {
@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
       { path: "settings", element: <SettingsPage /> },
       { path: `results`, element: <Results /> },
       { path: "watch/:videoId", element: <VideoDetailsPage /> },
-      { path: "/@:username", element: <ProfileWrapper /> },
+      { path: "/@:username", element: <ChannelProfile /> },
       { path: "/channel", element: <MyChannelProfile /> },
     ],
   },
