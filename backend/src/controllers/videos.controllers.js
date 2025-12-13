@@ -5,7 +5,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
-import { Subscription } from "../models/subscription.model.js";
+import { Subscription } from "../models/subscription.models.js";
 
 const getAllVideos = asyncHandler(async (req, res) => {
   const {
@@ -215,14 +215,7 @@ const getVideo = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, video, "Video fetched successfully"));
 });
 
-import mongoose from "mongoose";
-import { Video } from "../models/video.models.js";
-import { Like } from "../models/like.model.js"; // optional cleanup
-import { Comment } from "../models/comment.model.js"; // optional cleanup (if you have it)
-import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
-// import { deleteFromCloudinary } from "../utils/cloudinary.js"; // optional if you implement delete
+// Imports removed as they are duplicates of top-level imports
 
 const deleteVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
@@ -244,29 +237,9 @@ const deleteVideo = asyncHandler(async (req, res) => {
     throw new ApiError(403, "You are not authorized to delete this video");
   }
 
-  // 4. Delete the video file from Cloudinary
-  if (video.videoFile) {
-    try {
-      // Extract public ID from Cloudinary URL
-      const publicId = video.videoFile.split("/").pop().split(".")[0];
-      await uploadOnCloudinary.destroy(publicId, { resource_type: "video" });
-    } catch (error) {
-      console.error("Error deleting video from Cloudinary:", error);
-      // Continue with deletion even if Cloudinary deletion fails
-    }
-  }
+  // 4. Delete the video file from Cloudinary (Skipped as per user request)
 
-  // 5. Delete the thumbnail from Cloudinary
-  if (video.thumbnail) {
-    try {
-      // Extract public ID from Cloudinary URL
-      const publicId = video.thumbnail.split("/").pop().split(".")[0];
-      await uploadOnCloudinary.destroy(publicId, { resource_type: "image" });
-    } catch (error) {
-      console.error("Error deleting thumbnail from Cloudinary:", error);
-      // Continue with deletion even if Cloudinary deletion fails
-    }
-  }
+  // 5. Delete the thumbnail from Cloudinary (Skipped as per user request)
 
   // 6. Delete the video document from database
   await Video.findByIdAndDelete(videoId);
@@ -307,14 +280,6 @@ const updateVideo = asyncHandler(async (req, res) => {
   // 5. Handle thumbnail update if provided
   if (req.file) {
     try {
-      // Delete old thumbnail from Cloudinary if it exists
-      if (video.thumbnail) {
-        const oldThumbnailId = video.thumbnail.split("/").pop().split(".")[0];
-        await uploadOnCloudinary.destroy(oldThumbnailId, {
-          resource_type: "image",
-        });
-      }
-
       // Upload new thumbnail
       const thumbnailLocalPath = req.file.path;
       const thumbnail = await uploadOnCloudinary(thumbnailLocalPath);

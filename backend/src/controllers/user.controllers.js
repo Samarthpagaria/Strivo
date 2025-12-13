@@ -91,9 +91,28 @@ const registerUser = asyncHandler(async (req, res, next) => {
   if (!createdUser) {
     throw new ApiError(500, "Something went wrong while registering User");
   }
+
+  // Generate tokens for auto-login
+  const { accesstoken, refreshToken } = await generateAccessAndRefreshTokens(
+    createdUser._id
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
   return res
     .status(201)
-    .json(new ApiResponse(200, createdUser, "User registered successfully."));
+    .cookie("accessToken", accesstoken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        { user: createdUser, accessToken: accesstoken, refreshToken },
+        "User registered and logged in successfully."
+      )
+    );
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -137,7 +156,7 @@ const loginUser = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        { user: loggedInUser, accesstoken, refreshToken },
+        { user: loggedInUser, accessToken: accesstoken, refreshToken },
         "User logged in successfully."
       )
     );
@@ -232,25 +251,28 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
   if (!avatar.url) {
     throw new ApiError(400, "Error while uploading avatar");
   }
-  const user = await User.findByIdAndUpdate(
+
+  const updatedUser = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: { avatar: avatar.url },
     },
     { new: true }
   ).select("-password");
-  return res.status(200).json(new ApiResponse(200, user, "Avatar Updated  "));
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "Avatar Updated  "));
 });
 const updateUserCoverImage = asyncHandler(async (req, res) => {
   const coverImageLocalPath = req.file?.path;
   if (!coverImageLocalPath) {
     throw new ApiError(400, " Cover Image is missing ");
   }
-  const coverImage = await uploadOnCloudinary(avatarLocalPath);
+  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
   if (!coverImage.url) {
     throw new ApiError(400, "Error while uploading cover image");
   }
-  const user = await User.findByIdAndUpdate(
+  const updatedUser = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: { coverImage: coverImage.url },
@@ -259,7 +281,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
   ).select("-password");
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "Cover Image Updated  "));
+    .json(new ApiResponse(200, updatedUser, "Cover Image Updated  "));
 });
 
 const getUserChannelProfile = asyncHandler(async (req, res) => {
@@ -377,6 +399,30 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     );
 });
 
+const logoutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $unset: {
+        refreshToken: 1, // this removes the field from document
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out"));
+});
 export {
   registerUser,
   loginUser,

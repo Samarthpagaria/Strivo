@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyJWT } from "../middlewares/auth.middleware";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 import {
   togglePublishStatus,
@@ -9,11 +9,11 @@ import {
   getAllVideos,
   getVideo,
   publishAVideo,
-} from "../controllers/videos.controllers";
+} from "../controllers/videos.controllers.js";
 const router = Router();
 
 router.use(verifyJWT);
-import { upload } from "../middlewares/multer.middleware";
+import { upload } from "../middlewares/multer.middleware.js";
 
 router
   .route("/")

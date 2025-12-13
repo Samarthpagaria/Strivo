@@ -1,12 +1,9 @@
 import mongoose, { isValidObjectId } from "mongoose";
-import { Video } from "../models/video.models";
-import { Subscription } from "../models/subscription.models";
-import { Like } from "../models/like.models";
-import { ApiError } from "../utils/ApiError";
-import { ApiResponse } from "../utils/ApiResponse";
-import { asyncHandler } from "../utils/asyncHandler";
-import { asyncHandler } from "../utils/asyncHandler";
-import { User } from "../models/user.models";
+import { Video } from "../models/video.models.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { User } from "../models/user.models.js";
 
 /**
  * GET /dashboard/stats
@@ -19,7 +16,7 @@ import { User } from "../models/user.models";
  *  - Lookup all users and sum occurrences of channel video IDs in their watchHistory => total_views
  *  - Lookup likes where like.video ∈ channel videoIds => total_likes
  */
-export const getChannelStats = asyncHandler(async (req, res) => {
+const getChannelStats = asyncHandler(async (req, res) => {
   const userId = req?.user?._id;
   if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
     throw new ApiError(400, "Invalid or missing user id");
@@ -139,7 +136,7 @@ export const getChannelStats = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, data, "Stats fetched successfully"));
 });
-export const getChannelVideos = asyncHandler(async (req, res) => {
+const getChannelVideos = asyncHandler(async (req, res) => {
   const userId = req?.user?._id;
 
   if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
