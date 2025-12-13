@@ -3,22 +3,35 @@ import logo from "../assets/logo.png";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { HoverBorderGradient } from "../components/ui/hover-border-gradient";
-import { useState } from "react";
 import { useSearch } from "../ContentApi/SearchContext";
+import { useGlobal } from "../ContentApi/GlobalContext";
+import { useAuth } from "../ContentApi/AuthContext";
+import UserProfile from "./UserProfile";
 
 const Header = () => {
   const navigate = useNavigate();
   const { searchQuery, setSearchQuery } = useSearch();
+  const { user } = useGlobal();
+  const { logout } = useAuth();
 
   const handleSearch = () => {
     if (!searchQuery.trim()) return;
     navigate(`/results?q=${searchQuery}`);
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
+
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
       <div className="flex justify-between items-center px-4 container mx-auto">
-        <div onClick={() => navigate("/")}>
+        <div onClick={() => navigate("/")} className="cursor-pointer">
           <img
             src={logo}
             alt="strivo logo"
@@ -42,23 +55,27 @@ const Header = () => {
           </div>
         </div>
         <div>
-          {/* IF not logged in then twitter navigation menu  [for You , Following,Me] and  two buttons of signup and sign in  */}
-          {/* if logged in then profile icon and twitter navigation menu  [for You , Following,Me] */}
           <div className="flex items-center gap-4">
-            <HoverBorderGradient
-              containerClassName="rounded-full"
-              className="px-6 py-2 bg-white text-sm font-medium text-gray-800 hover:bg-gray-50"
-              onClick={() => navigate("/login")}
-            >
-              Sign In
-            </HoverBorderGradient>
-            <HoverBorderGradient
-              containerClassName="rounded-full"
-              className="px-6 py-2 bg-black text-sm font-medium text-white hover:bg-gray-800"
-              onClick={() => navigate("/register")}
-            >
-              Sign Up
-            </HoverBorderGradient>
+            {user ? (
+              <UserProfile user={user} onLogout={handleLogout} />
+            ) : (
+              <>
+                <HoverBorderGradient
+                  containerClassName="rounded-full"
+                  className="px-6 py-2 bg-white text-sm font-medium text-gray-800 hover:bg-gray-50 cursor-pointer"
+                  onClick={() => navigate("/login")}
+                >
+                  Sign In
+                </HoverBorderGradient>
+                <HoverBorderGradient
+                  containerClassName="rounded-full"
+                  className="px-6 py-2 bg-black text-sm font-medium text-white hover:bg-gray-800 cursor-pointer"
+                  onClick={() => navigate("/register")}
+                >
+                  Sign Up
+                </HoverBorderGradient>
+              </>
+            )}
           </div>
         </div>
       </div>
