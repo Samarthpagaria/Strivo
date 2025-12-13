@@ -36,10 +36,10 @@ export const GlobalProvider = ({ children }) => {
       return res.data;
     },
     onSuccess: (data) => {
-      setToken(data.accessToken);
-      setRefreshToken(data.refreshToken);
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
+      setToken(data.data.accessToken);
+      setRefreshToken(data.data.refreshToken);
+      localStorage.setItem("accessToken", data.data.accessToken);
+      localStorage.setItem("refreshToken", data.data.refreshToken);
     },
     onError: () => {
       setUser(null);

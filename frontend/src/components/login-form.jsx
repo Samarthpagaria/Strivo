@@ -24,12 +24,14 @@ export function LoginForm({ className, ...props }) {
   const [password, setPassword] = useState("");
 
   const { login, isLoggingIn } = useAuth();
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const formData = {
       email: email,
       username: name,
       password: password,
     };
+    console.log(formData);
     login(formData);
   };
   return (

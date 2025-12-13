@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import { useMutation } from "@tanstack/react-query";
-
+import { useToast } from "./ToastContext";
 import axios from "axios";
 import { useGlobal } from "./GlobalContext";
 const AuthContext = createContext();
@@ -8,7 +8,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const { user, token, setUser, setToken, setRefreshToken } = useGlobal();
-
+  const { showToast } = useToast();
   //login mutation
   const loginMutation = useMutation({
     mutationFn: async (formData) => {
@@ -23,12 +23,14 @@ export const AuthProvider = ({ children }) => {
       return res.data;
     },
     onSuccess: (data) => {
-      setUser(data.user);
-      setToken(data.accessToken);
-      setRefreshToken(data.refreshToken);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
+      setUser(data.data.user);
+      setToken(data.data.accessToken);
+      setRefreshToken(data.data.refreshToken);
+      showToast("Login successful");
+      console.log(user); 
+      localStorage.setItem("user", JSON.stringify(data.data.user));
+      localStorage.setItem("accessToken", data.data.accessToken);
+      localStorage.setItem("refreshToken", data.data.refreshToken);
       sessionStorage.setItem("sessionActive", "true");
     },
   });
@@ -46,13 +48,14 @@ export const AuthProvider = ({ children }) => {
       return res.data;
     },
     onSuccess: (data) => {
-      setUser(data.user);
-      setToken(data.accessToken);
-      setRefreshToken(data.refreshToken);
-
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
+      setUser(data.data.user);
+      setToken(data.data.accessToken);
+      setRefreshToken(data.data.refreshToken);
+      showToast("Registration successful");
+      console.log(user);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
+      localStorage.setItem("accessToken", data.data.accessToken);
+      localStorage.setItem("refreshToken", data.data.refreshToken);
       sessionStorage.setItem("sessionActive", "true");
     },
   });
@@ -74,6 +77,7 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       setToken(null);
       setRefreshToken(null);
+      showToast("Logged out successfully");
 
       localStorage.removeItem("user");
       localStorage.removeItem("accessToken");

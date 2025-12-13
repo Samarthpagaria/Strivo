@@ -5,16 +5,22 @@ import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GlobalProvider } from "./ContentApi/GlobalContext";
 import { SearchProvider } from "./ContentApi/SearchContext";
+import { AuthProvider } from "./ContentApi/AuthContext";
+import { ToastProvider } from "./ContentApi/ToastContext";
 function App() {
   const queryClient = new QueryClient();
   return (
     <>
       <QueryClientProvider client={queryClient}>
+            <ToastProvider>
         <SearchProvider>
           <GlobalProvider>
-            <RouterProvider router={router} />
+              <AuthProvider>
+                <RouterProvider router={router} />
+              </AuthProvider>
           </GlobalProvider>
         </SearchProvider>
+            </ToastProvider>
       </QueryClientProvider>
     </>
   );

@@ -4,13 +4,14 @@ import { User } from "../models/user.models.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
 
-    const accesstoken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const accesstoken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
@@ -99,7 +100,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
   };
 
   return res
@@ -147,7 +148,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
   };
   return res
     .status(200)
@@ -172,9 +173,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
     const decodedToken = jwt.verify(
       incomingRefreshToken,
-      process.process.env.ACCESS_TOKEN_SECRET
+      process.env.ACCESS_TOKEN_SECRET
     );
-    const user = awaitUser.findById(decodedToken?._id);
+    const user = await User.findById(decodedToken?._id);
     if (!user) {
       throw new ApiError(401, "invalid refresh Token ");
     }
@@ -184,7 +185,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
     const options = {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
     };
     const { accessToken, newRefreshToken } =
       await generateAccessAndRefreshTokens(user._id);
@@ -221,7 +222,7 @@ const changeCurrentUserPassword = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  return req
+  return res
     .status(200)
     .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
 });
@@ -350,9 +351,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200),
-      channel[0],
-      "User channel fetched succesfully "
+      new ApiResponse(200, channel[0], "User channel fetched succesfully ")
     );
 });
 
@@ -393,7 +392,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        user[0].getWatchHistory,
+        user[0].watchHistory,
         "Watch history fetched successfully"
       )
     );
@@ -414,7 +413,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
   };
 
   return res

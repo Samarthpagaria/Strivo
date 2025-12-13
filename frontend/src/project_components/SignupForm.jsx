@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import strivoLogo from "@/assets/strivo_black_logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../ContentApi/AuthContext";
 
@@ -28,16 +28,19 @@ export function SignupForm({ className, ...props }) {
   const [coverImage, setCoverImage] = useState(null);
 
   const { register, isRegistering } = useAuth();
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("fullname", fullname);
+    formData.append("fullName", fullname);
     formData.append("username", username);
     formData.append("email", email);
     formData.append("password", password);
-    formData.append("avatar", avatar);
-    formData.append("coverImage", coverImage);
-    register(formData);
+    if (avatar) formData.append("avatar", avatar);
+    if (coverImage) formData.append("coverImage", coverImage);
+
+    await register(formData);
+    navigate("/");
   };
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -109,8 +112,7 @@ export function SignupForm({ className, ...props }) {
                   type="file"
                   accept="image/*"
                   required
-                  
-                  onChange={(e)=>setAvatar(e.target.files[0])}
+                  onChange={(e) => setAvatar(e.target.files[0])}
                 />
               </Field>
 
@@ -122,8 +124,7 @@ export function SignupForm({ className, ...props }) {
                   id="coverImage"
                   type="file"
                   accept="image/*"
-                 
-                  onChange={(e)=>setCoverImage(e.target.files[0])}
+                  onChange={(e) => setCoverImage(e.target.files[0])}
                 />
               </Field>
 
