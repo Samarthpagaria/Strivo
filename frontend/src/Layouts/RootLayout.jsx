@@ -45,7 +45,7 @@ const RootLayout = () => {
               ref={mainContentRef}
               className="flex-1 overflow-y-auto no-scrollbar relative"
             >
-              <Outlet />
+              <Outlet context={{ scrollRef: mainContentRef }} />
               <ScrollToTop containerRef={mainContentRef} />
             </main>
           </div>
