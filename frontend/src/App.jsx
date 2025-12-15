@@ -7,20 +7,23 @@ import { GlobalProvider } from "./ContentApi/GlobalContext";
 import { SearchProvider } from "./ContentApi/SearchContext";
 import { AuthProvider } from "./ContentApi/AuthContext";
 import { ToastProvider } from "./ContentApi/ToastContext";
+import { MyChannelProvider } from "./ContentApi/myChannelContext";
 function App() {
   const queryClient = new QueryClient();
   return (
     <>
       <QueryClientProvider client={queryClient}>
-            <ToastProvider>
-        <SearchProvider>
-          <GlobalProvider>
-              <AuthProvider>
-                <RouterProvider router={router} />
-              </AuthProvider>
-          </GlobalProvider>
-        </SearchProvider>
-            </ToastProvider>
+        <ToastProvider>
+          <SearchProvider>
+            <GlobalProvider>
+              <MyChannelProvider>
+                <AuthProvider>
+                  <RouterProvider router={router} />
+                </AuthProvider>
+              </MyChannelProvider>
+            </GlobalProvider>
+          </SearchProvider>
+        </ToastProvider>
       </QueryClientProvider>
     </>
   );
