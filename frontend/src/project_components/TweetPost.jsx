@@ -1,13 +1,18 @@
 import React, { useState } from "react";
+import { useTweet } from "../ContentApi/TweetContext";
 import { Image, Smile, Calendar, MapPin } from "lucide-react";
+import { useGlobal } from "../ContentApi/GlobalContext";
 
 const TweetPost = () => {
   const [tweetText, setTweetText] = useState("");
-  const maxLength = 280;
+  const maxLength = 500;
 
-  const handlePost = () => {
+  const { user } = useGlobal();
+  const { createTweet } = useTweet();
+
+  const handlePost = async () => {
     if (tweetText.trim()) {
-      console.log("Posting tweet:", tweetText);
+      await createTweet.mutateAsync(tweetText);
       setTweetText("");
     }
   };
@@ -19,9 +24,9 @@ const TweetPost = () => {
           {/* Avatar */}
           <div className="shrink-0">
             <img
-              src="https://picsum.photos/id/10/40/40?grayscale&blur=2"
+              src={user?.avatar}
               alt="User avatar"
-              className="w-10 h-10 rounded-full"
+              className="w-12 h-12 rounded-full"
             />
           </div>
 

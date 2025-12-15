@@ -19,12 +19,12 @@ const createTweet = asyncHandler(async (req, res) => {
   }
   const tweet = await Tweet.create({ owner: userId, content: content.trim() });
   if (!tweet) {
-    throw new ApiError(500, "Falied to create tweet");
+    throw new ApiError(500, "Failed to create tweet");
   }
   console.log("Tweet created:", tweet);
   return res
     .status(201)
-    .json(new ApiResponse(201, tweet, "Tweet Created Succeddfully"));
+    .json(new ApiResponse(201, tweet, "Tweet Created Successfully"));
 });
 const getUserTweets = asyncHandler(async (req, res) => {
   //TODO: get user tweets
