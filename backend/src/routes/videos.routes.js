@@ -23,8 +23,10 @@ router
       { name: "videoFile", maxCount: 1 },
       { name: "thumbnail", maxCount: 1 },
     ]),
-    publishAVideo
+    publishAVideo // Done
   );
+
+router.route("/home-feed").get(getHomeFeedVideos);
 
 router
   .route("/:videoId")
@@ -33,6 +35,5 @@ router
   .patch(upload.single("thumbnail"), updateVideo);
 
 router.route("/toggle/publish/:videoId").patch(togglePublishStatus);
-router.route("/home-feed").get(getHomeFeedVideos);
 
 export default router;

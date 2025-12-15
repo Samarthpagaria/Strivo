@@ -91,18 +91,16 @@ const MyChannelProfile = () => {
     formData.append("thumbnail", videoForm.thumbnail);
 
     await myChannelAddvideoMutation.mutateAsync(formData);
-    if (myChannelAddvideoMutation.isSuccess) {
-      setTimeout(() => {
-        setIsVideoModalOpen(false);
-        setVideoForm({
-          title: "",
-          description: "",
-          videoFile: null,
-          thumbnail: null,
-        });
-        myChannelAddvideoMutation.reset();
-      }, 2000);
-    }
+    setTimeout(() => {
+      setIsVideoModalOpen(false);
+      setVideoForm({
+        title: "",
+        description: "",
+        videoFile: null,
+        thumbnail: null,
+      });
+      myChannelAddvideoMutation.reset();
+    }, 2000);
   };
 
   const handleCreatePlaylist = async (e) => {
@@ -153,7 +151,7 @@ const MyChannelProfile = () => {
       </div>
 
       {/* Channel Info Section */}
-      <div className="max-w-6xl mx-auto px-4 md:px-6">
+      <div className="max-w-6xl  mx-auto px-4 md:px-6">
         {/* Avatar and Basic Info */}
         <div className="flex flex-col md:flex-row items-start md:items-end gap-4 -mt-12 md:-mt-16 mb-6">
           <div className="relative">
@@ -164,7 +162,7 @@ const MyChannelProfile = () => {
             />
           </div>
 
-          <div className="flex-1 md:mb-4">
+          <div className="flex-1 pt-8 md:mb-4">
             <div className="flex items-center gap-2 mb-1">
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
                 {channelData.fullName}
@@ -253,7 +251,8 @@ const MyChannelProfile = () => {
                           Loading videos...
                         </td>
                       </tr>
-                    ) : myChannelVideosQuery.data?.length > 0 ? (
+                    ) : Array.isArray(myChannelVideosQuery.data) &&
+                      myChannelVideosQuery.data.length > 0 ? (
                       myChannelVideosQuery.data.map((video) => (
                         <tr
                           key={video._id}
@@ -438,7 +437,7 @@ const MyChannelProfile = () => {
 
       {/* Add Video Modal */}
       {isVideoModalOpen && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 bg-black/60 z-150 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 relative animate-in fade-in zoom-in duration-200">
             <button
               onClick={() => setIsVideoModalOpen(false)}

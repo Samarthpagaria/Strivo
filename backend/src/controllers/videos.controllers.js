@@ -127,7 +127,7 @@ const getHomeFeedVideos = asyncHandler(async (req, res) => {
         ],
       },
     },
-    { $unwind: $owner },
+    { $unwind: "$owner" },
     { $limit: 20 },
   ]);
   const randomVideos = await Video.aggregate([
@@ -182,9 +182,10 @@ const publishAVideo = asyncHandler(async (req, res) => {
   const publishedVideo = await Video.create({
     videoFile: video.url,
     thumbnail: thumbnail.url,
-    owner: req.user._id,
     title: req.body.title,
     description: req.body.description,
+    duration: video.duration,
+    owner: req.user._id,
     isPublished: true,
   });
 
