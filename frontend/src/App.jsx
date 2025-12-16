@@ -8,6 +8,7 @@ import { SearchProvider } from "./ContentApi/SearchContext";
 import { AuthProvider } from "./ContentApi/AuthContext";
 import { ToastProvider } from "./ContentApi/ToastContext";
 import { MyChannelProvider } from "./ContentApi/myChannelContext";
+import { PlaylistProvider } from "./ContentApi/PlaylistContext";
 function App() {
   const queryClient = new QueryClient();
   return (
@@ -17,9 +18,11 @@ function App() {
           <SearchProvider>
             <GlobalProvider>
               <MyChannelProvider>
-                <AuthProvider>
-                  <RouterProvider router={router} />
-                </AuthProvider>
+                <PlaylistProvider>
+                  <AuthProvider>
+                    <RouterProvider router={router} />
+                  </AuthProvider>
+                </PlaylistProvider>
               </MyChannelProvider>
             </GlobalProvider>
           </SearchProvider>

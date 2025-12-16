@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import PlaylistCard from "../project_components/PlaylistCard";
 import { Plus } from "lucide-react";
 import { HoverBorderGradient } from "../components/ui/hover-border-gradient";
+import CreatePlaylistModal from "../project_components/CreatePlaylistModal";
+import { usePlaylist } from "../ContentApi/PlaylistContext";
 
 function Playlists() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { createPlaylist, isCreatingPlaylist } = usePlaylist();
+
+  const handleCreatePlaylist = (playlistData) => {
+    createPlaylist(playlistData);
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="min-h-screen w-full bg-white dark:bg-gray-950">
       {/* Header Section */}
@@ -23,6 +33,7 @@ function Playlists() {
             <HoverBorderGradient
               containerClassName="rounded-full hover:scale-105 transition-transform duration-500"
               className="bg-white dark:bg-white text-black dark:text-black  flex items-center gap-2 group"
+              onClick={() => setIsModalOpen(true)}
             >
               <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
               <span>Create Playlist</span>
@@ -45,6 +56,14 @@ function Playlists() {
           <PlaylistCard />
         </div>
       </div>
+
+      {/* Create Playlist Modal */}
+      <CreatePlaylistModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleCreatePlaylist}
+        isLoading={isCreatingPlaylist}
+      />
     </div>
   );
 }
