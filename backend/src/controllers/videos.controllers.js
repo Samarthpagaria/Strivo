@@ -78,27 +78,24 @@ const getAllVideos = asyncHandler(async (req, res) => {
           )
         );
     }
-    return (
-      res.status(200),
-      json(
-        new ApiResponse(
-          200,
-          {
-            videos: videos.docs,
-            pagination: {
-              totalVideos: videos.totalDocs,
-              totalPages: videos.totalPages,
-              currentPage: videos.page,
-              hasNextPage: videos.hasNextPage,
-              hasPrevPage: videos.hasPrevPage,
-            },
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          videos: videos.docs,
+          pagination: {
+            totalVideos: videos.totalDocs,
+            totalPages: videos.totalPages,
+            currentPage: videos.page,
+            hasNextPage: videos.hasNextPage,
+            hasPrevPage: videos.hasPrevPage,
           },
-          "Videos fetched successfully"
-        )
+        },
+        "Videos fetched successfully"
       )
     );
   } catch (error) {
-    throw new ApiResponse(500, "Error while fetching videos" + error.message);
+    throw new ApiError(500, "Error while fetching videos: " + error.message);
   }
 });
 

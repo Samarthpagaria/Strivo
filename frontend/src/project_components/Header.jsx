@@ -10,7 +10,7 @@ import UserProfile from "./UserProfile";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { searchQuery, setSearchQuery } = useSearch();
+const { searchQuery, setSearchQuery } = useSearch();
   const { user } = useGlobal();
   const { logout } = useAuth();
 
