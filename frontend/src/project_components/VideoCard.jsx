@@ -1,5 +1,6 @@
 import React from "react";
 import { MoreVertical } from "lucide-react";
+import VideoCardMenu from "./VideoCardMenu";
 
 // Helper function to format relative time
 const getRelativeTime = (dateString) => {
@@ -52,9 +53,7 @@ const VideoCard = ({ title, owner, views, createdAt, thumbnail }) => {
             {viewCount} views · {uploadedTime}
           </p>
         </div>
-        <button className="p-1 hover:bg-gray-300 rounded-full transition-colors h-fit">
-          <MoreVertical className="w-4 h-4 text-gray-600" />
-        </button>
+        <VideoCardMenu />
       </div>
     </div>
   );
