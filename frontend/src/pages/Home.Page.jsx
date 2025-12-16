@@ -48,7 +48,7 @@ function Home() {
     <>
       <div className="p-4 grid lg:grid-cols-3 gap-2 no-scrollbar">
         {videos.map((video) => {
-          return <VideoCard key={video._id} {...video} />;
+          return <VideoCard key={video._id}  {...video} />;
         })}
       </div>
     </>

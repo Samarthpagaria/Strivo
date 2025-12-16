@@ -22,7 +22,7 @@ const getRelativeTime = (dateString) => {
   return `${Math.floor(diffInSeconds / 31556952)} years ago`;
 };
 
-const VideoCard = ({ title, owner, views, createdAt, thumbnail }) => {
+const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
   // Handle both API data (owner object) and mock data (channel string)
   const channelName = owner?.username || owner?.fullName || "Unknown Channel";
   const channelAvatar =
@@ -53,7 +53,7 @@ const VideoCard = ({ title, owner, views, createdAt, thumbnail }) => {
             {viewCount} views · {uploadedTime}
           </p>
         </div>
-        <VideoCardMenu />
+        <VideoCardMenu videoId={_id} />
       </div>
     </div>
   );

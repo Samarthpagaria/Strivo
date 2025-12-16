@@ -42,6 +42,29 @@ export const PlaylistProvider = ({ children }) => {
       console.error("Error details:", error.response?.data);
     },
   });
+  //add video to playlist
+  const addVideoToPlaylistMutation = useMutation({
+    mutationFn: async ({ videoId, playlistId }) => {
+      const res = await axios.patch(
+        `http://localhost:8000/api/v1/playlist/add/${videoId}/${playlistId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return res.data;
+    },
+    onSuccess: (data) => {
+      showToast(data?.message || "Video added to playlist successfully! 🎉");
+      console.log("Video added to playlist successfully:", data);
+    },
+    onError: (error) => {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to add video to playlist. Please try again.";
+      showToast(errorMessage);
+      console.error("Error adding video to playlist:", error);
+      console.error("Error details:", error.response?.data);
+    },
+  });
 
   //fetch all playlist
   const fetchAllPlaylistsQuery = useQuery({
@@ -77,6 +100,7 @@ export const PlaylistProvider = ({ children }) => {
     fetchAllPlaylistsQuery.error,
     showToast,
   ]);
+
   return (
     <PlaylistContext.Provider
       value={{
@@ -86,6 +110,9 @@ export const PlaylistProvider = ({ children }) => {
         isCreatingPlaylist: createPlaylistMutation.isPending,
         isLoadingPlaylists: fetchAllPlaylistsQuery.isLoading,
         refetchPlaylists: fetchAllPlaylistsQuery.refetch,
+        addVideoToPlaylist: addVideoToPlaylistMutation,
+        isAddingVideoToPlaylist: addVideoToPlaylistMutation.isPending,
+        errorAddingVideoToPlaylist: addVideoToPlaylistMutation.error,
       }}
     >
       {children}

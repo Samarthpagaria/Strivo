@@ -6,11 +6,37 @@ import {
 } from "@/components/ui/popover";
 import { MoreVertical, ListPlus, ChevronRight } from "lucide-react";
 import { usePlaylist } from "../ContentApi/PlaylistContext";
+import { useToast } from "../ContentApi/ToastContext";
 
-const VideoCardMenu = () => {
-  const { allPlaylists } = usePlaylist();
+const VideoCardMenu = ({ videoId }) => {
+  const { showToast } = useToast();
+  const { allPlaylists, addVideoToPlaylist } = usePlaylist();
 
   console.log("📋 VideoCardMenu - allPlaylists:", allPlaylists);
+
+  const handleAddToPlaylist = (playlistId) => {
+    if (!videoId) {
+      showToast("No video ID provided");
+      console.error("No video ID provided");
+      return;
+    }
+    console.log("Adding video to playlist:", { videoId, playlistId });
+    addVideoToPlaylist.mutate({ videoId, playlistId });
+  };
+
+  // Check if video is already in playlist
+  const isVideoInPlaylist = (playlist) => {
+    if (!playlist.videos || !Array.isArray(playlist.videos)) {
+      return false;
+    }
+    // Handle both ObjectId strings and objects
+    return playlist.videos.some(
+      (video) =>
+        video === videoId ||
+        video?._id === videoId ||
+        video?.toString() === videoId
+    );
+  };
 
   return (
     <Popover>
@@ -41,10 +67,18 @@ const VideoCardMenu = () => {
                   allPlaylists.map((playlist) => (
                     <button
                       key={playlist._id || playlist.id}
+                      onClick={() =>
+                        handleAddToPlaylist(playlist._id || playlist.id)
+                      }
                       className="w-full flex items-center justify-between px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors text-left"
                     >
                       <span>{playlist?.name}</span>
-                      <input type="checkbox" className="w-4 h-4" />
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4 pointer-events-none"
+                        checked={isVideoInPlaylist(playlist)}
+                        readOnly
+                      />
                     </button>
                   ))
                 ) : (
