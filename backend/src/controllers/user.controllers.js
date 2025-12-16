@@ -187,16 +187,17 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
     };
-    const { accessToken, newRefreshToken } =
+    // ✅ Consistent with registerUser and loginUser
+    const { accesstoken, refreshToken: newRefreshToken } =
       await generateAccessAndRefreshTokens(user._id);
     return res
       .status(200)
-      .cookie("accessToken", accessToken, options)
+      .cookie("accessToken", accesstoken, options)
       .cookie("refreshToken", newRefreshToken, options)
       .json(
         new ApiResponse(
           200,
-          { accessToken, refreshToken: newRefreshToken },
+          { accessToken: accesstoken, refreshToken: newRefreshToken },
           "Access token refreshed successfully "
         )
       );
