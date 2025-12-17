@@ -1,7 +1,7 @@
 import { useContext, createContext } from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useGlobal } from "./GlobalContext";
 import { useToast } from "./ToastContext";
 
@@ -12,6 +12,7 @@ export const usePlaylist = () => useContext(PlaylistContext);
 export const PlaylistProvider = ({ children }) => {
   const { token, user, isAuthenticated } = useGlobal();
   const { showToast } = useToast();
+  const queryClient = useQueryClient();
   const [allPlaylists, setAllPlaylists] = useState([]);
 
   // Get user ID (handle both _id and id)
@@ -55,6 +56,8 @@ export const PlaylistProvider = ({ children }) => {
     onSuccess: (data) => {
       showToast(data?.message || "Video added to playlist successfully! 🎉");
       console.log("Video added to playlist successfully:", data);
+      // Invalidate and refetch playlists to update UI
+      queryClient.invalidateQueries({ queryKey: ["allPlaylists", userId] });
     },
     onError: (error) => {
       const errorMessage =
@@ -62,6 +65,36 @@ export const PlaylistProvider = ({ children }) => {
         "Failed to add video to playlist. Please try again.";
       showToast(errorMessage);
       console.error("Error adding video to playlist:", error);
+      console.error("Error details:", error.response?.data);
+    },
+  });
+
+  // remove video from playlist
+  const removeVideoFromPlaylistMutation = useMutation({
+    mutationFn: async ({ videoId, playlistId }) => {
+      const res = await axios.patch(
+        `http://localhost:8000/api/v1/playlist/remove/${videoId}/${playlistId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return res.data;
+    },
+    onSuccess: (data) => {
+      showToast(
+        data?.message || "Video removed from playlist successfully! 🎉"
+      );
+      console.log("Video removed from playlist successfully:", data);
+      // Invalidate and refetch playlists to update UI
+      queryClient.invalidateQueries({ queryKey: ["allPlaylists", userId] });
+    },
+    onError: (error) => {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to remove video from playlist. Please try again.";
+      showToast(errorMessage);
+      console.error("Error removing video from playlist:", error);
       console.error("Error details:", error.response?.data);
     },
   });
@@ -113,6 +146,10 @@ export const PlaylistProvider = ({ children }) => {
         addVideoToPlaylist: addVideoToPlaylistMutation,
         isAddingVideoToPlaylist: addVideoToPlaylistMutation.isPending,
         errorAddingVideoToPlaylist: addVideoToPlaylistMutation.error,
+        // remove video from playlist
+        removeVideoFromPlaylist: removeVideoFromPlaylistMutation,
+        isRemovingVideoFromPlaylist: removeVideoFromPlaylistMutation.isPending,
+        errorRemovingVideoFromPlaylist: removeVideoFromPlaylistMutation.error,
       }}
     >
       {children}

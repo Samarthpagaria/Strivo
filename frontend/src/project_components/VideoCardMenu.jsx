@@ -10,18 +10,36 @@ import { useToast } from "../ContentApi/ToastContext";
 
 const VideoCardMenu = ({ videoId }) => {
   const { showToast } = useToast();
-  const { allPlaylists, addVideoToPlaylist } = usePlaylist();
+  const {
+    allPlaylists,
+    addVideoToPlaylist,
+    removeVideoFromPlaylist,
+    isAddingVideoToPlaylist,
+    isRemovingVideoFromPlaylist,
+    errorRemovingVideoFromPlaylist,
+  } = usePlaylist();
+
+  // Combined loading state for both add and remove operations
+  const isLoading = isAddingVideoToPlaylist || isRemovingVideoFromPlaylist;
 
   console.log("📋 VideoCardMenu - allPlaylists:", allPlaylists);
 
-  const handleAddToPlaylist = (playlistId) => {
+  const handleTogglePlaylist = (playlist) => {
     if (!videoId) {
       showToast("No video ID provided");
       console.error("No video ID provided");
       return;
     }
-    console.log("Adding video to playlist:", { videoId, playlistId });
-    addVideoToPlaylist.mutate({ videoId, playlistId });
+    const playlistId = playlist._id || playlist.id;
+    if (isVideoInPlaylist(playlist)) {
+      // Remove from playlist
+      console.log("Removing video from playlist:", { videoId, playlistId });
+      removeVideoFromPlaylist.mutate({ videoId, playlistId });
+    } else {
+      // Add to playlist
+      console.log("Adding video to playlist:", { videoId, playlistId });
+      addVideoToPlaylist.mutate({ videoId, playlistId });
+    }
   };
 
   // Check if video is already in playlist
@@ -35,6 +53,7 @@ const VideoCardMenu = ({ videoId }) => {
         video === videoId ||
         video?._id === videoId ||
         video?.toString() === videoId
+      //some means if any of the condition is true then it will return true , some takes callBack function as a parameter
     );
   };
 
@@ -67,15 +86,18 @@ const VideoCardMenu = ({ videoId }) => {
                   allPlaylists.map((playlist) => (
                     <button
                       key={playlist._id || playlist.id}
-                      onClick={() =>
-                        handleAddToPlaylist(playlist._id || playlist.id)
-                      }
-                      className="w-full flex items-center justify-between px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors text-left"
+                      onClick={() => handleTogglePlaylist(playlist)}
+                      disabled={isLoading}
+                      className={`w-full flex items-center justify-between px-3 py-2 text-sm text-gray-700 dark:text-gray-300 rounded transition-colors text-left ${
+                        isLoading
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                      }`}
                     >
                       <span>{playlist?.name}</span>
                       <input
                         type="checkbox"
-                        className="w-4 h-4 pointer-events-none"
+                        className="w-4 h-4  pointer-events-none  "
                         checked={isVideoInPlaylist(playlist)}
                         readOnly
                       />

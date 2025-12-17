@@ -171,7 +171,7 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
     { new: true }
   );
   if (!removedVideoFromPlaylist) {
-    throw new ApiError(404, "Unable to remove video to playlist");
+    throw new ApiError(404, "Unable to remove video from playlist");
   }
   return res
     .status(200)
