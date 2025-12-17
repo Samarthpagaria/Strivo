@@ -115,7 +115,7 @@ const ProfileTab = () => {
                   <Button
                     onClick={() => setIsEditingAvatar(true)}
                     variant="outline"
-                    className="group relative overflow-hidden transition-all duration-300 w-full flex items-center justify-center gap-2 hover:gap-2"
+                    className="group relative overflow-hidden transition-all duration-300 w-full flex items-center justify-center gap-2 hover:gap-2 rounded-2xl"
                   >
                     <Pencil className="w-4 h-4" />
                     <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-xs group-hover:opacity-100 transition-all duration-300">
@@ -192,7 +192,7 @@ const ProfileTab = () => {
                   />
                   <Button
                     onClick={() => console.log("Save full name")}
-                    className="shrink-0"
+                    className="shrink-0 rounded-full"
                   >
                     Save
                   </Button>
@@ -215,7 +215,7 @@ const ProfileTab = () => {
                   />
                   <Button
                     onClick={() => console.log("Save email")}
-                    className="shrink-0"
+                    className="shrink-0 rounded-full"
                   >
                     Save
                   </Button>
@@ -269,7 +269,7 @@ const ProfileTab = () => {
                 <Button
                   onClick={() => setIsEditingCover(true)}
                   variant="outline"
-                  className="group relative overflow-hidden transition-all duration-300 hover:pr-12"
+                  className="group relative overflow-hidden transition-all duration-300 hover:pr-12 rounded-2xl"
                 >
                   <Pencil className="w-4 h-4" />
                   <span className="absolute right-3 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
