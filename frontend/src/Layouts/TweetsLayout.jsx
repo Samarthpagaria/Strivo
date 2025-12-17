@@ -43,7 +43,7 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
       id="tweets-scroll-container"
       ref={tweetsContainerRef}
       style={{ width: `${width}px` }}
-      className="bg-gray-50 border-l border-gray-300 overflow-y-auto relative"
+      className="border-l border-gray-300 overflow-y-auto relative no-scrollbar"
     >
       {/* Resize Handle */}
       <div
