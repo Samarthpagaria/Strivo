@@ -8,7 +8,7 @@ import { MOCK_TWEETS } from "../utils/mockData";
 import TweetSearchResults from "../pages/tweets/TweetsResults.Page.jsx";
 import { useTweet } from "../ContentApi/TweetContext";
 
-const TweetsLayout = ({ width = "w-80" }) => {
+const TweetsLayout = ({ width = 400, onResizeStart }) => {
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
   const tweetsContainerRef = useRef(null);
@@ -42,8 +42,19 @@ const TweetsLayout = ({ width = "w-80" }) => {
     <div
       id="tweets-scroll-container"
       ref={tweetsContainerRef}
-      className={`${width} bg-gray-50 border-l border-gray-300 overflow-y-auto`}
+      style={{ width: `${width}px` }}
+      className="bg-gray-50 border-l border-gray-300 overflow-y-auto relative"
     >
+      {/* Resize Handle */}
+      <div
+        onMouseDown={onResizeStart}
+        className="absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-blue-500 transition-colors z-50 group"
+        style={{ touchAction: "none" }}
+      >
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-transparent group-hover:bg-blue-500 transition-colors" />
+        <div className="absolute left-[-3px] top-0 bottom-0 w-2 bg-transparent" />
+      </div>
+
       <div className="sticky top-0 z-50 flex justify-center -mb-24">
         <TweetNavbar scrollContainerRef={tweetsContainerRef} />
       </div>

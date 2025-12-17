@@ -10,6 +10,8 @@ import { ProfileProvider } from "../ContentApi/ProfileContext";
 
 const RootLayout = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+  const [tweetPanelWidth, setTweetPanelWidth] = useState(400); // Default width in pixels
+  const [isResizing, setIsResizing] = useState(false);
   const mainContentRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,6 +21,50 @@ const RootLayout = () => {
   // Check if we are on a profile route and get the username
   const match = useMatch("/@:username");
   const username = match?.params?.username;
+
+  // Resize handler
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    setIsResizing(true);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isResizing) return;
+
+    const newWidth = window.innerWidth - e.clientX;
+    const minWidth = 300; // Minimum width
+    const maxWidth = window.innerWidth * 0.6; // Maximum 60% of window width
+
+    if (newWidth >= minWidth && newWidth <= maxWidth) {
+      setTweetPanelWidth(newWidth);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsResizing(false);
+  };
+
+  // Add and remove event listeners for resize
+  React.useEffect(() => {
+    if (isResizing) {
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "ew-resize";
+      document.body.style.userSelect = "none";
+    } else {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+  }, [isResizing, tweetPanelWidth]);
 
   if (isAuth) {
     return <Outlet />;
@@ -52,7 +98,10 @@ const RootLayout = () => {
 
           {/* Tweets Section */}
           <TweetProvider>
-            <TweetsLayout width={isSidebarExpanded ? "w-150" : "w-160"} />
+            <TweetsLayout
+              width={tweetPanelWidth}
+              onResizeStart={handleMouseDown}
+            />
           </TweetProvider>
         </ProfileProvider>
       </div>
