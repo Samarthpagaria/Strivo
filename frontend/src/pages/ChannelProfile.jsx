@@ -4,6 +4,7 @@ import { useProfile } from "../ContentApi/ProfileContext";
 import { CheckCircle2 } from "lucide-react";
 import { VideoProvider } from "../ContentApi/VideoContext";
 import VideosTab from "./VideosTab";
+import SubscribeButton from "../project_components/SubscribeButton";
 
 const ChannelProfile = () => {
   const { username } = useParams();
@@ -83,15 +84,10 @@ const ChannelProfile = () => {
 
           {/* Subscribe Button */}
           <div className="md:mb-4">
-            <button
-              className={`px-6 py-2 rounded-full font-semibold transition-all ${
-                channelData.isSubscribed
-                  ? "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                  : "bg-red-600 text-white hover:bg-red-700"
-              }`}
-            >
-              {channelData.isSubscribed ? "Subscribed" : "Subscribe"}
-            </button>
+            <SubscribeButton
+              channelId={channelData._id}
+              isSubscribed={channelData.isSubscribed}
+            />
           </div>
         </div>
 
