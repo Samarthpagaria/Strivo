@@ -230,17 +230,27 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
 const UpdateAccountDetails = asyncHandler(async (req, res) => {
   const { fullName, email } = req.body;
-  if (!fullName && !email) {
-    throw new ApiError(400, "All fields are required");
+
+  // both fields must be sent
+  if (!fullName || !email) {
+    throw new ApiError(400, "Full name and email are required");
   }
+
   const user = await User.findByIdAndUpdate(
-    req.user?._id,
-    { $set: { fullName: fullName, email: email } },
-    { new: true }
+    req.user._id,
+    {
+      fullName,
+      email,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
   ).select("-password");
+
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "account Details updated"));
+    .json(new ApiResponse(200, user, "Account details updated"));
 });
 
 const updateUserAvatar = asyncHandler(async (req, res) => {

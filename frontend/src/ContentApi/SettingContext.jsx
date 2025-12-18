@@ -13,7 +13,7 @@ export const SettingProvider = ({ children }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const { token } = useGlobal();
+  const { token, refetchUser } = useGlobal();
   //query for change password
   const changePasswordMutation = useMutation({
     mutationFn: async () => {
@@ -42,6 +42,34 @@ export const SettingProvider = ({ children }) => {
       showToast(error?.response?.data?.message, "error");
     },
   });
+
+  //update user detials
+  const updateUserMutation = useMutation({
+    mutationFn: async ({ fullName, email }) => {
+      const res = await axios.patch(
+        `http://localhost:8000/api/v1/users/update-account`,
+        {
+          fullName,
+          email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      return res.data;
+    },
+    onSuccess: async (data) => {
+      showToast(data?.message);
+      // Refetch user data from backend to ensure UI is in sync
+      await refetchUser();
+    },
+    onError: (error) => {
+      showToast(error?.response?.data?.message, "error");
+    },
+  });
   return (
     <SettingContext.Provider
       value={{
@@ -52,6 +80,7 @@ export const SettingProvider = ({ children }) => {
         confirmPassword,
         setConfirmPassword,
         changePasswordMutation,
+        updateUser: updateUserMutation.mutateAsync,
       }}
     >
       {children}

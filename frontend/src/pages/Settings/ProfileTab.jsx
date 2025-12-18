@@ -12,9 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { User, Image, ImagePlus, Upload, Pencil } from "lucide-react";
 import { useGlobal } from "../../ContentApi/GlobalContext";
+import { useSetting } from "../../ContentApi/SettingContext";
 
 const ProfileTab = () => {
   const { user } = useGlobal();
+  const { updateUser } = useSetting();
 
   // Profile form state (no functionality)
   const [fullName, setFullName] = useState("");
@@ -60,8 +62,7 @@ const ProfileTab = () => {
 
   const handleAccountDetailsSubmit = (e) => {
     e.preventDefault();
-    // TODO: Add update account details functionality
-    console.log("Update account details");
+    updateUser({ fullName, email });
   };
 
   const handleAvatarSubmit = (e) => {
@@ -177,51 +178,38 @@ const ProfileTab = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-6">
+            <form onSubmit={handleAccountDetailsSubmit} className="space-y-6">
               {/* Full Name Field */}
               <div className="space-y-3">
                 <FieldLabel htmlFor="fullName">Full Name</FieldLabel>
-                <div className="flex gap-3">
-                  <Input
-                    id="fullName"
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Enter your full name"
-                    className="flex-1"
-                  />
-                  <Button
-                    onClick={() => console.log("Save full name")}
-                    className="shrink-0 rounded-full"
-                  >
-                    Save
-                  </Button>
-                </div>
+                <Input
+                  id="fullName"
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Enter your full name"
+                />
               </div>
-
-              <Separator />
 
               {/* Email Field */}
               <div className="space-y-3">
                 <FieldLabel htmlFor="email">Email Address</FieldLabel>
-                <div className="flex gap-3">
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="flex-1"
-                  />
-                  <Button
-                    onClick={() => console.log("Save email")}
-                    className="shrink-0 rounded-full"
-                  >
-                    Save
-                  </Button>
-                </div>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                />
               </div>
-            </div>
+
+              {/* Common Save Button */}
+              <div className="flex justify-end">
+                <Button type="submit" className="rounded-full">
+                  Save Changes
+                </Button>
+              </div>
+            </form>
           </CardContent>
         </Card>
       </div>
