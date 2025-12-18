@@ -70,6 +70,32 @@ export const SettingProvider = ({ children }) => {
       showToast(error?.response?.data?.message, "error");
     },
   });
+
+  //update avatar
+  const updateAvatarMutation = useMutation({
+    mutationFn: async (formData) => {
+      const res = await axios.patch(
+        `http://localhost:8000/api/v1/users/avatar`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      return res.data;
+    },
+    onSuccess: async (data) => {
+      showToast(data?.message);
+      // Refetch user data from backend to ensure UI is in sync
+      await refetchUser();
+    },
+    onError: (error) => {
+      showToast(error?.response?.data?.message, "error");
+    },
+  });
+
   return (
     <SettingContext.Provider
       value={{
@@ -81,6 +107,7 @@ export const SettingProvider = ({ children }) => {
         setConfirmPassword,
         changePasswordMutation,
         updateUser: updateUserMutation.mutateAsync,
+        updateAvatar: updateAvatarMutation.mutateAsync,
       }}
     >
       {children}

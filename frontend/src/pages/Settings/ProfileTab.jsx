@@ -16,14 +16,17 @@ import { useSetting } from "../../ContentApi/SettingContext";
 
 const ProfileTab = () => {
   const { user } = useGlobal();
-  const { updateUser } = useSetting();
+  const { updateUser, updateAvatar } = useSetting();
 
   // Profile form state (no functionality)
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarFileSizeError, setAvatarFileSizeError] = useState(false);
   const [coverImagePreview, setCoverImagePreview] = useState(null);
-
+  const [coverImageFile, setCoverImageFile] = useState(null);
+  
   // Edit mode states
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
   const [isEditingCover, setIsEditingCover] = useState(false);
@@ -41,6 +44,16 @@ const ProfileTab = () => {
   const handleAvatarChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Check file size (max 8MB)
+      const maxSize = 8 * 1024 * 1024; // 8MB in bytes
+      if (file.size >= maxSize) {
+        setAvatarFileSizeError(true);
+        setAvatarFile(null);
+        return;
+      }
+
+      setAvatarFileSizeError(false);
+      setAvatarFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setAvatarPreview(reader.result);
@@ -52,6 +65,7 @@ const ProfileTab = () => {
   const handleCoverImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
+      setCoverImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setCoverImagePreview(reader.result);
@@ -65,15 +79,29 @@ const ProfileTab = () => {
     updateUser({ fullName, email });
   };
 
-  const handleAvatarSubmit = (e) => {
+  const handleAvatarSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Add update avatar functionality
-    console.log("Update avatar");
+
+    if (!avatarFile) {
+      console.error("No avatar file selected");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("avatar", avatarFile);
+
+    try {
+      await updateAvatar(formData);
+      // Clear the file state after successful upload
+      setAvatarFile(null);
+      setIsEditingAvatar(false);
+    } catch (error) {
+      console.error("Failed to update avatar:", error);
+    }
   };
 
   const handleCoverImageSubmit = (e) => {
     e.preventDefault();
-    // TODO: Add update cover image functionality
     console.log("Update cover image");
   };
 
@@ -138,18 +166,27 @@ const ProfileTab = () => {
                     <p className="text-xs text-muted-foreground mt-1">
                       Square image, 400x400px+
                     </p>
+                    {avatarFileSizeError && (
+                      <p className="text-xs text-red-500 mt-1 font-medium">
+                        File size must be less than 8MB
+                      </p>
+                    )}
                   </div>
                   <div className="flex gap-3">
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => setIsEditingAvatar(false)}
+                      onClick={() => {
+                        setIsEditingAvatar(false);
+                        setAvatarFileSizeError(false);
+                      }}
                       className="flex-1"
                     >
                       Cancel
                     </Button>
                     <Button
-                      onClick={() => console.log("Upload avatar")}
+                      onClick={(e) => handleAvatarSubmit(e)}
+                      disabled={!avatarFile || avatarFileSizeError}
                       className="flex-1"
                     >
                       <Upload className="w-4 h-4 mr-2" />
