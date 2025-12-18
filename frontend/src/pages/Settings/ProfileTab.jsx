@@ -10,13 +10,22 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { User, Image, ImagePlus, Upload, Pencil } from "lucide-react";
+import {
+  User,
+  Image,
+  ImagePlus,
+  Upload,
+  Pencil,
+  ScissorsSquareDashedBottom,
+} from "lucide-react";
 import { useGlobal } from "../../ContentApi/GlobalContext";
 import { useSetting } from "../../ContentApi/SettingContext";
+import { useToast } from "../../ContentApi/ToastContext";
 
 const ProfileTab = () => {
+  const { showToast } = useToast();
   const { user } = useGlobal();
-  const { updateUser, updateAvatar } = useSetting();
+  const { updateUser, updateAvatar, updateCoverImage } = useSetting();
 
   // Profile form state (no functionality)
   const [fullName, setFullName] = useState("");
@@ -26,7 +35,7 @@ const ProfileTab = () => {
   const [avatarFileSizeError, setAvatarFileSizeError] = useState(false);
   const [coverImagePreview, setCoverImagePreview] = useState(null);
   const [coverImageFile, setCoverImageFile] = useState(null);
-  
+  const [coverImageFileSizeError, setCoverImageFileSizeError] = useState(false);
   // Edit mode states
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
   const [isEditingCover, setIsEditingCover] = useState(false);
@@ -65,6 +74,12 @@ const ProfileTab = () => {
   const handleCoverImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
+      const maxSize = 8 * 1024 * 1024;
+      if (file.size > maxSize) {
+        setCoverImageFileSizeError(true);
+        return;
+      }
+      setCoverImageFileSizeError(false);
       setCoverImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -83,7 +98,7 @@ const ProfileTab = () => {
     e.preventDefault();
 
     if (!avatarFile) {
-      console.error("No avatar file selected");
+      showToast("No avatar file selected", "error");
       return;
     }
 
@@ -100,9 +115,25 @@ const ProfileTab = () => {
     }
   };
 
-  const handleCoverImageSubmit = (e) => {
+  const handleCoverImageSubmit = async (e) => {
     e.preventDefault();
-    console.log("Update cover image");
+
+    if (!coverImageFile) {
+      showToast("No cover image file selected", "error");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("coverImage", coverImageFile);
+
+    try {
+      await updateCoverImage(formData);
+      // Clear the file state after successful upload
+      setCoverImageFile(null);
+      setIsEditingCover(false);
+    } catch (error) {
+      console.error("Failed to update cover image:", error);
+    }
   };
 
   return (
@@ -325,7 +356,7 @@ const ProfileTab = () => {
                   >
                     Cancel
                   </Button>
-                  <Button onClick={() => console.log("Upload cover")}>
+                  <Button onClick={(e) => handleCoverImageSubmit(e)}>
                     <Upload className="w-4 h-4 mr-2" />
                     Upload Cover
                   </Button>
