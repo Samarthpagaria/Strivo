@@ -59,6 +59,29 @@ export const GlobalProvider = ({ children }) => {
       return true;
     }
   };
+
+  // Refetch user from backend
+  const refetchUser = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8000/api/v1/users/current-user`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      const userData = res.data.data;
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+      return userData;
+    } catch (error) {
+      console.error("Failed to refetch user:", error);
+      throw error;
+    }
+  };
+
   //initial app load
   useEffect(() => {
     const init = async () => {
@@ -76,7 +99,17 @@ export const GlobalProvider = ({ children }) => {
   }, []);
   return (
     <GlobalContext.Provider
-      value={{ user, token,refreshToken,setRefreshToken, setUser, setToken, isAuthenticated, isAppReady }}
+      value={{
+        user,
+        token,
+        refreshToken,
+        setRefreshToken,
+        setUser,
+        setToken,
+        refetchUser,
+        isAuthenticated,
+        isAppReady,
+      }}
     >
       {children}
     </GlobalContext.Provider>
