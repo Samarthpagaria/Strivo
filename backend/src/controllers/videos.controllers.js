@@ -35,8 +35,12 @@ const getAllVideos = asyncHandler(async (req, res) => {
     matchStage.owner = new mongoose.Types.ObjectId(userId);
   }
 
-  //only show published vodes
-  matchStage.isPublished = true;
+  // Only show published videos UNLESS the user is viewing their own videos
+  // If userId matches the authenticated user, show all videos (published and unpublished)
+  const isViewingOwnVideos = userId && userId === req.user?._id.toString();
+  if (!isViewingOwnVideos) {
+    matchStage.isPublished = true;
+  }
 
   //Build sortStage
   const sortStage = {};

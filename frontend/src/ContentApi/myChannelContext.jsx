@@ -119,7 +119,13 @@ export const MyChannelProvider = ({ children }) => {
   const myChannelTogglePublishMutation = useMutation({
     mutationFn: async (videoId) => {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/videos/toggle/publish/${videoId}`
+        `http://localhost:8000/api/v1/videos/toggle/publish/${videoId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       return res.data;
     },
@@ -137,7 +143,12 @@ export const MyChannelProvider = ({ children }) => {
   const myChannelDeleteVideoMutation = useMutation({
     mutationFn: async (videoId) => {
       const res = await axios.delete(
-        `http://localhost:8000/api/v1/videos/${videoId}`
+        `http://localhost:8000/api/v1/videos/${videoId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       return res.data;
     },
