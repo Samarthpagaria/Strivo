@@ -1,19 +1,13 @@
 import React, { useState } from "react";
 import { useGlobal } from "../../ContentApi/GlobalContext";
 import { useMyChannel } from "../../ContentApi/myChannelContext";
-import {
-  CheckCircle2,
-  Upload,
-  X,
-  ImagePlus,
-  Edit3,
-  Trash2,
-  MoreVertical,
-  Plus,
-} from "lucide-react";
+import { Edit3, Trash2, Plus, ImagePlus, X } from "lucide-react";
 import VideoCard from "../../project_components/VideoCard";
-
+import PublishVideoModal from "../../project_components/PublishVideoModal";
+import { NoiseBackground } from "@/components/ui/noise-background";
+import { useNavigate } from "react-router-dom";
 const MyChannelProfile = () => {
+  const navigate = useNavigate();
   const { user } = useGlobal();
   const {
     myChannelVideosQuery,
@@ -32,13 +26,6 @@ const MyChannelProfile = () => {
   const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
 
   // Forms
-  const [videoForm, setVideoForm] = useState({
-    title: "",
-    description: "",
-    videoFile: null,
-    thumbnail: null,
-  });
-
   const [playlistForm, setPlaylistForm] = useState({
     name: "",
     description: "",
@@ -52,7 +39,6 @@ const MyChannelProfile = () => {
     username: user?.username || "username",
     subscribersCount: "0",
     channelsSubscribedToCount: "0",
-    isVerified: true,
   };
 
   const tabs = [
@@ -63,44 +49,13 @@ const MyChannelProfile = () => {
 
   // --- Handlers ---
 
-  const handleVideoInputChange = (e) => {
-    const { name, value } = e.target;
-    setVideoForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleVideoFileChange = (e) => {
-    const { name, files } = e.target;
-    if (files && files[0]) {
-      setVideoForm((prev) => ({ ...prev, [name]: files[0] }));
-    }
+  const handleAddVideo = async (formData) => {
+    await myChannelAddvideoMutation.mutateAsync(formData);
   };
 
   const handlePlaylistInputChange = (e) => {
     const { name, value } = e.target;
     setPlaylistForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleAddVideo = async (e) => {
-    e.preventDefault();
-    if (!videoForm.videoFile || !videoForm.thumbnail) return;
-
-    const formData = new FormData();
-    formData.append("title", videoForm.title);
-    formData.append("description", videoForm.description);
-    formData.append("videoFile", videoForm.videoFile);
-    formData.append("thumbnail", videoForm.thumbnail);
-
-    await myChannelAddvideoMutation.mutateAsync(formData);
-    setTimeout(() => {
-      setIsVideoModalOpen(false);
-      setVideoForm({
-        title: "",
-        description: "",
-        videoFile: null,
-        thumbnail: null,
-      });
-      myChannelAddvideoMutation.reset();
-    }, 2000);
   };
 
   const handleCreatePlaylist = async (e) => {
@@ -142,7 +97,7 @@ const MyChannelProfile = () => {
   return (
     <div className="w-full relative min-h-screen bg-gray-50">
       {/* Cover Image */}
-      <div className="w-full h-48 md:h-64 bg-gradient-to-r from-blue-500 to-purple-600 relative">
+      <div className="w-full h-48 md:h-64 bg-gradient-to-r from-neutral-500 to-neutral-00 relative rounded-b-4xl overflow-hidden">
         <img
           src={channelData.coverImage}
           alt="Cover"
@@ -162,16 +117,18 @@ const MyChannelProfile = () => {
             />
           </div>
 
-          <div className="flex-1 pt-8 md:mb-4">
+          <div className="flex-1 pt-20 md:mb-4">
             <div className="flex items-center gap-2 mb-1">
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
                 {channelData.fullName}
               </h1>
-              {channelData.isVerified && (
-                <CheckCircle2 className="w-6 h-6 text-blue-500 fill-current" />
-              )}
             </div>
-            <p className="text-gray-600 mb-2">@{channelData.username}</p>
+            <p className="text-gray-600 mb-2">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-rose-700 via-amber-500 to-yellow-600 font-semibold">
+                @
+              </span>
+              {channelData.username}
+            </p>
             <div className="flex gap-4 text-sm text-gray-600">
               <span>
                 <strong className="text-gray-900">
@@ -189,17 +146,40 @@ const MyChannelProfile = () => {
           </div>
 
           <div className="md:mb-4 flex gap-3">
-            <button
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition-colors"
-              onClick={() => setIsVideoModalOpen(true)}
+            <NoiseBackground
+              containerClassName="w-fit p-2 rounded-full"
+              gradientColors={[
+                "rgb(255, 100, 150)",
+                "rgb(100, 150, 255)",
+                "rgb(255, 200, 100)",
+              ]}
+              animating={true}
             >
-              <ImagePlus className="w-4 h-4" />
-              Add Video
-            </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-full font-semibold hover:bg-gray-300 transition-colors">
-              <Edit3 className="w-4 h-4" />
-              Edit Profile
-            </button>
+              <button
+                onClick={() => setIsVideoModalOpen(true)}
+                className="h-full w-full cursor-pointer rounded-full bg-gradient-to-r from-neutral-100 via-neutral-100 to-white  px-3 py-1.5 text-sm text-black shadow-[0px_2px_0px_0px_rgba(245,245,245,1)_inset,0px_0.5px_1px_0px_rgba(163,163,163,1)] transition-all duration-100 active:scale-98 dark:from-black dark:via-black dark:to-neutral-900 dark:text-white dark:shadow-[0px_1px_0px_0px_rgba(10,10,10,1)_inset,0px_1px_0px_0px_rgba(38,38,38,1)] flex items-center gap-2 font-semibold"
+              >
+                <ImagePlus className="w-3.5 h-3.5" />
+                Add Video
+              </button>
+            </NoiseBackground>
+            <NoiseBackground
+              containerClassName="w-fit p-2 rounded-full "
+              gradientColors={[
+                "rgb(255, 100, 150)",
+                "rgb(100, 150, 255)",
+                "rgb(255, 200, 100)",
+              ]}
+              animating={true}
+            >
+              <button
+                onClick={() => navigate("/settings")}
+                className="h-full w-full cursor-pointer rounded-full bg-transparent px-3 py-1.5 text-sm text-black transition-all duration-100 active:scale-98 flex items-center gap-2 font-semibold opacity-100 "
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+                Edit Profile
+              </button>
+            </NoiseBackground>
           </div>
         </div>
 
@@ -436,154 +416,12 @@ const MyChannelProfile = () => {
       </div>
 
       {/* Add Video Modal */}
-      {isVideoModalOpen && (
-        <div className="fixed inset-0 bg-black/60 z-150 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 relative animate-in fade-in zoom-in duration-200">
-            <button
-              onClick={() => setIsVideoModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
-
-            <h2 className="text-2xl font-bold mb-6 text-gray-900">
-              Upload Video
-            </h2>
-
-            {myChannelAddvideoMutation.isPending ? (
-              <div className="flex flex-col items-center justify-center py-12 space-y-4">
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-100 border-t-blue-600"></div>
-                <p className="text-lg font-medium text-blue-600">
-                  Uploading Video...
-                </p>
-                <p className="text-sm text-gray-500">
-                  Please wait, do not close this window.
-                </p>
-              </div>
-            ) : myChannelAddvideoMutation.isSuccess ? (
-              <div className="flex flex-col items-center justify-center py-12 space-y-4">
-                <div className="rounded-full bg-green-100 p-3">
-                  <CheckCircle2 className="w-12 h-12 text-green-600" />
-                </div>
-                <p className="text-xl font-bold text-gray-900">
-                  Uploaded Successfully!
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleAddVideo} className="space-y-5">
-                {myChannelAddvideoMutation.isError && (
-                  <div className="p-4 bg-red-50 text-red-700 rounded-xl text-sm border border-red-100 flex items-center gap-2">
-                    <X className="w-4 h-4" />
-                    Error uploading video. Please try again.
-                  </div>
-                )}
-
-                {/* Thumbnail Input */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Thumbnail
-                  </label>
-                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 transition-all relative group">
-                    <input
-                      type="file"
-                      name="thumbnail"
-                      onChange={handleVideoFileChange}
-                      accept="image/*"
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                      required
-                    />
-                    {videoForm.thumbnail ? (
-                      <div className="flex flex-col items-center text-green-600">
-                        <CheckCircle2 className="w-8 h-8 mb-2" />
-                        <p className="text-sm font-medium truncate w-full px-4">
-                          {videoForm.thumbnail.name}
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center text-gray-400 group-hover:text-blue-500 transition-colors">
-                        <ImagePlus className="w-8 h-8 mb-2" />
-                        <span className="text-sm font-medium">
-                          Click to upload thumbnail
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Video Input */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Video File
-                  </label>
-                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 transition-all relative group">
-                    <input
-                      type="file"
-                      name="videoFile"
-                      onChange={handleVideoFileChange}
-                      accept="video/*"
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                      required
-                    />
-                    {videoForm.videoFile ? (
-                      <div className="flex flex-col items-center text-green-600">
-                        <CheckCircle2 className="w-8 h-8 mb-2" />
-                        <p className="text-sm font-medium truncate w-full px-4">
-                          {videoForm.videoFile.name}
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center text-gray-400 group-hover:text-blue-500 transition-colors">
-                        <Upload className="w-8 h-8 mb-2" />
-                        <span className="text-sm font-medium">
-                          Click to upload video
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Title
-                  </label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={videoForm.title}
-                    onChange={handleVideoInputChange}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                    placeholder="Video title"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    Description
-                  </label>
-                  <textarea
-                    name="description"
-                    value={videoForm.description}
-                    onChange={handleVideoInputChange}
-                    rows="3"
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none transition-all"
-                    placeholder="What's this video about?"
-                  ></textarea>
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"
-                  >
-                    Upload Video
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
+      <PublishVideoModal
+        isOpen={isVideoModalOpen}
+        onClose={() => setIsVideoModalOpen(false)}
+        onSubmit={handleAddVideo}
+        mutation={myChannelAddvideoMutation}
+      />
 
       {/* Create Playlist Modal */}
       {isPlaylistModalOpen && (

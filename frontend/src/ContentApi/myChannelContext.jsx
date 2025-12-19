@@ -15,8 +15,15 @@ export const MyChannelProvider = ({ children }) => {
   const myChannelVideosQuery = useQuery({
     queryKey: ["mychannel", "videos", user?.username],
     queryFn: async () => {
-      const res = await axios.get(`write query route for all video`);
-      return res.data;
+      const res = await axios.get(
+        `http://localhost:8000/api/v1/videos?userId=${user._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return res.data.data.videos;
     },
     enabled: !!user?._id && !!isAuthenticated,
   });
