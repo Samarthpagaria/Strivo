@@ -163,6 +163,31 @@ export const MyChannelProvider = ({ children }) => {
     },
   });
 
+  const myChannelUpdateVideoMutation = useMutation({
+    mutationFn: async ({ videoId, formData }) => {
+      const res = await axios.patch(
+        `http://localhost:8000/api/v1/videos/${videoId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return res.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["mychannel", "videos", user?.username]);
+      showToast(data?.message || "Video updated successfully!");
+    },
+    onError: (error) => {
+      const errorMessage =
+        error?.response?.data?.message || "Failed to update video";
+      showToast(errorMessage);
+    },
+  });
+
   return (
     <MyChannelContext.Provider
       value={{
@@ -175,6 +200,7 @@ export const MyChannelProvider = ({ children }) => {
         myChannelCreatePlaylistMutation,
         myChannelTogglePublishMutation,
         myChannelDeleteVideoMutation,
+        myChannelUpdateVideoMutation,
       }}
     >
       {children}

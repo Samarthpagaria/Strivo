@@ -17,6 +17,7 @@ const MyChannelProfile = () => {
     myChannelCreatePlaylistMutation,
     myChannelTogglePublishMutation,
     myChannelDeleteVideoMutation,
+    myChannelUpdateVideoMutation,
   } = useMyChannel();
 
   const [activeTab, setActiveTab] = useState("videos");
@@ -24,6 +25,14 @@ const MyChannelProfile = () => {
   // Modal States
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
+
+  // Edit States
+  const [editingVideoId, setEditingVideoId] = useState(null);
+  const [editForm, setEditForm] = useState({
+    title: "",
+    description: "",
+    thumbnailFile: null,
+  });
 
   // Forms
   const [playlistForm, setPlaylistForm] = useState({
@@ -78,6 +87,44 @@ const MyChannelProfile = () => {
     if (window.confirm("Are you sure you want to delete this video?")) {
       await myChannelDeleteVideoMutation.mutateAsync(videoId);
     }
+  };
+
+  const handleEditClick = (video) => {
+    setEditingVideoId(video._id);
+    setEditForm({
+      title: video.title,
+      description: video.description,
+      thumbnailFile: null,
+    });
+  };
+
+  const handleEditCancel = () => {
+    setEditingVideoId(null);
+    setEditForm({ title: "", description: "", thumbnailFile: null });
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleThumbnailChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setEditForm((prev) => ({ ...prev, thumbnailFile: file }));
+    }
+  };
+
+  const handleEditSave = async (videoId) => {
+    const formData = new FormData();
+    formData.append("title", editForm.title);
+    formData.append("description", editForm.description);
+    if (editForm.thumbnailFile) {
+      formData.append("thumbnail", editForm.thumbnailFile);
+    }
+
+    await myChannelUpdateVideoMutation.mutateAsync({ videoId, formData });
+    handleEditCancel();
   };
 
   // Close modals on success (alternate check)
@@ -234,75 +281,174 @@ const MyChannelProfile = () => {
                     ) : Array.isArray(myChannelVideosQuery.data) &&
                       myChannelVideosQuery.data.length > 0 ? (
                       myChannelVideosQuery.data.map((video) => (
-                        <tr
-                          key={video._id}
-                          className="hover:bg-gray-50 transition-colors"
-                        >
-                          <td className="px-6 py-4">
-                            {/* Toggle Publish Switch */}
-                            <button
-                              onClick={() => handleTogglePublish(video._id)}
-                              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                                video.isPublished
-                                  ? "bg-green-500"
-                                  : "bg-gray-300"
-                              }`}
-                            >
-                              <span
-                                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                                  video.isPublished
-                                    ? "translate-x-6"
-                                    : "translate-x-1"
-                                }`}
-                              />
-                            </button>
-                          </td>
-                          <td className="px-6 py-4">
-                            <span
-                              className={`px-3 py-1 rounded-full text-xs font-medium border ${
-                                video.isPublished
-                                  ? "bg-green-100 text-green-700 border-green-200"
-                                  : "bg-gray-100 text-gray-700 border-gray-200"
-                              }`}
-                            >
-                              {video.isPublished ? "Published" : "Unpublished"}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <div className="h-10 w-16 bg-gray-200 rounded overflow-hidden flex-shrink-0">
-                                <img
-                                  src={video.thumbnail}
-                                  alt={video.title}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                              <span className="font-medium text-gray-900 truncate max-w-xs">
-                                {video.title}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-gray-600">
-                            {/* Likes count not available in current API response, keeping placeholder or 0 */}
-                            0
-                          </td>
-                          <td className="px-6 py-4 text-gray-600 whitespace-nowrap">
-                            {new Date(video.createdAt).toLocaleDateString()}
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
-                                <Edit3 className="w-4 h-4" />
-                              </button>
+                        <React.Fragment key={video._id}>
+                          <tr className="hover:bg-gray-50 transition-colors">
+                            <td className="px-6 py-4">
+                              {/* Toggle Publish Switch */}
                               <button
-                                onClick={() => handleDeleteVideo(video._id)}
-                                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                                onClick={() => handleTogglePublish(video._id)}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                                  video.isPublished
+                                    ? "bg-green-500"
+                                    : "bg-gray-300"
+                                }`}
                               >
-                                <Trash2 className="w-4 h-4" />
+                                <span
+                                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                                    video.isPublished
+                                      ? "translate-x-6"
+                                      : "translate-x-1"
+                                  }`}
+                                />
                               </button>
-                            </div>
-                          </td>
-                        </tr>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span
+                                className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                                  video.isPublished
+                                    ? "bg-green-100 text-green-700 border-green-200"
+                                    : "bg-gray-100 text-gray-700 border-gray-200"
+                                }`}
+                              >
+                                {video.isPublished
+                                  ? "Published"
+                                  : "Unpublished"}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
+                                <div className="h-10 w-16 bg-gray-200 rounded overflow-hidden flex-shrink-0">
+                                  <img
+                                    src={video.thumbnail}
+                                    alt={video.title}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <span className="font-medium text-gray-900 truncate max-w-xs">
+                                  {video.title}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 text-gray-600">
+                              {/* Likes count not available in current API response, keeping placeholder or 0 */}
+                              0
+                            </td>
+                            <td className="px-6 py-4 text-gray-600 whitespace-nowrap">
+                              {new Date(video.createdAt).toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button
+                                  onClick={() => handleEditClick(video)}
+                                  className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                                >
+                                  <Edit3 className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteVideo(video._id)}
+                                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                          {/* Expandable Edit Row */}
+                          {editingVideoId === video._id && (
+                            <tr>
+                              <td colSpan="6" className="px-6 py-4 bg-gray-50">
+                                <div className="max-w-4xl">
+                                  <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                                    Edit Video
+                                  </h3>
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    {/* Thumbnail Section */}
+                                    <div className="space-y-3">
+                                      <label className="block text-xs font-medium text-gray-700">
+                                        Current Thumbnail
+                                      </label>
+                                      <div className="w-full aspect-video bg-gray-200 rounded-lg overflow-hidden">
+                                        <img
+                                          src={video.thumbnail}
+                                          alt="Thumbnail"
+                                          className="w-full h-full object-cover"
+                                        />
+                                      </div>
+                                      <label className="block rounded-br-none">
+                                        <span className="sr-only ">
+                                          Choose thumbnail
+                                        </span>
+                                        <input
+                                          type="file"
+                                          accept="image/*"
+                                          onChange={handleThumbnailChange}
+                                          className="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-gradient-to-r file:from-gray-900 file:via-gray-800 file:via-gray-700 file:to-white file:mask-r-from-95% file:text-white hover:file:bg-gray-800 file:cursor-pointer cursor-pointer border rounded-xl file:rounded-br-none file:rounded-tr-none "
+                                        />
+                                      </label>
+                                      {editForm.thumbnailFile && (
+                                        <p className="text-xs text-green-600">
+                                          New thumbnail selected
+                                        </p>
+                                      )}
+                                    </div>
+
+                                    {/* Form Fields */}
+                                    <div className="md:col-span-2 space-y-4">
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-700 mb-1.5">
+                                          Title
+                                        </label>
+                                        <input
+                                          type="text"
+                                          name="title"
+                                          value={editForm.title}
+                                          onChange={handleEditInputChange}
+                                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                                        />
+                                      </div>
+                                      <div>
+                                        <label className="block text-xs font-medium text-gray-700 mb-1.5">
+                                          Description
+                                        </label>
+                                        <textarea
+                                          name="description"
+                                          value={editForm.description}
+                                          onChange={handleEditInputChange}
+                                          rows="4"
+                                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent resize-none"
+                                        />
+                                      </div>
+                                      <div className="flex justify-end gap-3 pt-2">
+                                        <button
+                                          onClick={handleEditCancel}
+                                          disabled={
+                                            myChannelUpdateVideoMutation.isPending
+                                          }
+                                          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                          Cancel
+                                        </button>
+                                        <button
+                                          onClick={() =>
+                                            handleEditSave(video._id)
+                                          }
+                                          disabled={
+                                            myChannelUpdateVideoMutation.isPending
+                                          }
+                                          className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                          {myChannelUpdateVideoMutation.isPending
+                                            ? "Saving..."
+                                            : "Save Changes"}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
                       ))
                     ) : (
                       <tr>
