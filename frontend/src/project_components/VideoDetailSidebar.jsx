@@ -102,7 +102,7 @@ const VideoDetailSidebar = ({
             <motion.div layout>
               <PixelCard
                 variant="blue"
-                className="w-10 h-10 rounded-xl border border-slate-200/60 bg-white/60 p-0 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
+                className="w-10 h-10 rounded-full border border-slate-200/40 p-0 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
                 gap={3}
                 speed={15}
                 colors="#3b82f6,#60a5fa,#93c5fd"
@@ -121,7 +121,7 @@ const VideoDetailSidebar = ({
             <motion.div layout>
               <PixelCard
                 variant="blue"
-                className="w-10 h-10 rounded-xl border border-slate-200/60 bg-white/60 p-0 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
+                className="w-10 h-10 rounded-full border border-slate-200/40 p-0 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
                 gap={3}
                 speed={15}
                 colors="#f43f5e,#fb7185,#fda4af"
@@ -139,7 +139,7 @@ const VideoDetailSidebar = ({
             <motion.div layout>
               <PixelCard
                 variant="blue"
-                className="w-10 h-10 rounded-xl border border-slate-200/60 bg-white/60 p-0 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
+                className="w-10 h-10 rounded-full border border-slate-200/40 p-0 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
                 gap={3}
                 speed={15}
                 colors="#10b981,#34d399,#6ee7b7"
@@ -156,7 +156,7 @@ const VideoDetailSidebar = ({
             <motion.div layout>
               <PixelCard
                 variant="blue"
-                className="w-10 h-10 rounded-xl border border-slate-200/60 bg-white/60 p-0 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
+                className="w-10 h-10 rounded-full border border-slate-200/40 p-0 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
                 gap={3}
                 speed={15}
                 colors="#0ea5e9,#38bdf8,#7dd3fc"
@@ -178,7 +178,7 @@ const VideoDetailSidebar = ({
                   setIsOpen(false);
                   setActiveTab(null);
                 }}
-                className="w-10 h-10 flex items-center justify-center hover:bg-slate-100/80 rounded-xl transition-colors text-slate-400 hover:text-slate-600"
+                className="w-10 h-10 flex items-center justify-center hover:bg-slate-100/80 rounded-full transition-colors text-slate-400 hover:text-slate-600"
               >
                 <X size={20} />
               </motion.button>
@@ -198,11 +198,14 @@ const VideoDetailSidebar = ({
             <motion.div layout className="flex-1">
               <PixelCard
                 variant="blue"
-                className={`w-full h-11 rounded-xl border border-slate-200/60 p-0 cursor-pointer transition-all ${
+                active={activeTab === "discussion" && isOpen}
+                className={`rounded-full border p-0 cursor-pointer transition-all ${
+                  isOpen ? "w-full h-11" : "w-10 h-10"
+                } ${
                   activeTab === "discussion" && isOpen
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
-                    : "bg-white/60 hover:bg-white"
-                } ${!isOpen ? "w-10" : ""}`}
+                    ? "border-blue-500/50 shadow-lg shadow-blue-200/30"
+                    : "border-slate-200/40"
+                }`}
                 gap={3}
                 speed={15}
                 colors="#6366f1,#818cf8,#a5b4fc"
@@ -213,7 +216,7 @@ const VideoDetailSidebar = ({
                     size={16}
                     className={
                       activeTab === "discussion" && isOpen
-                        ? "text-white"
+                        ? "text-blue-600"
                         : "text-indigo-600"
                     }
                   />
@@ -222,8 +225,8 @@ const VideoDetailSidebar = ({
                       initial={{ opacity: 0, x: -5 }}
                       animate={{ opacity: 1, x: 0 }}
                       className={`text-[11px] font-bold ${
-                        activeTab === "discussion"
-                          ? "text-white"
+                        activeTab === "discussion" && isOpen
+                          ? "text-blue-700"
                           : "text-slate-600"
                       }`}
                     >
@@ -238,11 +241,14 @@ const VideoDetailSidebar = ({
             <motion.div layout className="flex-1">
               <PixelCard
                 variant="blue"
-                className={`w-full h-11 rounded-xl border border-slate-200/60 p-0 cursor-pointer transition-all ${
+                active={activeTab === "upnext" && isOpen}
+                className={`rounded-full border p-0 cursor-pointer transition-all ${
+                  isOpen ? "w-full h-11" : "w-10 h-10"
+                } ${
                   activeTab === "upnext" && isOpen
-                    ? "bg-amber-500 text-white shadow-lg shadow-amber-200"
-                    : "bg-white/60 hover:bg-white"
-                } ${!isOpen ? "w-10" : ""}`}
+                    ? "border-amber-500/50 shadow-lg shadow-amber-200/30"
+                    : "border-slate-200/40"
+                }`}
                 gap={3}
                 speed={15}
                 colors="#f59e0b,#fbbf24,#fcd34d"
@@ -253,7 +259,7 @@ const VideoDetailSidebar = ({
                     size={16}
                     className={
                       activeTab === "upnext" && isOpen
-                        ? "text-white"
+                        ? "text-amber-600"
                         : "text-amber-600"
                     }
                   />
@@ -262,7 +268,9 @@ const VideoDetailSidebar = ({
                       initial={{ opacity: 0, x: -5 }}
                       animate={{ opacity: 1, x: 0 }}
                       className={`text-[11px] font-bold ${
-                        activeTab === "upnext" ? "text-white" : "text-slate-600"
+                        activeTab === "upnext" && isOpen
+                          ? "text-amber-700"
+                          : "text-slate-600"
                       }`}
                     >
                       Up Next

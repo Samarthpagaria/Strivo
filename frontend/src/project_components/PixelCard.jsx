@@ -133,6 +133,7 @@ export default function PixelCard({
   speed,
   colors,
   noFocus,
+  active = false,
   className = "",
   children,
   ...rest
@@ -145,6 +146,14 @@ export default function PixelCard({
   const reducedMotion = useRef(
     window.matchMedia("(prefers-reduced-motion: reduce)").matches
   ).current;
+
+  useEffect(() => {
+    if (active) {
+      handleAnimation("appear");
+    } else {
+      handleAnimation("disappear");
+    }
+  }, [active]);
 
   const variantCfg = VARIANTS[variant] || VARIANTS.default;
   const finalGap = gap ?? variantCfg.gap;
@@ -225,14 +234,20 @@ export default function PixelCard({
     animationRef.current = requestAnimationFrame(() => doAnimate(name));
   };
 
-  const onMouseEnter = () => handleAnimation("appear");
-  const onMouseLeave = () => handleAnimation("disappear");
+  const onMouseEnter = () => {
+    if (active) return;
+    handleAnimation("appear");
+  };
+  const onMouseLeave = () => {
+    if (active) return;
+    handleAnimation("disappear");
+  };
   const onFocus = (e) => {
-    if (e.currentTarget.contains(e.relatedTarget)) return;
+    if (active || e.currentTarget.contains(e.relatedTarget)) return;
     handleAnimation("appear");
   };
   const onBlur = (e) => {
-    if (e.currentTarget.contains(e.relatedTarget)) return;
+    if (active || e.currentTarget.contains(e.relatedTarget)) return;
     handleAnimation("disappear");
   };
 
