@@ -200,21 +200,131 @@ const publishAVideo = asyncHandler(async (req, res) => {
 });
 
 const getVideo = asyncHandler(async (req, res) => {
-  const userId = req.user?._id;
   const { videoId } = req.params;
+  const userId = req.user?._id;
+
   if (!mongoose.isValidObjectId(videoId)) {
     throw new ApiError(400, "Invalid video id");
   }
-  const video = await Video.findById(videoId);
-  if (!video) {
+
+  const video = await Video.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(videoId),
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "video",
+        as: "likes",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $lookup: {
+              from: "subscriptions",
+              localField: "_id",
+              foreignField: "channel",
+              as: "subscribers",
+            },
+          },
+          {
+            $addFields: {
+              subscribersCount: {
+                $size: "$subscribers",
+              },
+              isSubscribed: {
+                $cond: {
+                  if: { $in: [userId, "$subscribers.subscriber"] },
+                  then: true,
+                  else: false,
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              fullName: 1,
+              username: 1,
+              avatar: 1,
+              subscribersCount: 1,
+              isSubscribed: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        likesCount: {
+          $size: "$likes",
+        },
+        owner: {
+          $first: "$owner",
+        },
+        isLiked: {
+          $cond: {
+            if: { $in: [userId, "$likes.likedBy"] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        videoFile: 1,
+        title: 1,
+        description: 1,
+        views: 1,
+        createdAt: 1,
+        duration: 1,
+        thumbnail: 1,
+        owner: 1,
+        likesCount: 1,
+        isLiked: 1,
+        isPublished: 1,
+      },
+    },
+  ]);
+
+  if (!video?.length) {
     throw new ApiError(404, "Video not found");
   }
-  if (video.owner.toString() !== userId.toString()) {
-    throw new ApiError(403, "Unauthorized access");
+
+  // Check if the video is published OR if the user is the owner
+  const videoData = video[0];
+  if (
+    !videoData.isPublished &&
+    videoData.owner?._id?.toString() !== userId?.toString()
+  ) {
+    throw new ApiError(403, "This video is private");
   }
+
+  // Increment views
+  await Video.findByIdAndUpdate(videoId, {
+    $inc: { views: 1 },
+  });
+
+  // Add to user's watch history
+  if (userId) {
+    await User.findByIdAndUpdate(userId, {
+      $addToSet: { watchHistory: videoId },
+    });
+  }
+
   return res
     .status(200)
-    .json(new ApiResponse(200, video, "Video fetched successfully"));
+    .json(new ApiResponse(200, videoData, "Video fetched successfully"));
 });
 
 // Imports removed as they are duplicates of top-level imports

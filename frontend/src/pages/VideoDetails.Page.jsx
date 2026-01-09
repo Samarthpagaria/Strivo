@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import PixelCard from "../project_components/PixelCard";
 import VideoDetailSidebar from "../project_components/VideoDetailSidebar";
+import { useVideoDetail } from "../ContentApi/VideoDetailContext";
+import { formatDistanceToNow } from "date-fns";
 
 // Dummy data for development (re-used)
 const MOCK_VIDEO = {
@@ -66,11 +68,19 @@ const COMMENTS = [
 
 const VideoDetailsPage = () => {
   const { videoId } = useParams();
-  const { scrollRef } = useOutletContext() || {}; // Access scroll container from RootLayout
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const { scrollRef } = useOutletContext() || {};
+  const {
+    data: videoData,
+    isLoading,
+    isError,
+    error,
+    toggleVideoLikeMutation,
+    toggleSubscriptionMutation,
+  } = useVideoDetail(videoId);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const playerRef = useRef(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Scroll Animation Logic
   // IMPORTANT: We must pass the container ref to track the correct scrollable element
@@ -123,6 +133,27 @@ const VideoDetailsPage = () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="w-full h-screen flex flex-col items-center justify-center gap-4">
+        <h2 className="text-xl font-bold text-gray-800">Error loading video</h2>
+        <p className="text-gray-600">
+          {error?.response?.data?.message || error?.message}
+        </p>
+      </div>
+    );
+  }
+
+  if (!videoData) return null;
+
   return (
     <div className="w-full min-h-screen bg-white">
       {/* Unified Layout Container */}
@@ -141,14 +172,12 @@ const VideoDetailsPage = () => {
                 >
                   {/* Simulated Video Content */}
                   <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
-                    <div className="text-center">
-                      <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform cursor-pointer">
-                        <div className="w-0 h-0 border-t-15 border-t-transparent border-l-25 border-l-white border-b-15 border-b-transparent ml-2"></div>
-                      </div>
-                      <p className="text-white/40 font-medium tracking-wide font-mono">
-                        CINEMA PLAYER
-                      </p>
-                    </div>
+                    <video
+                      src={videoData.videoFile}
+                      controls
+                      autoPlay
+                      className="w-full h-full object-contain"
+                    />
                   </div>
 
                   {/* Player Controls Overlay (Mock) */}
@@ -190,12 +219,14 @@ const VideoDetailsPage = () => {
               <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                 <div className="flex-1">
                   <h1 className="text-xl md:text-2xl font-bold text-gray-900 leading-tight mb-1">
-                    {MOCK_VIDEO.title}
+                    {videoData.title}
                   </h1>
                   <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span>{MOCK_VIDEO.views} views</span>
+                    <span>{videoData.views} views</span>
                     <span>•</span>
-                    <span>{MOCK_VIDEO.uploadedAt}</span>
+                    <span>
+                      {formatDistanceToNow(new Date(videoData.createdAt))} ago
+                    </span>
                   </div>
                 </div>
               </div>
@@ -204,34 +235,37 @@ const VideoDetailsPage = () => {
               <div className="bg-gray-50/50 rounded-xl p-4 flex items-center justify-between border border-gray-100">
                 <div className="flex items-center gap-3">
                   <img
-                    src={MOCK_VIDEO.channel.avatar}
+                    src={videoData.owner.avatar}
                     alt=""
                     className="w-12 h-12 rounded-full border-2 border-white shadow-sm"
                   />
                   <div>
                     <h3 className="text-base font-bold text-gray-900">
-                      {MOCK_VIDEO.channel.name}
+                      {videoData.owner.fullName}
                     </h3>
                     <p className="text-xs text-gray-500">
-                      {MOCK_VIDEO.channel.subscribers} Subscribers
+                      {videoData.owner.subscribersCount} Subscribers
                     </p>
                   </div>
                 </div>
                 <button
-                  onClick={() => setIsSubscribed(!isSubscribed)}
+                  onClick={() =>
+                    toggleSubscriptionMutation.mutate(videoData.owner._id)
+                  }
+                  disabled={toggleSubscriptionMutation.isPending}
                   className={`px-6 py-2 rounded-full text-sm font-semibold transition-all shadow-xs ${
-                    isSubscribed
+                    videoData.owner.isSubscribed
                       ? "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
                       : "bg-black text-white hover:bg-gray-800"
                   }`}
                 >
-                  {isSubscribed ? "Subscribed" : "Subscribe"}
+                  {videoData.owner.isSubscribed ? "Subscribed" : "Subscribe"}
                 </button>
               </div>
 
               {/* Description */}
               <div className="prose prose-sm max-w-none text-gray-600 leading-relaxed bg-gray-50/30 p-4 rounded-xl border border-gray-100/50">
-                <p className="whitespace-pre-wrap">{MOCK_VIDEO.description}</p>
+                <p className="whitespace-pre-wrap">{videoData.description}</p>
               </div>
             </div>
           </div>
@@ -242,10 +276,9 @@ const VideoDetailsPage = () => {
             relatedVideos={MORE_VIDEOS}
             isOpen={isSidebarOpen}
             setIsOpen={setIsSidebarOpen}
-            videoData={MOCK_VIDEO}
-            isSubscribed={isSubscribed}
-            setIsSubscribed={setIsSubscribed}
-            onLike={() => console.log("Liked")}
+            videoData={videoData}
+            isSubscribed={videoData.owner.isSubscribed}
+            onLike={() => toggleVideoLikeMutation.mutate(videoData._id)}
             onDislike={() => console.log("Disliked")}
             onPlaylist={() => console.log("Added to playlist")}
           />

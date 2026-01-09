@@ -108,10 +108,17 @@ const VideoDetailSidebar = ({
                 colors="#3b82f6,#60a5fa,#93c5fd"
                 onClick={onLike}
               >
-                <div className="flex flex-col items-center justify-center relative z-10 text-blue-600">
-                  <ThumbsUp size={16} />
+                <div
+                  className={`flex flex-col items-center justify-center relative z-10 ${
+                    videoData.isLiked ? "text-blue-500" : "text-slate-400"
+                  }`}
+                >
+                  <ThumbsUp
+                    size={16}
+                    fill={videoData.isLiked ? "currentColor" : "none"}
+                  />
                   <span className="text-[9px] font-bold mt-0.5">
-                    {videoData.likes}
+                    {videoData.likesCount}
                   </span>
                 </div>
               </PixelCard>

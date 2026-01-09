@@ -10,6 +10,7 @@ import { ToastProvider } from "./ContentApi/ToastContext";
 import { MyChannelProvider } from "./ContentApi/myChannelContext";
 import { PlaylistProvider } from "./ContentApi/PlaylistContext";
 import { SettingProvider } from "./ContentApi/SettingContext";
+import { VideoDetailProvider } from "./ContentApi/VideoDetailContext";
 
 function App() {
   const queryClient = new QueryClient();
@@ -21,11 +22,13 @@ function App() {
             <GlobalProvider>
               <MyChannelProvider>
                 <PlaylistProvider>
-                  <AuthProvider>
-                    <SettingProvider>
-                      <RouterProvider router={router} />
-                    </SettingProvider>
-                  </AuthProvider>
+                  <VideoDetailProvider>
+                    <AuthProvider>
+                      <SettingProvider>
+                        <RouterProvider router={router} />
+                      </SettingProvider>
+                    </AuthProvider>
+                  </VideoDetailProvider>
                 </PlaylistProvider>
               </MyChannelProvider>
             </GlobalProvider>

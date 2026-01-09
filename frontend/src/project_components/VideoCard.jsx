@@ -1,6 +1,7 @@
 import React from "react";
 import { MoreVertical } from "lucide-react";
 import VideoCardMenu from "./VideoCardMenu";
+import { useNavigate } from "react-router-dom";
 
 // Helper function to format relative time
 const getRelativeTime = (dateString) => {
@@ -23,6 +24,8 @@ const getRelativeTime = (dateString) => {
 };
 
 const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
+  const navigate = useNavigate();
+
   // Handle both API data (owner object) and mock data (channel string)
   const channelName = owner?.username || owner?.fullName || "Unknown Channel";
   const channelAvatar =
@@ -31,8 +34,15 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
   const uploadedTime = createdAt ? getRelativeTime(createdAt) : "Unknown";
   const viewCount = views || 0;
 
+  const handleCardClick = () => {
+    navigate(`/watch/${_id}`);
+  };
+
   return (
-    <div className="w-full hover:opacity-75 hover:bg-gray-200 rounded-3xl transition-all duration-300 p-2 ">
+    <div
+      onClick={handleCardClick}
+      className="w-full hover:opacity-75 hover:bg-gray-200 rounded-3xl transition-all duration-300 p-2 cursor-pointer"
+    >
       <div className="bg-gray-200 w-full aspect-video rounded-xl overflow-hidden ">
         <img
           src={videoThumbnail}
@@ -53,7 +63,9 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
             {viewCount} views · {uploadedTime}
           </p>
         </div>
-        <VideoCardMenu videoId={_id} />
+        <div onClick={(e) => e.stopPropagation()}>
+          <VideoCardMenu videoId={_id} />
+        </div>
       </div>
     </div>
   );
