@@ -1,12 +1,20 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useCallback } from "react";
 import { useInView } from "react-intersection-observer";
 import { useInfiniteSearchVideos } from "../ContentApi/SearchContext";
 import VideoListCard from "../project_components/VideoListCard";
 
 function Results() {
   const { search } = useLocation();
+  const navigate = useNavigate();
   const query = new URLSearchParams(search).get("q") || "";
+
+  const handleVideoClick = useCallback(
+    (videoId) => {
+      navigate(`/watch/${videoId}`);
+    },
+    [navigate]
+  );
 
   // Intersection observer hook - triggers when element comes into view
   const { ref, inView } = useInView({
@@ -68,7 +76,11 @@ function Results() {
         {!isLoading && allVideos.length > 0 && (
           <>
             {allVideos.map((video) => (
-              <VideoListCard key={video._id} {...video} />
+              <VideoListCard
+                key={video._id}
+                {...video}
+                onClick={() => handleVideoClick(video._id)}
+              />
             ))}
           </>
         )}
