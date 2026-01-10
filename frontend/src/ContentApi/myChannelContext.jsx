@@ -55,22 +55,6 @@ export const MyChannelProvider = ({ children }) => {
     enabled: !!user?._id && !!isAuthenticated,
   });
 
-  const homeFeedQuery = useQuery({
-    queryKey: ["homeFeed", user?.username],
-    queryFn: async () => {
-      const res = await axios.get(
-        `http://localhost:8000/api/v1/videos/home-feed`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      return res.data.data.feed;
-    },
-    enabled: !!user?._id && !!isAuthenticated,
-  });
-
   const myChannelAddvideoMutation = useMutation({
     mutationFn: async (formData) => {
       const res = await axios.post(
@@ -195,7 +179,6 @@ export const MyChannelProvider = ({ children }) => {
         myChannelSubscriptionsQuery,
         myChannelPlaylistsQuery,
         mychannelTweetsQuery,
-        homeFeedQuery,
         myChannelAddvideoMutation,
         myChannelCreatePlaylistMutation,
         myChannelTogglePublishMutation,

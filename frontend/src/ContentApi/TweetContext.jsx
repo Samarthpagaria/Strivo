@@ -59,9 +59,27 @@ export const TweetProvider = ({ children }) => {
       showToast(message);
     },
   });
+  const homeFeedTweetsQuery = useQuery({
+    queryKey: ["home-feed-tweets"],
+    queryFn: async () => {
+      const res = await axios.get(`http://localhost:8000/api/v1/tweets/feed`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data;
+    },
+    enabled: !!token,
+    retry: 1,
+  });
   return (
     <TweetContext.Provider
-      value={{ tweetQuery, userId, createTweet: createTweetMutation }}
+      value={{
+        tweetQuery,
+        userId,
+        createTweet: createTweetMutation,
+        homeFeedTweetsQuery,
+      }}
     >
       {children}
     </TweetContext.Provider>

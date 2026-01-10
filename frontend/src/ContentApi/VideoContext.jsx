@@ -1,12 +1,14 @@
 import { useContext, createContext, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useGlobal } from "./GlobalContext";
 
 const VideoContext = createContext();
 
 export const useVideo = () => useContext(VideoContext);
 
 export const VideoProvider = ({ children, username, userId }) => {
+  const { token, user, isAuthenticated } = useGlobal();
   const [page, setPage] = useState(1);
 
   const videoQuery = useQuery({
@@ -20,6 +22,23 @@ export const VideoProvider = ({ children, username, userId }) => {
     enabled: !!userId,
     keepPreviousData: true,
   });
+
+  const homeFeedQuery = useQuery({
+    queryKey: ["homeFeed", user?.username],
+    queryFn: async () => {
+      const res = await axios.get(
+        `http://localhost:8000/api/v1/videos/home-feed`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return res.data.data.feed;
+    },
+    enabled: !!user?._id && !!isAuthenticated,
+  });
+
   return (
     <VideoContext.Provider
       value={{
@@ -29,6 +48,7 @@ export const VideoProvider = ({ children, username, userId }) => {
         isError: videoQuery.isError,
         page,
         setPage,
+        homeFeedQuery,
       }}
     >
       {children}

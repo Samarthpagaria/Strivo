@@ -4,7 +4,7 @@ import TweetDetails from "../pages/tweets/TweetDetailsPage.Page.jsx";
 import TweetNavbar from "../project_components/TweetNavbar.jsx";
 import TweetPost from "../project_components/TweetPost.jsx";
 import TweetsList from "../project_components/TweetsList.jsx";
-import { MOCK_TWEETS } from "../utils/mockData";
+// import { MOCK_TWEETS } from "../utils/mockData";
 import TweetSearchResults from "../pages/tweets/TweetsResults.Page.jsx";
 import { useTweet } from "../ContentApi/TweetContext";
 
@@ -29,7 +29,7 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
   const isSearchMode = !!searchQuery && !isVideoResultsPage;
 
   // using tweet context
-  const { tweetQuery } = useTweet();
+  const { tweetQuery, homeFeedTweetsQuery } = useTweet();
 
   // remove only tweetId while keeping q or other queries intact
   const handleTweetBack = () => {
@@ -61,7 +61,9 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
         <TweetPost />
       </div>
       <div className="p-4">
-        {isTweetDetails ? (
+        {homeFeedTweetsQuery.isLoading ? (
+          <div className="text-center py-4 text-gray-400">Loading feed...</div>
+        ) : isTweetDetails ? (
           <TweetDetails tweetId={tweetId} onBack={handleTweetBack} />
         ) : isSearchMode ? (
           <TweetSearchResults query={searchQuery} />
@@ -71,8 +73,10 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
             emptyMessage="This user hasn't posted any tweets yet."
           />
         ) : (
-          /* Replaced HomeTweets/SearchResults with unified list */
-          <TweetsList tweets={MOCK_TWEETS} />
+          <TweetsList
+            tweets={homeFeedTweetsQuery.data?.data || []}
+            emptyMessage="No tweets in your feed."
+          />
         )}
       </div>
     </div>

@@ -1,18 +1,38 @@
 import React, { useState } from "react";
 import { Heart } from "lucide-react";
 
-const Tweet = ({
-  username = "John Doe",
-  handle = "@johndoe",
-  timestamp = "2h",
-  content = "This is a sample tweet! 🚀 #React #WebDev",
-  avatar = "https://picsum.photos/id/64/48/48",
-  likes = 128,
-}) => {
-  const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(likes);
+// Helper function to format relative time
+const getRelativeTime = (dateString) => {
+  const now = new Date();
+  const past = new Date(dateString);
+  const diffInSeconds = Math.floor((now - past) / 1000);
 
-  const handleLike = () => {
+  if (diffInSeconds < 60) return "just now";
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+  if (diffInSeconds < 604800)
+    return `${Math.floor(diffInSeconds / 86400)}d ago`;
+  if (diffInSeconds < 2592000)
+    return `${Math.floor(diffInSeconds / 604800)}w ago`;
+  if (diffInSeconds < 31556952)
+    return `${Math.floor(diffInSeconds / 2592000)}mo ago`;
+  return `${Math.floor(diffInSeconds / 31556952)}y ago`;
+};
+
+const Tweet = ({
+  content,
+  ownerDetails,
+  createdAt,
+  likesCount = 0,
+  isLiked: initialIsLiked = false,
+}) => {
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
+  const [likeCount, setLikeCount] = useState(likesCount);
+
+  const timestamp = createdAt ? getRelativeTime(createdAt) : "just now";
+
+  const handleLike = (e) => {
+    e.stopPropagation(); // Prevent navigating if the whole tweet is a link
     setIsLiked(!isLiked);
     setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
   };
@@ -22,7 +42,11 @@ const Tweet = ({
       <div className="flex gap-3">
         {/* Avatar */}
         <div className="shrink-0">
-          <img src={avatar} alt={username} className="w-12 h-12 rounded-full" />
+          <img
+            src={ownerDetails?.avatar || "https://via.placeholder.com/150"}
+            alt={ownerDetails?.username}
+            className="w-12 h-12 rounded-full object-cover"
+          />
         </div>
 
         {/* Tweet Content */}
@@ -31,10 +55,10 @@ const Tweet = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1 flex-wrap">
               <span className="font-semibold text-gray-900 hover:underline">
-                {username}
+                {ownerDetails?.username}
               </span>
               <span className="text-gray-500 text-sm">
-                {handle} · {timestamp}
+                {ownerDetails?.fullName} · {timestamp}
               </span>
             </div>
 
@@ -76,4 +100,3 @@ const Tweet = ({
 };
 
 export default Tweet;
-  

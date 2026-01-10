@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import VideoCard from "../project_components/VideoCard.jsx";
-import { useMyChannel } from "../ContentApi/myChannelContext";
+import { useVideo } from "../ContentApi/VideoContext";
 
 function Home() {
   const navigate = useNavigate();
-  const { homeFeedQuery } = useMyChannel();
+  const { homeFeedQuery } = useVideo();
 
   // Loading state
   if (homeFeedQuery.isLoading) {
@@ -48,7 +48,7 @@ function Home() {
     <>
       <div className="p-4 grid lg:grid-cols-3 gap-2 no-scrollbar">
         {videos.map((video) => {
-          return <VideoCard key={video._id}  {...video} />;
+          return <VideoCard key={video._id} {...video} />;
         })}
       </div>
     </>

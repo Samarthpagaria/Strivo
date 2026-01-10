@@ -10,6 +10,7 @@ import { ToastProvider } from "./ContentApi/ToastContext";
 import { MyChannelProvider } from "./ContentApi/myChannelContext";
 import { PlaylistProvider } from "./ContentApi/PlaylistContext";
 import { SettingProvider } from "./ContentApi/SettingContext";
+import { VideoProvider } from "./ContentApi/VideoContext";
 import { VideoDetailProvider } from "./ContentApi/VideoDetailContext";
 
 function App() {
@@ -20,17 +21,19 @@ function App() {
         <ToastProvider>
           <SearchProvider>
             <GlobalProvider>
-              <MyChannelProvider>
-                <PlaylistProvider>
-                  <VideoDetailProvider>
-                    <AuthProvider>
-                      <SettingProvider>
-                        <RouterProvider router={router} />
-                      </SettingProvider>
-                    </AuthProvider>
-                  </VideoDetailProvider>
-                </PlaylistProvider>
-              </MyChannelProvider>
+              <VideoProvider>
+                <MyChannelProvider>
+                  <PlaylistProvider>
+                    <VideoDetailProvider>
+                      <AuthProvider>
+                        <SettingProvider>
+                          <RouterProvider router={router} />
+                        </SettingProvider>
+                      </AuthProvider>
+                    </VideoDetailProvider>
+                  </PlaylistProvider>
+                </MyChannelProvider>
+              </VideoProvider>
             </GlobalProvider>
           </SearchProvider>
         </ToastProvider>
