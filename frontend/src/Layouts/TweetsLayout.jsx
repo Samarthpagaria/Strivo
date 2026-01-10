@@ -13,7 +13,6 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
   const navigate = useNavigate();
   const tweetsContainerRef = useRef(null);
 
-  // Parse query params cleanly
   const params = new URLSearchParams(search);
 
   const searchQuery = params.get("q") || ""; // Default to empty string
