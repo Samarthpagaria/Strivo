@@ -75,12 +75,60 @@ export const TweetProvider = ({ children }) => {
     enabled: !!token,
     retry: 1,
   });
+
+  const updateTweetMutation = useMutation({
+    mutationFn: async ({ tweetId, content }) => {
+      const res = await axios.patch(
+        `http://localhost:8000/api/v1/tweets/${tweetId}`,
+        { content },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return res.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["home-feed-tweets"] });
+      queryClient.invalidateQueries({ queryKey: ["tweets", userId] });
+      showToast(data?.message || "Tweet updated successfully!");
+    },
+    onError: (error) => {
+      showToast(error?.response?.data?.message || "Failed to update tweet");
+    },
+  });
+
+  const deleteTweetMutation = useMutation({
+    mutationFn: async (tweetId) => {
+      const res = await axios.delete(
+        `http://localhost:8000/api/v1/tweets/${tweetId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return res.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["home-feed-tweets"] });
+      queryClient.invalidateQueries({ queryKey: ["tweets", userId] });
+      showToast(data?.message || "Tweet deleted successfully!");
+    },
+    onError: (error) => {
+      showToast(error?.response?.data?.message || "Failed to delete tweet");
+    },
+  });
+
   return (
     <TweetContext.Provider
       value={{
         tweetQuery,
         userId,
         createTweet: createTweetMutation,
+        updateTweet: updateTweetMutation,
+        deleteTweet: deleteTweetMutation,
         homeFeedTweetsQuery,
       }}
     >
