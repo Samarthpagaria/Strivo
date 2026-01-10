@@ -3,7 +3,7 @@ import { useProfile } from "./ProfileContext.jsx";
 import { useGlobal } from "./GlobalContext";
 import { useToast } from "./ToastContext";
 import axios from "axios";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const TweetContext = createContext();
 export const useTweet = () => useContext(TweetContext);
@@ -12,6 +12,7 @@ export const TweetProvider = ({ children }) => {
   const { userProfile } = useProfile();
   const { token } = useGlobal();
   const { showToast } = useToast();
+  const queryClient = useQueryClient();
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
@@ -51,6 +52,8 @@ export const TweetProvider = ({ children }) => {
       return res.data;
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["home-feed-tweets"] });
+      queryClient.invalidateQueries({ queryKey: ["tweets", userId] });
       const message = data?.data?.message || "Tweet posted successfully!";
       showToast(message);
     },
