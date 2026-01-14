@@ -123,7 +123,7 @@ const getLikedVideos = asyncHandler(async (req, res) => {
     // 1. only likes by this user and that reference a video
     {
       $match: {
-        likedBy: mongoose.Types.ObjectId(userId),
+        likedBy: new mongoose.Types.ObjectId(userId),
         video: { $exists: true, $ne: null },
       },
     },
