@@ -21,6 +21,8 @@ export const ProfileProvider = ({ children, username }) => {
     retry: 1,
   });
 
+  
+
   // Update userProfile when data changes
   useEffect(() => {
     if (data) {
