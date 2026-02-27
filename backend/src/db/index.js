@@ -21,4 +21,3 @@ export default connectDB;
 // Homework assignments / Tasks :
 // --Get to know about process in nodejs
 // -- Get to know about connectionInstance(variable ) actually console.log the variable which stores the return obeject from the mongoose.connect() function.
-

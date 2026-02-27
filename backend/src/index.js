@@ -1,23 +1,38 @@
-import mongoose, { connect } from "mongoose";
-import { DB_NAME } from "./constants.js";
-import "dotenv/config";
-import express from "express";
-import connectDB from "./db/index.js";
-import { app } from "./app.js";
+// ⚠️ In ESM, static `import` statements are HOISTED before any code runs.
+// So dotenv.config() placed between imports runs TOO LATE.
+// We must use a top-level async IIFE with dynamic imports to ensure
+// .env is loaded BEFORE any other module (mongoose, app, etc.) is imported.
 
-// So this connectDb is an async function which returns a promise
-// So we can use .then() method to handle the promise resolution
+import dns from "dns";
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import path from "path";
+
+// 🔧 FIX: Force Node.js to use Google's public DNS (8.8.8.8)
+// Root cause: Reliance router provides DNS via IPv6 (2405:201:...)
+// but Node.js c-ares library can't resolve MongoDB SRV records over IPv6 DNS.
+dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env FIRST — before any other module gets imported
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+
+// Now dynamically import modules AFTER env vars are set
+const { default: connectDB } = await import("./db/index.js");
+const { app } = await import("./app.js");
+
+// Connect to DB and start server
 connectDB()
   .then(() => {
     app.on("error", (error) => {
       console.log("Errrr: " + error);
       throw error;
     });
+
     const server = app.listen(process.env.PORT || 8000, () => {
-      console.log(`Server is running on port : ${process.env.PORT || 8000}`);
-    });
-    server.on("connection", (socket) => {
-      console.log("A new client has connected!");
+      console.log(`✅ Server is running on port: ${process.env.PORT || 8000}`);
     });
 
     server.on("close", () => {
@@ -25,26 +40,5 @@ connectDB()
     });
   })
   .catch((error) => {
-    console.log("Mongodb DB connection failed !! ", error);
+    console.log("MongoDB connection failed !! ", error);
   });
-
-/*
---- this is the syntax if want to write database connection in the main index.js file -----
-import express from "express";
-const app = express();
-(async () => {
-  try {
-      mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`);
-      app.on("error", (error) => {
-          console.log("Errrr: " + error);
-          throw error;
-      })
-      app.listen(process.env.PORT, () => {
-          console.log(`Server started at http://localhost:${process.env.PORT}`);
-      });
-  } catch (error) {
-    console.log("Error connecting to the database:", error);
-    throw error;
-  }
-})();
-*/
