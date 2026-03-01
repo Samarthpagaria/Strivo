@@ -1,5 +1,5 @@
 import React from "react";
-import { ListVideo, PlayCircle, Heart } from "lucide-react";
+import { ListVideo, PlayCircle, Circle, Trash2, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const PlaylistCard = ({
@@ -30,14 +30,52 @@ const PlaylistCard = ({
       <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-100" />
       <div className="absolute inset-0 bg-linear-to-b from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-      {/* Top Bar with Play Button and Badge */}
-      <div className="absolute left-0 right-0 top-0 flex items-center justify-between p-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-xl opacity-0 scale-50 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 hover:bg-white/40 shadow-lg border border-white/20">
-          <PlayCircle className="h-6 w-6 fill-white/10" />
+      {/* Top Bar with Actions and Badge */}
+      <div className="absolute left-0 right-0 top-0 flex items-start justify-between p-4">
+        {/* Action Group: Play & Settings (Horizontal) */}
+        <div className="flex flex-row items-center gap-2">
+          {/* Play Button */}
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-xl opacity-0 scale-50 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 hover:bg-white/40 shadow-lg border border-white/20">
+            <PlayCircle className="h-6 w-6 fill-white/10" />
+          </div>
+
+          {/* Settings Group (Horizontal Expansion) */}
+          <div
+            className="group/settings relative flex flex-row items-center gap-1.5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Main Actions Button (Circular Dot) */}
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-2xl opacity-0 scale-50 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 hover:bg-white/30 shadow-lg border border-white/10">
+              <Circle className="h-2.5 w-2.5 fill-white" />
+            </div>
+
+            {/* Sub-buttons (revealed horizontally on Settings hover) */}
+            <div className="flex flex-row items-center gap-2 overflow-hidden max-w-0 opacity-0 transition-all duration-700 ease-in-out group-hover/settings:max-w-[120px] group-hover/settings:opacity-100 group-hover/settings:ml-0.5">
+              {/* Delete Button */}
+              <button
+                title="Delete Playlist"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-br from-red-500/10 to-rose-600/10 text-red-100/80 backdrop-blur-xl border border-red-500/20 hover:from-red-500/30 hover:to-rose-600/30 hover:text-red-50 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-red-500/20"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+
+              {/* Update Button */}
+              <button
+                title="Update Playlist"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-br from-blue-500/10 to-indigo-600/10 text-blue-100/80 backdrop-blur-xl border border-blue-500/20 hover:from-blue-500/30 hover:to-indigo-600/30 hover:text-blue-50 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-blue-500/20"
+              >
+                <Edit className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center gap-2 rounded-xl bg-white/10 px-3 py-1.5 text-[10px] font-bold text-white backdrop-blur-md border border-white/20 shadow-lg group-hover:bg-orange-300/30 transition-colors">
-          <ListVideo className="h-3.5 w-3.5" />
-          <span>{videoCount} VIDEOS</span>
+
+        <div className="flex items-center gap-2 rounded-lg bg-white/10 px-2.5 py-1 text-[9px] font-black text-white backdrop-blur-md border border-white/10 shadow-lg group-hover:bg-orange-300/20 transition-all duration-500">
+          <ListVideo className="h-3 w-3" />
+          <span className="tracking-widest uppercase">
+            {" "}
+            {videoCount} VIDEOS{" "}
+          </span>
         </div>
       </div>
 
