@@ -1,62 +1,62 @@
 import React from "react";
-import { ListVideo } from "lucide-react";
+import { ListVideo, PlayCircle, Heart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const PlaylistCard = ({
+  playlistId,
   title = "My Awesome Playlist",
   videoCount = 12,
-  thumbnail = "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=300&fit=crop",
-  duration = "2:45:30",
+  thumbnail,
+  description = "View full collection",
 }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="group cursor-pointer">
-      {/* Thumbnail Container with Stacked Effect */}
-      <div className="relative mb-3 pb-1 pr-1">
-        {/* Stacked cards effect - background layers */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-300 to-gray-400 translate-x-3 translate-y-3 rounded-xl opacity-50 shadow-md"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-300 to-slate-400 translate-x-2 translate-y-2 rounded-xl opacity-65 shadow-md"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-400 to-gray-500 translate-x-1 translate-y-1 rounded-xl opacity-75 shadow-md"></div>
-        {/* Main thumbnail */}
-        <div className="relative aspect-video rounded-xl overflow-hidden shadow-lg transition-all duration-300 group-hover:shadow-2xl group-hover:scale-[1.02] z-10 bg-gradient-to-br from-gray-800 to-gray-900">
-          <img
-            src={thumbnail}
-            alt={title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-          />
+    <div
+      className="group relative h-[280px] w-full cursor-pointer overflow-hidden rounded-3xl bg-gray-900 shadow-xl transition-all duration-700 hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/20"
+      onClick={() => playlistId && navigate(`/playlists/${playlistId}`)}
+    >
+      {/* Background Image with Dynamic Blur */}
+      <img
+        src={
+          thumbnail ||
+          "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&h=1200&fit=crop"
+        }
+        alt={title}
+        className="absolute inset-0 h-full w-full object-cover transition-all duration-1000 blur-xs group-hover:scale-110 group-hover:blur-0"
+      />
 
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+      {/* Complex Gradient Overlay */}
+      <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-100" />
+      <div className="absolute inset-0 bg-linear-to-b from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-          {/* Playlist icon overlay */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <div className="bg-white/20 backdrop-blur-sm rounded-full p-4 transform group-hover:scale-110 transition-transform duration-300">
-              <ListVideo className="w-8 h-8 text-white" />
-            </div>
-          </div>
+      {/* Top Bar with Play Button and Badge */}
+      <div className="absolute left-0 right-0 top-0 flex items-center justify-between p-4">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-xl opacity-0 scale-50 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 hover:bg-white/40 shadow-lg border border-white/20">
+          <PlayCircle className="h-6 w-6 fill-white/10" />
+        </div>
+        <div className="flex items-center gap-2 rounded-xl bg-white/10 px-3 py-1.5 text-[10px] font-bold text-white backdrop-blur-md border border-white/20 shadow-lg group-hover:bg-orange-300/30 transition-colors">
+          <ListVideo className="h-3.5 w-3.5" />
+          <span>{videoCount} VIDEOS</span>
+        </div>
+      </div>
 
-          {/* Video count badge */}
-          <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-sm px-3 py-1.5 rounded-lg flex items-center gap-2">
-            <ListVideo className="w-4 h-4 text-white" />
-            <span className="text-white font-semibold text-sm">
-              {videoCount} videos
-            </span>
-          </div>
-
-          {/* Duration badge */}
-          <div className="absolute bottom-3 right-3 bg-black/80 backdrop-blur-sm px-2 py-1 rounded text-white text-xs font-semibold">
-            {duration}
+      {/* Glassmorphic Footer (Description Box) */}
+      <div className="absolute bottom-4 left-4 right-4 overflow-hidden rounded-xl border border-white/0 bg-black/10 p-4 backdrop-blur-sm transition-all duration-500 group-hover:bg-white/15 group-hover:border-white/30 group-hover:backdrop-blur-2xl">
+        <div className="flex flex-col">
+          <h3 className="text-lg font-extrabold tracking-tight text-white line-clamp-1 drop-shadow-md transition-all duration-500">
+            {title}
+          </h3>
+          <div className="grid grid-rows-[0fr] opacity-0 transition-all duration-500 group-hover:grid-rows-[1fr] group-hover:opacity-100 group-hover:mt-2">
+            <p className="overflow-hidden text-[12px] font-medium text-gray-200 line-clamp-1 leading-tight">
+              {description || "View collection"}
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Playlist Info */}
-      <div className="px-1">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
-          {title}
-        </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          View full playlist
-        </p>
-      </div>
+      {/* Subtle Shine Effect on Hover */}
+      <div className="absolute -left-1/2 -top-1/2 h-[200%] w-[200%] rotate-45 bg-linear-to-r from-transparent via-white/5 to-transparent transition-transform duration-1000 group-hover:translate-x-full pointer-events-none" />
     </div>
   );
 };

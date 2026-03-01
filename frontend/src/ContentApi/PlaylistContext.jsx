@@ -24,7 +24,7 @@ export const PlaylistProvider = ({ children }) => {
       const res = await axios.post(
         "http://localhost:8000/api/v1/playlist",
         playlistData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       return res.data;
     },
@@ -49,7 +49,7 @@ export const PlaylistProvider = ({ children }) => {
       const res = await axios.patch(
         `http://localhost:8000/api/v1/playlist/add/${videoId}/${playlistId}`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       return res.data;
     },
@@ -77,13 +77,13 @@ export const PlaylistProvider = ({ children }) => {
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
       return res.data;
     },
     onSuccess: (data) => {
       showToast(
-        data?.message || "Video removed from playlist successfully! 🎉"
+        data?.message || "Video removed from playlist successfully! 🎉",
       );
       console.log("Video removed from playlist successfully:", data);
       // Invalidate and refetch playlists to update UI
@@ -99,6 +99,8 @@ export const PlaylistProvider = ({ children }) => {
     },
   });
 
+  const [playlistId, setPlaylistId] = useState(null);
+
   //fetch all playlist
   const fetchAllPlaylistsQuery = useQuery({
     queryKey: ["allPlaylists", userId],
@@ -107,7 +109,7 @@ export const PlaylistProvider = ({ children }) => {
         `http://localhost:8000/api/v1/playlist/user/${userId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
       return res.data;
     },
@@ -133,6 +135,20 @@ export const PlaylistProvider = ({ children }) => {
     fetchAllPlaylistsQuery.error,
     showToast,
   ]);
+  const fetchPlayListByIdQuery = useQuery({
+    queryKey: ["playlist", playlistId],
+    queryFn: async ({ queryKey }) => {
+      const [_, id] = queryKey;
+      const res = await axios.get(
+        `http://localhost:8000/api/v1/playlist/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      return res.data;
+    },
+    enabled: isAuthenticated && !!playlistId, // Only fetch when user is authenticated and has an ID
+  });
 
   return (
     <PlaylistContext.Provider
@@ -150,6 +166,12 @@ export const PlaylistProvider = ({ children }) => {
         removeVideoFromPlaylist: removeVideoFromPlaylistMutation,
         isRemovingVideoFromPlaylist: removeVideoFromPlaylistMutation.isPending,
         errorRemovingVideoFromPlaylist: removeVideoFromPlaylistMutation.error,
+        // fetch playlist by id
+        fetchPlayListById: fetchPlayListByIdQuery.data,
+        isFetchingPlayListById: fetchPlayListByIdQuery.isLoading,
+        errorFetchingPlayListById: fetchPlayListByIdQuery.error,
+        refetchPlayListById: fetchPlayListByIdQuery.refetch,
+        setPlaylistId,
       }}
     >
       {children}

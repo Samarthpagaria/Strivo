@@ -7,7 +7,7 @@ import { usePlaylist } from "../ContentApi/PlaylistContext";
 
 function Playlists() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { createPlaylist, isCreatingPlaylist } = usePlaylist();
+  const { createPlaylist, isCreatingPlaylist, allPlaylists } = usePlaylist();
 
   const handleCreatePlaylist = (playlistData) => {
     createPlaylist(playlistData);
@@ -16,7 +16,6 @@ function Playlists() {
 
   return (
     <div className="min-h-screen w-full bg-white dark:bg-gray-950">
-      {/* Header Section */}
       <div className="relative overflow-hidden">
         <div className="relative px-8 pt-12 pb-8">
           <div className="flex items-center justify-between mb-3">
@@ -29,7 +28,6 @@ function Playlists() {
               </p>
             </div>
 
-            {/* Create Playlist Button */}
             <HoverBorderGradient
               containerClassName="rounded-full hover:scale-105 transition-transform duration-500"
               className="bg-white dark:bg-white text-black dark:text-black  flex items-center gap-2 group"
@@ -40,24 +38,25 @@ function Playlists() {
             </HoverBorderGradient>
           </div>
 
-          {/* Divider */}
           <div className="mt-6 h-px bg-gray-300 dark:bg-gray-700"></div>
         </div>
       </div>
 
-      {/* Playlists Grid */}
       <div className="px-8 pb-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {/* playlist cards */}
-          <PlaylistCard />
-          <PlaylistCard />
-          <PlaylistCard />
-          <PlaylistCard />
-          <PlaylistCard />
+          {allPlaylists?.map((playlist) => (
+            <PlaylistCard
+              key={playlist._id}
+              playlistId={playlist._id}
+              title={playlist.name}
+              description={playlist.description}
+              videoCount={playlist.videos.length}
+              thumbnail={playlist.videos[0]?.thumbnail || playlist.thumbnail}
+            />
+          ))}
         </div>
       </div>
 
-      {/* Create Playlist Modal */}
       <CreatePlaylistModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -22,8 +22,6 @@ const VideoCardMenu = ({ videoId }) => {
   // Combined loading state for both add and remove operations
   const isLoading = isAddingVideoToPlaylist || isRemovingVideoFromPlaylist;
 
-  console.log("📋 VideoCardMenu - allPlaylists:", allPlaylists);
-
   const handleTogglePlaylist = (playlist) => {
     if (!videoId) {
       showToast("No video ID provided");
@@ -33,11 +31,9 @@ const VideoCardMenu = ({ videoId }) => {
     const playlistId = playlist._id || playlist.id;
     if (isVideoInPlaylist(playlist)) {
       // Remove from playlist
-      console.log("Removing video from playlist:", { videoId, playlistId });
       removeVideoFromPlaylist.mutate({ videoId, playlistId });
     } else {
       // Add to playlist
-      console.log("Adding video to playlist:", { videoId, playlistId });
       addVideoToPlaylist.mutate({ videoId, playlistId });
     }
   };
@@ -52,7 +48,7 @@ const VideoCardMenu = ({ videoId }) => {
       (video) =>
         video === videoId ||
         video?._id === videoId ||
-        video?.toString() === videoId
+        video?.toString() === videoId,
       //some means if any of the condition is true then it will return true , some takes callBack function as a parameter
     );
   };
