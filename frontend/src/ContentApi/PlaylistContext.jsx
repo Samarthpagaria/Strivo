@@ -99,6 +99,58 @@ export const PlaylistProvider = ({ children }) => {
     },
   });
 
+  // delete playlist mutation
+  const deletePlaylistMutation = useMutation({
+    mutationFn: async (playlistId) => {
+      const res = await axios.delete(
+        `http://localhost:8000/api/v1/playlist/${playlistId}`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      return res.data;
+    },
+    onSuccess: (data, playlistId) => {
+      setAllPlaylists((prev) => prev.filter((p) => p._id !== playlistId));
+      showToast(data?.message || "Playlist deleted successfully!");
+      console.log("Playlist deleted successfully:", data);
+      queryClient.invalidateQueries({ queryKey: ["allPlaylists", userId] });
+    },
+    onError: (error) => {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to delete playlist. Please try again.";
+      showToast(errorMessage);
+      console.error("Error deleting playlist:", error);
+    },
+  });
+
+  // update playlist mutation
+  const updatePlaylistMutation = useMutation({
+    mutationFn: async ({ playlistId, name, description }) => {
+      const res = await axios.patch(
+        `http://localhost:8000/api/v1/playlist/${playlistId}`,
+        { name, description },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      return res.data;
+    },
+    onSuccess: (data) => {
+      const updatedPlaylist = data.data;
+      setAllPlaylists((prev) =>
+        prev.map((p) => (p._id === updatedPlaylist._id ? updatedPlaylist : p)),
+      );
+      showToast(data?.message || "Playlist updated successfully!");
+      console.log("Playlist updated successfully:", data);
+      queryClient.invalidateQueries({ queryKey: ["allPlaylists", userId] });
+    },
+    onError: (error) => {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to update playlist. Please try again.";
+      showToast(errorMessage);
+      console.error("Error updating playlist:", error);
+    },
+  });
+
   const [playlistId, setPlaylistId] = useState(null);
 
   //fetch all playlist
@@ -166,6 +218,12 @@ export const PlaylistProvider = ({ children }) => {
         removeVideoFromPlaylist: removeVideoFromPlaylistMutation,
         isRemovingVideoFromPlaylist: removeVideoFromPlaylistMutation.isPending,
         errorRemovingVideoFromPlaylist: removeVideoFromPlaylistMutation.error,
+        // delete playlist
+        deletePlaylist: deletePlaylistMutation.mutate,
+        isDeletingPlaylist: deletePlaylistMutation.isPending,
+        // update playlist
+        updatePlaylist: updatePlaylistMutation.mutate,
+        isUpdatingPlaylist: updatePlaylistMutation.isPending,
         // fetch playlist by id
         fetchPlayListById: fetchPlayListByIdQuery.data,
         isFetchingPlayListById: fetchPlayListByIdQuery.isLoading,
