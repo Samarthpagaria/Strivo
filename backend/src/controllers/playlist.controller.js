@@ -34,9 +34,11 @@ const getUserPlaylist = asyncHandler(async (req, res) => {
   if (userId !== req.user?._id.toString()) {
     throw new ApiError(400, "Unauthorized access");
   }
-  const fetchPlaylists = await Playlist.find({ owner: userId });
+  const fetchPlaylists = await Playlist.find({ owner: userId }).populate(
+    "videos"
+  );
   if (fetchPlaylists.length == 0) {
-    new ApiResponse(200, [], "No playlist found");
+    return res.status(200).json(new ApiResponse(200, [], "No playlist found"));
   }
   return res
     .status(200)

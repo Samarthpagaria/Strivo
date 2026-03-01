@@ -18,6 +18,8 @@ import Results from "../pages/Results.Page";
 import VideoDetailsPage from "../pages/VideoDetails.Page";
 import ChannelProfile from "../pages/ChannelProfile";
 import MyChannelProfile from "../pages/myChannel/myChannelProfile";
+import PlaylistDetail from "../pages/PlaylistDetail.Page";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -36,6 +38,8 @@ export const router = createBrowserRouter([
         element: <Subscriptions />,
       },
       { path: "playlists", element: <Playlists /> },
+      { path: "playlists/:playlistId", element: <PlaylistDetail /> },
+
       { path: "liked_videos", element: <LikedVideos /> },
       { path: "liked_tweets", element: <LikedTweets /> },
       { path: "history", element: <WatchHistory /> },
