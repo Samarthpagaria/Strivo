@@ -31,9 +31,7 @@ const getUserPlaylist = asyncHandler(async (req, res) => {
   if (!userId || !isValidObjectId(userId)) {
     throw new ApiError(400, "User unauthorized");
   }
-  if (userId !== req.user?._id.toString()) {
-    throw new ApiError(400, "Unauthorized access");
-  }
+  // Anyone can view a user's public playlists
   const fetchPlaylists = await Playlist.find({ owner: userId }).populate(
     "videos"
   );
@@ -61,7 +59,6 @@ const getPlaylistById = asyncHandler(async (req, res) => {
     {
       $match: {
         _id: new mongoose.Types.ObjectId(playlistId),
-        owner: new mongoose.Types.ObjectId(userId),
       },
     },
 

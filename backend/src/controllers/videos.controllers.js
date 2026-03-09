@@ -468,11 +468,11 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
 });
 
 export {
-  togglePublishStatus,//done
-  updateVideo,//done
-  deleteVideo,//done
-  getAllVideos, //done
-  getVideo,//done
-  publishAVideo,//done
-  getHomeFeedVideos,//done
+  togglePublishStatus,
+  updateVideo,
+  deleteVideo,
+  getAllVideos, 
+  getVideo,
+  publishAVideo,
+  getHomeFeedVideos,
 };

@@ -5,6 +5,7 @@ import { CheckCircle2 } from "lucide-react";
 import { VideoProvider } from "../ContentApi/VideoContext";
 import VideosTab from "./VideosTab";
 import SubscribeButton from "../project_components/SubscribeButton";
+import PlaylistsTab from "./PlaylistsTab";
 
 const ChannelProfile = () => {
   const { username } = useParams();
@@ -146,11 +147,7 @@ const ChannelProfile = () => {
             </div>
           )}
           {activeTab === "playlists" && (
-            <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-300">
-              <p className="text-gray-500 mb-2">
-                This channel has not created any playlists yet.
-              </p>
-            </div>
+            <PlaylistsTab userId={channelData._id} />
           )}
         </div>
       </div>

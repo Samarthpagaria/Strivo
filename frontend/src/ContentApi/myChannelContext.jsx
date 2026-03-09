@@ -21,7 +21,7 @@ export const MyChannelProvider = ({ children }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data.data.videos;
     },
@@ -40,10 +40,17 @@ export const MyChannelProvider = ({ children }) => {
   const myChannelPlaylistsQuery = useQuery({
     queryKey: ["mychannel", "playlists", user?.username],
     queryFn: async () => {
-      const res = await axios.get(`write query route for all playlists`);
-      return res.data;
+      const res = await axios.get(
+        `http://localhost:8000/api/v1/playlist/user/${user._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return res.data.data;
     },
-    enabled: !!user?._id && !!isAuthenticated,
+    enabled: !!user?._id && !!isAuthenticated && !!token,
   });
 
   const mychannelTweetsQuery = useQuery({
@@ -65,7 +72,7 @@ export const MyChannelProvider = ({ children }) => {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data;
     },
@@ -85,7 +92,12 @@ export const MyChannelProvider = ({ children }) => {
       // data: { name, description }
       const res = await axios.post(
         `http://localhost:8000/api/v1/playlist`,
-        data
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
       return res.data;
     },
@@ -109,7 +121,7 @@ export const MyChannelProvider = ({ children }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data;
     },
@@ -132,7 +144,7 @@ export const MyChannelProvider = ({ children }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data;
     },
@@ -157,7 +169,7 @@ export const MyChannelProvider = ({ children }) => {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data;
     },
@@ -168,6 +180,78 @@ export const MyChannelProvider = ({ children }) => {
     onError: (error) => {
       const errorMessage =
         error?.response?.data?.message || "Failed to update video";
+      showToast(errorMessage);
+    },
+  });
+
+  const myChannelDeletePlaylistMutation = useMutation({
+    mutationFn: async (playlistId) => {
+      const res = await axios.delete(
+        `http://localhost:8000/api/v1/playlist/${playlistId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return res.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["mychannel", "playlists", user?.username]);
+      showToast(data?.message || "Playlist deleted successfully!");
+    },
+    onError: (error) => {
+      const errorMessage =
+        error?.response?.data?.message || "Failed to delete playlist";
+      showToast(errorMessage);
+    },
+  });
+
+  const myChannelAddVideoToPlaylistMutation = useMutation({
+    mutationFn: async ({ videoId, playlistId }) => {
+      const res = await axios.patch(
+        `http://localhost:8000/api/v1/playlist/add/${videoId}/${playlistId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return res.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["mychannel", "playlists", user?.username]);
+      showToast(data?.message || "Video added to playlist!");
+    },
+    onError: (error) => {
+      const errorMessage =
+        error?.response?.data?.message || "Failed to add video to playlist";
+      showToast(errorMessage);
+    },
+  });
+
+  const myChannelRemoveVideoFromPlaylistMutation = useMutation({
+    mutationFn: async ({ videoId, playlistId }) => {
+      const res = await axios.patch(
+        `http://localhost:8000/api/v1/playlist/remove/${videoId}/${playlistId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return res.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["mychannel", "playlists", user?.username]);
+      showToast(data?.message || "Video removed from playlist!");
+    },
+    onError: (error) => {
+      const errorMessage =
+        error?.response?.data?.message ||
+        "Failed to remove video from playlist";
       showToast(errorMessage);
     },
   });
@@ -184,6 +268,9 @@ export const MyChannelProvider = ({ children }) => {
         myChannelTogglePublishMutation,
         myChannelDeleteVideoMutation,
         myChannelUpdateVideoMutation,
+        myChannelDeletePlaylistMutation,
+        myChannelAddVideoToPlaylistMutation,
+        myChannelRemoveVideoFromPlaylistMutation,
       }}
     >
       {children}
