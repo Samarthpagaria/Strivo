@@ -10,7 +10,7 @@ export const useTweet = () => useContext(TweetContext);
 
 export const TweetProvider = ({ children }) => {
   const { userProfile } = useProfile();
-  const { token } = useGlobal();
+  const { token, user } = useGlobal();
   const { showToast } = useToast();
   const queryClient = useQueryClient();
   const [userId, setUserId] = useState(null);
@@ -76,6 +76,23 @@ export const TweetProvider = ({ children }) => {
     retry: 1,
   });
 
+  const myTweetsQuery = useQuery({
+    queryKey: ["my-tweets", user?._id],
+    queryFn: async () => {
+      const res = await axios.get(
+        `http://localhost:8000/api/v1/tweets/user/${user._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return res.data;
+    },
+    enabled: !!user?._id && !!token,
+    retry: 1,
+  });
+
   const updateTweetMutation = useMutation({
     mutationFn: async ({ tweetId, content }) => {
       const res = await axios.patch(
@@ -130,6 +147,7 @@ export const TweetProvider = ({ children }) => {
         updateTweet: updateTweetMutation,
         deleteTweet: deleteTweetMutation,
         homeFeedTweetsQuery,
+        myTweetsQuery,
       }}
     >
       {children}

@@ -56,10 +56,17 @@ export const MyChannelProvider = ({ children }) => {
   const mychannelTweetsQuery = useQuery({
     queryKey: ["mychannel", "tweets", user?.username],
     queryFn: async () => {
-      const res = await axios.get(`write query route for all tweets`);
-      return res.data;
+      const res = await axios.get(
+        `http://localhost:8000/api/v1/tweets/user/${user._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return res.data.data;
     },
-    enabled: !!user?._id && !!isAuthenticated,
+    enabled: !!user?._id && !!isAuthenticated && !!token,
   });
 
   const myChannelAddvideoMutation = useMutation({

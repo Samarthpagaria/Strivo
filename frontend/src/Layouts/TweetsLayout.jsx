@@ -20,6 +20,8 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
 
   //check if we are on the profile channel route ("/c/:username")
   const isProfileChannelRoute = pathname.startsWith("/c/");
+  //check if we are on our own my channel route ("/channel")
+  const isMyChannelRoute = pathname.startsWith("/channel");
 
   // Check if we're on the video results page - don't show tweet search there
   const isVideoResultsPage = pathname === "/results";
@@ -29,7 +31,7 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
   const isSearchMode = !!searchQuery && !isVideoResultsPage;
 
   // using tweet context
-  const { tweetQuery, homeFeedTweetsQuery } = useTweet();
+  const { tweetQuery, homeFeedTweetsQuery, myTweetsQuery } = useTweet();
 
   // remove only tweetId while keeping q or other queries intact
   const handleTweetBack = () => {
@@ -71,6 +73,11 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
           <TweetsList
             tweets={tweetQuery.data?.data || []}
             emptyMessage="This user hasn't posted any tweets yet."
+          />
+        ) : isMyChannelRoute ? (
+          <TweetsList
+            tweets={myTweetsQuery.data?.data || []}
+            emptyMessage="You haven't posted any tweets yet."
           />
         ) : (
           <TweetsList
