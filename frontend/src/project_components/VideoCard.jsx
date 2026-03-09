@@ -38,6 +38,13 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
     navigate(`/watch/${_id}`);
   };
 
+  const handleProfileClick = (e) => {
+    e.stopPropagation();
+    if (owner?.username) {
+      navigate(`/c/${owner.username}`);
+    }
+  };
+
   return (
     <div
       onClick={handleCardClick}
@@ -52,13 +59,20 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
       </div>
       <div className="flex gap-3 mt-3">
         <img
+          onClick={handleProfileClick}
           src={channelAvatar}
           alt={channelName}
-          className="w-10 h-10 rounded-full object-cover"
+          className="w-10 h-10 rounded-full object-cover hover:opacity-80 transition-opacity"
+          title={channelName}
         />
         <div className="flex flex-col flex-1">
           <h3 className="text-sm font-semibold line-clamp-2">{title}</h3>
-          <p className="text-xs text-gray-400">{channelName}</p>
+          <p
+            className="text-xs text-gray-500 hover:text-gray-800 transition-colors"
+            onClick={handleProfileClick}
+          >
+            {channelName}
+          </p>
           <p className="text-xs text-gray-500">
             {viewCount} views · {uploadedTime}
           </p>

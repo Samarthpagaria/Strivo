@@ -19,7 +19,7 @@ const RootLayout = () => {
   const isAuth = path === "/login" || path === "/register";
 
   // Check if we are on a profile route and get the username
-  const match = useMatch("/@:username");
+  const match = useMatch("/c/:username");
   const username = match?.params?.username;
 
   // Resize handler

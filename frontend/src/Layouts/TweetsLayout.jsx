@@ -18,8 +18,8 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
   const searchQuery = params.get("q") || ""; // Default to empty string
   const tweetId = params.get("tweetId"); // ?tweetId=777
 
-  //check if we are on the profile channel route ("/@:username")
-  const isProfileChannelRoute = pathname.startsWith("/@");
+  //check if we are on the profile channel route ("/c/:username")
+  const isProfileChannelRoute = pathname.startsWith("/c/");
 
   // Check if we're on the video results page - don't show tweet search there
   const isVideoResultsPage = pathname === "/results";
@@ -69,7 +69,7 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
           <TweetSearchResults query={searchQuery} />
         ) : isProfileChannelRoute ? (
           <TweetsList
-            tweets={tweetQuery.data?.data?.tweets || []}
+            tweets={tweetQuery.data?.data || []}
             emptyMessage="This user hasn't posted any tweets yet."
           />
         ) : (

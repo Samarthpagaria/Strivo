@@ -26,12 +26,12 @@ export const TweetProvider = ({ children }) => {
     queryKey: ["tweets", userId],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/tweets?userId=${userId}`,
+        `http://localhost:8000/api/v1/tweets/user/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data;
     },
@@ -47,7 +47,7 @@ export const TweetProvider = ({ children }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data;
     },
@@ -85,7 +85,7 @@ export const TweetProvider = ({ children }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data;
     },
@@ -107,7 +107,7 @@ export const TweetProvider = ({ children }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data;
     },

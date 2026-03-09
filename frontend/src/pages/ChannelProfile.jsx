@@ -8,11 +8,29 @@ import SubscribeButton from "../project_components/SubscribeButton";
 
 const ChannelProfile = () => {
   const { username } = useParams();
-  const { userProfile } = useProfile();
+  const { userProfile, isLoading, isError } = useProfile();
   const [activeTab, setActiveTab] = useState("videos");
-  //   const { videos, isLoading } = useVideo();
 
-  // Mock data for demonstration - replace with actual data from userProfile
+  if (isLoading) {
+    return (
+      <div className="w-full min-h-[60vh] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (isError || !userProfile) {
+    return (
+      <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-4">
+        <h2 className="text-xl font-bold text-gray-800">User not found</h2>
+        <p className="text-gray-500">
+          The channel you are looking for does not exist.
+        </p>
+      </div>
+    );
+  }
+
+  // Derived data mapping directly from backend response
   const channelData = {
     _id: userProfile?._id || null,
     coverImage:
@@ -32,9 +50,9 @@ const ChannelProfile = () => {
   ];
 
   return (
-    <div className="w-full">
+    <div className="w-full relative min-h-screen bg-gray-50">
       {/* Cover Image */}
-      <div className="w-full h-48 md:h-64 bg-gradient-to-r from-blue-500 to-purple-600 relative">
+      <div className="w-full h-48 md:h-64 bg-linear-to-r from-neutral-500 to-neutral-400 relative rounded-b-4xl overflow-hidden">
         <img
           src={channelData.coverImage}
           alt="Cover"
@@ -56,7 +74,7 @@ const ChannelProfile = () => {
           </div>
 
           {/* Channel Details */}
-          <div className="flex-1 md:mb-4">
+          <div className="flex-1 pt-20 md:mb-4">
             <div className="flex items-center gap-2 mb-1">
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
                 {channelData.fullName}
@@ -65,7 +83,12 @@ const ChannelProfile = () => {
                 <CheckCircle2 className="w-6 h-6 text-blue-500 fill-current" />
               )}
             </div>
-            <p className="text-gray-600 mb-2">@{channelData.username}</p>
+            <p className="text-gray-600 mb-2">
+              <span className="bg-clip-text text-transparent bg-linear-to-r from-rose-700 via-amber-500 to-yellow-600 font-semibold">
+                @
+              </span>
+              {channelData.username}
+            </p>
             <div className="flex gap-4 text-sm text-gray-600">
               <span>
                 <strong className="text-gray-900">
@@ -82,8 +105,8 @@ const ChannelProfile = () => {
             </div>
           </div>
 
-          {/* Subscribe Button */}
-          <div className="md:mb-4">
+          {/* Subscribe Button (Replacing Edit/Add actions) */}
+          <div className="md:mb-4 flex gap-3">
             <SubscribeButton
               channelId={channelData._id}
               isSubscribed={channelData.isSubscribed}
@@ -92,7 +115,7 @@ const ChannelProfile = () => {
         </div>
 
         {/* Tabs Navigation */}
-        <div className="border-b border-gray-200">
+        <div className="border-b border-gray-200 mb-6">
           <nav className="flex gap-8">
             {tabs.map((tab) => (
               <button
@@ -114,16 +137,18 @@ const ChannelProfile = () => {
         </div>
 
         {/* Tab Content */}
-        <div className="py-6">
+        <div className="pb-12">
           {activeTab === "videos" && (
-            <VideoProvider username={username} userId={channelData._id}>
-              <VideosTab />
-            </VideoProvider>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+              <VideoProvider username={username} userId={channelData._id}>
+                <VideosTab />
+              </VideoProvider>
+            </div>
           )}
           {activeTab === "playlists" && (
-            <div className="text-center py-12 text-gray-500">
-              <p className="text-lg">
-                Playlists content will be displayed here
+            <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-300">
+              <p className="text-gray-500 mb-2">
+                This channel has not created any playlists yet.
               </p>
             </div>
           )}

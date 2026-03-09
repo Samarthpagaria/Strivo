@@ -14,8 +14,16 @@ export const VideoProvider = ({ children, username, userId }) => {
   const videoQuery = useQuery({
     queryKey: ["videos", username, page],
     queryFn: async () => {
+      const config = token
+        ? {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        : {};
       const res = await axios.get(
-        `http://localhost:8000/api/v1/videos?userId=${userId}&page=${page}&limit=20`
+        `http://localhost:8000/api/v1/videos?userId=${userId}&page=${page}&limit=20`,
+        config,
       );
       return res.data;
     },
@@ -32,7 +40,7 @@ export const VideoProvider = ({ children, username, userId }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data.data.feed;
     },

@@ -1,0 +1,19 @@
+Tasks 
+-Video Routes 
+-Tweet Routes 
+
+-user cahnnel work - 
+1.Build general user channel 
+
+-Like Routes
+2. Add comment ---> like comment (toggle)
+
+-Comment routes 
+  1.getvideoComments,
+  2.addCommentToVideo,
+  3.deleteComment,
+  4.updateComment,
+
+subscription routes 
+
+dashboard routes

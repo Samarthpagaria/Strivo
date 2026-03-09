@@ -145,7 +145,14 @@ const getHomeFeedVideos = asyncHandler(async (req, res) => {
     },
     { $unwind: "$owner" },
   ]);
-  const combinedFeed = [...subscribedVideos, ...randomVideos];
+  const subscribedVideoIds = new Set(
+    subscribedVideos.map((v) => v._id.toString())
+  );
+  const filteredRandomVideos = randomVideos.filter(
+    (v) => !subscribedVideoIds.has(v._id.toString())
+  );
+
+  const combinedFeed = [...subscribedVideos, ...filteredRandomVideos];
   combinedFeed.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return res
@@ -461,11 +468,11 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
 });
 
 export {
-  togglePublishStatus,
-  updateVideo,
-  deleteVideo,
-  getAllVideos,
-  getVideo,
-  publishAVideo,
-  getHomeFeedVideos,
+  togglePublishStatus,//done
+  updateVideo,//done
+  deleteVideo,//done
+  getAllVideos, //done
+  getVideo,//done
+  publishAVideo,//done
+  getHomeFeedVideos,//done
 };

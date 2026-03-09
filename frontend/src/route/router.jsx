@@ -48,7 +48,7 @@ export const router = createBrowserRouter([
       { path: "settings", element: <SettingsPage /> },
       { path: `results`, element: <Results /> },
       { path: "watch/:videoId", element: <VideoDetailsPage /> },
-      { path: "/@:username", element: <ChannelProfile /> },
+      { path: "/c/:username", element: <ChannelProfile /> },
       { path: "/channel", element: <MyChannelProfile /> },
     ],
   },

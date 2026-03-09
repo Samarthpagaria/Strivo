@@ -33,10 +33,12 @@ const VideosTab = () => {
         {videos.map((video) => (
           <VideoCard
             key={video._id}
+            _id={video._id}
             title={video.title}
-            channel={video.owner?.[0]?.username || "Unknown"}
+            owner={video.owner?.[0] || video.owner}
             views={video.views}
-            uploaded={video.createdAt}
+            createdAt={video.createdAt}
+            thumbnail={video.thumbnail}
             duration={video.duration}
           />
         ))}

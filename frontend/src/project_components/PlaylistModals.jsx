@@ -25,7 +25,7 @@ export const DeletePlaylistModal = ({
             Delete Playlist?
           </h3>
           <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 leading-relaxed px-2">
-            Are you sure you want to delete{" "}
+            Are you sure you want to delete
             <span className="font-semibold text-gray-900 dark:text-white">
               "{playlistTitle}"
             </span>
