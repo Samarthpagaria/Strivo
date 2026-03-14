@@ -7,7 +7,6 @@ import {
   ChevronLeft,
   ThumbsUp,
   X,
-  ThumbsDown,
   ListPlus,
   Twitter,
   Trash2,
@@ -31,7 +30,6 @@ const VideoDetailSidebar = ({
   setIsOpen,
   videoData,
   onLike,
-  onDislike,
   onPlaylist,
   isSubscribed,
   setIsSubscribed,
@@ -224,19 +222,6 @@ const VideoDetailSidebar = ({
               </PixelCard>
             </motion.div>
 
-            {/* Dislike Button */}
-            <motion.div layout>
-              <PixelCard
-                variant="blue"
-                className="w-10 h-10 rounded-full border border-slate-200/40 p-0 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
-                gap={3}
-                speed={15}
-                colors="#f43f5e,#fb7185,#fda4af"
-                onClick={onDislike}
-              >
-                <ThumbsDown size={16} className="text-rose-500 relative z-10" />
-              </PixelCard>
-            </motion.div>
 
             {isOpen && (
               <motion.div layout className="w-px h-6 bg-slate-200/50" />

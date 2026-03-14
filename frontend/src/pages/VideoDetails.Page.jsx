@@ -46,8 +46,6 @@ const MORE_VIDEOS = Array(12)
     thumbnail: `https://picsum.photos/seed/${i + 100}/320/180`,
   }));
 
-
-
 const VideoDetailsPage = () => {
   const { videoId } = useParams();
   const { scrollRef } = useOutletContext() || {};
@@ -74,12 +72,12 @@ const VideoDetailsPage = () => {
   const width = useTransform(
     scrollY,
     [0, 50, 100, 150, 200, 300, 400, 500, 600, 800],
-    ["100%", "98%", "95%", "92%", "88%", "82%", "78%", "74%", "72%", "70%"]
+    ["100%", "98%", "95%", "92%", "88%", "82%", "78%", "74%", "72%", "70%"],
   );
   const borderRadius = useTransform(
     scrollY,
     [0, 50, 100, 150, 200, 300, 400, 500, 600, 800],
-    [0, 4, 8, 12, 16, 20, 24, 28, 30, 32]
+    [0, 4, 8, 12, 16, 20, 24, 28, 30, 32],
   );
   const y = useTransform(scrollY, [0, 800], [0, 0]); // Keep it pinned properly
   const paddingInline = useTransform(scrollY, [0, 800], ["0rem", "0rem"]); // No extra padding needed if width shrinks
@@ -255,7 +253,6 @@ const VideoDetailsPage = () => {
 
             {/* Right Sidebar */}
             <VideoDetailSidebar
-      
               relatedVideos={MORE_VIDEOS}
               isOpen={isSidebarOpen}
               setIsOpen={setIsSidebarOpen}
