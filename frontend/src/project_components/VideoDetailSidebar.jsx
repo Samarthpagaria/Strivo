@@ -10,11 +10,15 @@ import {
   ThumbsDown,
   ListPlus,
   Twitter,
+  Trash2,
+  Pencil,
 } from "lucide-react";
 import PixelCard from "./PixelCard";
+import { useGlobal } from "../ContentApi/GlobalContext";
+import { useComment } from "../ContentApi/CommentContext";
+import { formatDistanceToNow } from "date-fns";
 
 const VideoDetailSidebar = ({
-  comments = [],
   relatedVideos = [],
   isOpen,
   setIsOpen,
@@ -25,7 +29,18 @@ const VideoDetailSidebar = ({
   isSubscribed,
   setIsSubscribed,
 }) => {
+  const { user } = useGlobal();
   const [activeTab, setActiveTab] = useState(null); // null means drawer is closed
+  const {
+    getCommentsQuery,
+    createCommentMutation,
+    removeCommentMutation,
+    updateCommentMutation,
+    videoId,
+  } = useComment();
+
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editContent, setEditContent] = useState("");
 
   const handleTabClick = (tabId) => {
     if (activeTab === tabId && isOpen) {
@@ -37,6 +52,8 @@ const VideoDetailSidebar = ({
     }
   };
 
+  const comments = getCommentsQuery.data || [];
+  console.log(comments);
   const tabs = [
     {
       id: "discussion",
@@ -62,7 +79,48 @@ const VideoDetailSidebar = ({
     hidden: { opacity: 0, y: 12, scale: 0.96 },
     show: { opacity: 1, y: 0, scale: 1 },
   };
+  const [commentText, setCommentText] = useState("");
 
+  function handleCommentSubmit() {
+    if (!commentText.trim()) return;
+
+    createCommentMutation.mutate(
+      {
+        videoId,
+        content: commentText,
+      },
+      {
+        onSuccess: () => {
+          setCommentText(""); // Clear the input on success
+        },
+      }
+    );
+  }
+  function handleCommentCancel() {
+    setCommentText("");
+  }
+
+  const handleEditStart = (comment) => {
+    setEditingCommentId(comment._id);
+    setEditContent(comment.content);
+  };
+
+  const handleEditCancel = () => {
+    setEditingCommentId(null);
+    setEditContent("");
+  };
+
+  const handleEditSave = (commentId) => {
+    if (!editContent.trim()) return;
+    updateCommentMutation.mutate(
+      { commentId, content: editContent },
+      {
+        onSuccess: () => {
+          handleEditCancel();
+        },
+      }
+    );
+  };
   return (
     <div className="flex h-[calc(100vh-64px)] sticky top-4 items-start">
       <motion.div
@@ -305,41 +363,148 @@ const VideoDetailSidebar = ({
                   variants={containerVariants}
                   initial="hidden"
                   animate="show"
-                  className="space-y-4"
+                  className="space-y-1"
                 >
                   <motion.div
                     variants={itemVariants}
-                    className="flex gap-3 mb-6 bg-white/60 p-4 rounded-xl border border-slate-100 shadow-sm"
+                    className="relative bg-white/50 backdrop-blur-md rounded-2xl border border-slate-200/60 p-4 shadow-sm group focus-within:shadow-lg focus-within:shadow-blue-500/5 focus-within:border-blue-500/30 transition-all duration-500 mb-8"
                   >
-                    <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
-                      U
+                    <div className="flex gap-4">
+                      <div className="shrink-0 pt-1">
+                        {user?.avatar ? (
+                          <div className="relative">
+                            <img
+                              src={user.avatar}
+                              alt={user.fullName}
+                              className="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover"
+                            />
+                            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></div>
+                          </div>
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-sm border-2 border-white shadow-sm shadow-blue-200/50">
+                            {user?.fullName?.charAt(0) || "U"}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 space-y-3">
+                        <textarea
+                          placeholder="Share your thoughts..."
+                          value={commentText}
+                          onChange={(e) => setCommentText(e.target.value)}
+                          disabled={createCommentMutation.isPending}
+                          className="w-full bg-transparent text-sm focus:outline-none resize-none min-h-[44px] placeholder:text-slate-400 text-slate-700 leading-relaxed font-medium pt-2 scrollbar-none"
+                        />
+                        <div className="flex items-center justify-end gap-3 h-0 group-focus-within:h-10 group-focus-within:mt-2 overflow-hidden transition-all duration-500 ease-out opacity-0 group-focus-within:opacity-100">
+                          <button
+                            className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100/80 transition-all active:scale-95"
+                            onClick={handleCommentCancel}
+                            disabled={createCommentMutation.isPending}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className={`px-6 py-2 rounded-xl text-xs font-black transition-all shadow-lg shadow-black/10 active:scale-95 flex items-center gap-2 ${
+                              createCommentMutation.isPending
+                                ? "bg-slate-400 cursor-not-allowed"
+                                : "bg-slate-900 text-white hover:bg-black hover:-translate-y-0.5"
+                            }`}
+                            onClick={handleCommentSubmit}
+                            disabled={
+                              createCommentMutation.isPending ||
+                              !commentText.trim()
+                            }
+                          >
+                            {createCommentMutation.isPending
+                              ? "Posting..."
+                              : "Comment"}
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <textarea
-                      placeholder="Add to the conversation..."
-                      className="w-full bg-transparent text-sm focus:outline-none resize-none h-16 text-slate-700 placeholder:text-slate-400"
-                    />
                   </motion.div>
                   {comments.map((comment) => (
                     <motion.div
-                      key={comment.id}
+                      key={comment._id}
                       variants={itemVariants}
-                      className="flex gap-3 group bg-white/30 p-4 rounded-xl border border-slate-100/50 hover:bg-white/60 transition-all hover:border-slate-200 shadow-sm hover:shadow-md"
+                      className="flex gap-3 group px-2 py-3 rounded-xl hover:bg-slate-50/50 transition-all duration-300 relative"
                     >
-                      <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs shrink-0 border border-indigo-100">
-                        {comment.user[0]}
+                      <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs shrink-0 border border-indigo-100 overflow-hidden">
+                        {comment.owner?.avatar ? (
+                          <img
+                            src={comment.owner.avatar}
+                            alt=""
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="flex items-center justify-center h-full font-bold text-indigo-600 text-xs">
+                            {comment.owner?.username?.charAt(0).toUpperCase()}
+                          </span>
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-bold text-slate-900 text-xs truncate">
-                            @{comment.user}
-                          </span>
-                          <span className="text-[10px] text-slate-400 shrink-0">
-                            {comment.time}
-                          </span>
+                        <div className="flex items-center justify-between mb-0.5">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="font-bold text-slate-900 text-xs truncate">
+                              @{comment.owner?.username}
+                            </span>
+                            <span className="text-[10px] text-slate-400 shrink-0">
+                              {comment.createdAt
+                                ? formatDistanceToNow(new Date(comment.createdAt)) + " ago"
+                                : ""}
+                            </span>
+                          </div>
+                          
+                          {/* Action Buttons - Only for owner */}
+                          {user?._id === comment.owner?._id && !editingCommentId && (
+                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={() => handleEditStart(comment)}
+                                className="p-1.5 hover:bg-blue-50 rounded-lg text-slate-400 hover:text-blue-600 transition-all active:scale-90"
+                                title="Edit comment"
+                              >
+                                <Pencil size={11} />
+                              </button>
+                              <button
+                                onClick={() => removeCommentMutation.mutate({ commentId: comment._id })}
+                                disabled={removeCommentMutation.isPending}
+                                className="p-1.5 hover:bg-rose-50 rounded-lg text-slate-400 hover:text-rose-600 transition-all active:scale-90 disabled:opacity-50"
+                                title="Delete comment"
+                              >
+                                <Trash2 size={12} />
+                              </button>
+                            </div>
+                          )}
                         </div>
-                        <p className="text-sm text-slate-600 leading-relaxed">
-                          {comment.text}
-                        </p>
+
+                        {editingCommentId === comment._id ? (
+                          <div className="mt-2 space-y-2">
+                            <textarea
+                              value={editContent}
+                              onChange={(e) => setEditContent(e.target.value)}
+                              className="w-full bg-slate-50/50 border border-slate-200 rounded-lg p-2 text-sm focus:outline-none focus:border-blue-500/50 min-h-[60px] resize-none"
+                              autoFocus
+                            />
+                            <div className="flex justify-end gap-2">
+                              <button
+                                onClick={handleEditCancel}
+                                className="px-3 py-1 text-[10px] font-bold text-slate-500 hover:bg-slate-100 rounded-md transition-colors"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={() => handleEditSave(comment._id)}
+                                disabled={updateCommentMutation.isPending || !editContent.trim()}
+                                className="px-4 py-1 text-[10px] font-bold bg-blue-600 text-white hover:bg-blue-700 rounded-md transition-colors disabled:opacity-50"
+                              >
+                                {updateCommentMutation.isPending ? "Saving..." : "Save"}
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-sm text-slate-600 leading-relaxed wrap-break-word">
+                            {comment.content}
+                          </p>
+                        )}
                       </div>
                     </motion.div>
                   ))}
