@@ -14,9 +14,16 @@ import {
   Pencil,
 } from "lucide-react";
 import PixelCard from "./PixelCard";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { useGlobal } from "../ContentApi/GlobalContext";
 import { useComment } from "../ContentApi/CommentContext";
+import { usePlaylist } from "../ContentApi/PlaylistContext";
 import { formatDistanceToNow } from "date-fns";
+import { useToast } from "../ContentApi/ToastContext";
 
 const VideoDetailSidebar = ({
   relatedVideos = [],
@@ -38,6 +45,41 @@ const VideoDetailSidebar = ({
     updateCommentMutation,
     videoId,
   } = useComment();
+
+  const {
+    allPlaylists,
+    addVideoToPlaylist,
+    removeVideoFromPlaylist,
+    isAddingVideoToPlaylist,
+    isRemovingVideoFromPlaylist,
+  } = usePlaylist();
+
+  const { showToast } = useToast();
+
+  const isLoadingPlaylist =
+    isAddingVideoToPlaylist || isRemovingVideoFromPlaylist;
+
+  const handleTogglePlaylist = (playlist) => {
+    if (!videoId) {
+      showToast("No video ID provided");
+      return;
+    }
+    const playlistId = playlist._id || playlist.id;
+    if (isVideoInPlaylist(playlist)) {
+      removeVideoFromPlaylist.mutate({ videoId, playlistId });
+    } else {
+      addVideoToPlaylist.mutate({ videoId, playlistId });
+    }
+  };
+
+  const isVideoInPlaylist = (playlist) => {
+    if (!playlist.videos || !Array.isArray(playlist.videos)) {
+      return false;
+    }
+    return playlist.videos.some(
+      (v) => v === videoId || v?._id === videoId || v?.toString() === videoId
+    );
+  };
 
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editContent, setEditContent] = useState("");
@@ -202,19 +244,72 @@ const VideoDetailSidebar = ({
 
             {/* Playlist Button */}
             <motion.div layout>
-              <PixelCard
-                variant="blue"
-                className="w-10 h-10 rounded-full border border-slate-200/40 p-0 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
-                gap={3}
-                speed={15}
-                colors="#10b981,#34d399,#6ee7b7"
-                onClick={onPlaylist}
-              >
-                <ListPlus
-                  size={16}
-                  className="text-emerald-600 relative z-10"
-                />
-              </PixelCard>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <PixelCard
+                    variant="blue"
+                    className="w-10 h-10 rounded-full border border-slate-200/40 p-0 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
+                    gap={3}
+                    speed={15}
+                    colors="#10b981,#34d399,#6ee7b7"
+                  >
+                    <ListPlus
+                      size={16}
+                      className="text-emerald-600 relative z-10"
+                    />
+                  </PixelCard>
+                </PopoverTrigger>
+                <PopoverContent
+                  side={isOpen ? "bottom" : "left"}
+                  align="center"
+                  className="w-56 p-2 bg-white/80 backdrop-blur-xl border border-slate-200/50 shadow-2xl rounded-2xl z-200"
+                >
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 px-3 py-2">
+                      Add to Playlist
+                    </p>
+                    <div className="max-h-[240px] overflow-y-auto scrollbar-none space-y-0.5">
+                      {allPlaylists && allPlaylists.length > 0 ? (
+                        allPlaylists.map((playlist) => (
+                          <button
+                            key={playlist._id || playlist.id}
+                            onClick={() => handleTogglePlaylist(playlist)}
+                            disabled={isLoadingPlaylist}
+                            className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-bold rounded-xl transition-all text-left ${
+                              isLoadingPlaylist
+                                ? "opacity-50 cursor-not-allowed"
+                                : "hover:bg-slate-50 text-slate-700 hover:text-emerald-600"
+                            }`}
+                          >
+                            <span className="truncate">{playlist?.name}</span>
+                            <div
+                              className={`w-4 h-4 rounded-full border-2 transition-all flex items-center justify-center shrink-0 ${
+                                isVideoInPlaylist(playlist)
+                                  ? "bg-emerald-500 border-emerald-500 scale-110"
+                                  : "border-slate-200"
+                              }`}
+                            >
+                              {isVideoInPlaylist(playlist) && (
+                                <div className="w-1.5 h-1.5 bg-white rounded-full" />
+                              )}
+                            </div>
+                          </button>
+                        ))
+                      ) : (
+                        <div className="px-3 py-8 text-center bg-slate-50/50 rounded-xl">
+                          <PlaySquare
+                            size={24}
+                            className="mx-auto mb-2 text-slate-300"
+                          />
+                          <p className="text-[10px] font-bold text-slate-400 leading-tight">
+                            No playlists found.<br />Create one first!
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </motion.div>
 
             {/* Twitter Button */}
