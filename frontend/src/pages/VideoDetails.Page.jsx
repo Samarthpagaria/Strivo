@@ -53,7 +53,44 @@ const VideoDetailsPage = () => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const playerRef = useRef(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const [showSettings, setShowSettings] = useState(false);
+  const videoRef = useRef(null);
+
+  const formatTime = (seconds) => {
+    if (isNaN(seconds)) return "0:00";
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+
+    if (hrs > 0) {
+      return `${hrs}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    }
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+        setIsPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  const handleSpeedChange = (speed) => {
+    setPlaybackSpeed(speed);
+    if (videoRef.current) {
+      videoRef.current.playbackRate = speed;
+    }
+    setShowSettings(false);
+  };
 
   // Scroll Animation Logic
   // IMPORTANT: We must pass the container ref to track the correct scrollable element
@@ -140,46 +177,117 @@ const VideoDetailsPage = () => {
                 <div className="flex justify-center origin-top">
                   <motion.div
                     ref={playerRef}
-                    layout
                     style={{ width, borderRadius }}
-                    className="max-w-full aspect-video bg-black shadow-2xl relative overflow-hidden ring-1 ring-black/5 group mx-auto"
+                    className="max-w-full aspect-video bg-black shadow-2xl relative overflow-hidden group mx-auto"
                   >
-                    {/* Simulated Video Content */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
-                      <video
-                        src={videoData.videoFile}
-                        controls
-                        autoPlay
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
+                    <video
+                      ref={videoRef}
+                      src={videoData.videoFile}
+                      autoPlay
+                      loop
+                      className="w-full h-full object-contain relative z-10 cursor-pointer"
+                      onClick={togglePlay}
+                      onTimeUpdate={() => setCurrentTime(videoRef.current?.currentTime || 0)}
+                      onLoadedMetadata={() => setDuration(videoRef.current?.duration || 0)}
+                    />
 
-                    {/* Player Controls Overlay (Mock) */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-linear-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="h-1 bg-gray-600 rounded-full mb-4 overflow-hidden">
-                        <div className="h-full w-1/3 bg-red-600"></div>
-                      </div>
-                      <div className="flex justify-between items-center text-white">
-                        <div className="flex gap-4">
-                          <button className="text-sm hover:text-gray-300">
-                            Play
-                          </button>
-                          <button className="text-sm hover:text-gray-300">
-                            Volume
-                          </button>
-                          <span className="text-xs opacity-70">
-                            05:20 / 15:45
-                          </span>
+                    {/* Play/Pause Large Center Icon Overlay */}
+                    {!isPlaying && (
+                      <div 
+                        className="absolute inset-0 flex items-center justify-center z-25 pointer-events-none"
+                      >
+                        <div className="w-20 h-20 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white scale-110 animate-in fade-in zoom-in duration-200">
+                          <PlaySquare size={40} fill="currentColor" />
                         </div>
-                        <div className="flex gap-4">
-                          <button className="text-sm hover:text-gray-300 transition-colors">
-                            Settings
+                      </div>
+                    )}
+
+                    {/* Gradient Overlay for Controls */}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none" />
+
+                    {/* Custom Controls Bar */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6 z-30 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      {/* Progress Bar */}
+                      <div 
+                        className="h-1.5 w-full bg-white/20 rounded-full mb-4 overflow-hidden backdrop-blur-sm cursor-pointer hover:h-2 transition-all group/progress"
+                        onClick={(e) => {
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const x = e.clientX - rect.left;
+                          const pct = x / rect.width;
+                          if (videoRef.current) {
+                            videoRef.current.currentTime = pct * duration;
+                          }
+                        }}
+                      >
+                        <div 
+                          className="h-full bg-blue-500 rounded-full relative"
+                          style={{ width: `${(currentTime / duration) * 100}%` }}
+                        >
+                          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg opacity-0 group-hover/progress:opacity-100 transition-opacity" />
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between items-center text-white">
+                        <div className="flex items-center gap-6">
+                          <button 
+                            onClick={togglePlay}
+                            className="hover:text-blue-400 transition-colors"
+                          >
+                            {isPlaying ? (
+                              <div className="flex gap-1.5">
+                                <div className="w-1.5 h-5 bg-white rounded-md" />
+                                <div className="w-1.5 h-5 bg-white rounded-md" />
+                              </div>
+                            ) : (
+                              <PlaySquare size={24} fill="currentColor" />
+                            )}
                           </button>
+                          <div className="flex items-center gap-3">
+                            <span className="text-xs font-bold tabular-nums">
+                              {formatTime(currentTime)}
+                            </span>
+                            <span className="text-[10px] opacity-40">/</span>
+                            <span className="text-xs font-bold tabular-nums opacity-80">
+                              {formatTime(duration)}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-4 relative">
+                          <div className="relative">
+                            <button 
+                              onClick={() => setShowSettings(!showSettings)}
+                              className="text-xs font-black uppercase tracking-widest hover:text-blue-400 transition-colors px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-md flex items-center gap-2"
+                            >
+                              {playbackSpeed}x
+                              <MoreHorizontal size={14} />
+                            </button>
+                            
+                            {showSettings && (
+                              <div className="absolute bottom-full right-0 mb-4 w-32 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-200">
+                                <p className="text-[9px] font-black uppercase tracking-tighter text-white/30 px-3 py-2 border-b border-white/5">Speed</p>
+                                {[0.5, 1, 1.5, 2].map((speed) => (
+                                  <button
+                                    key={speed}
+                                    onClick={() => handleSpeedChange(speed)}
+                                    className={`w-full text-left px-3 py-2.5 text-xs font-bold transition-all ${
+                                      playbackSpeed === speed 
+                                        ? "text-blue-400 bg-blue-500/10" 
+                                        : "text-white/70 hover:bg-white/10 hover:text-white"
+                                    }`}
+                                  >
+                                    {speed === 1 ? "Normal" : `${speed}x`}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          
                           <button
                             onClick={handleFullscreen}
-                            className="text-sm hover:text-gray-300 transition-colors"
+                            className="hover:text-blue-400 transition-colors p-1"
                           >
-                            {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+                            <Info size={20} />
                           </button>
                         </div>
                       </div>
