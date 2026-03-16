@@ -35,16 +35,7 @@ const MOCK_VIDEO = {
   },
 };
 
-const MORE_VIDEOS = Array(12)
-  .fill(null)
-  .map((_, i) => ({
-    id: i,
-    title: `Learn React in 202${i} - Full Course for Beginners`,
-    channel: "Frontend Daily",
-    views: `${(i + 1) * 10}K`,
-    uploadedAt: `${i + 1} days ago`,
-    thumbnail: `https://picsum.photos/seed/${i + 100}/320/180`,
-  }));
+
 
 const VideoDetailsPage = () => {
   const { videoId } = useParams();
@@ -56,6 +47,8 @@ const VideoDetailsPage = () => {
     error,
     toggleVideoLikeMutation,
     toggleSubscriptionMutation,
+    relatedVideos,
+    isLoadingRelated,
   } = useVideoDetail(videoId);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -253,7 +246,8 @@ const VideoDetailsPage = () => {
 
             {/* Right Sidebar */}
             <VideoDetailSidebar
-              relatedVideos={MORE_VIDEOS}
+              relatedVideos={relatedVideos}
+              isLoadingRelated={isLoadingRelated}
               isOpen={isSidebarOpen}
               setIsOpen={setIsSidebarOpen}
               videoData={videoData}

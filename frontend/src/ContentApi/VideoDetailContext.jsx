@@ -83,12 +83,26 @@ export const useVideoDetail = (videoId) => {
     },
   });
 
+  const relatedVideosQuery = useQuery({
+    queryKey: ["relatedVideos", videoId],
+    queryFn: async () => {
+      const res = await axios.get(
+        `http://localhost:8000/api/v1/videos/related/${videoId}`
+      );
+      return res.data.data;
+    },
+    enabled: !!videoId,
+  });
+
   return {
     ...videoQuery,
+    relatedVideos: relatedVideosQuery.data || [],
+    isLoadingRelated: relatedVideosQuery.isLoading,
     toggleVideoLikeMutation,
     toggleSubscriptionMutation,
   };
 };
+
 
 export const VideoDetailProvider = ({ children }) => {
   const queryClient = useQueryClient();

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MessageSquare,
@@ -33,6 +34,7 @@ const VideoDetailSidebar = ({
   onPlaylist,
   isSubscribed,
   setIsSubscribed,
+  isLoadingRelated,
 }) => {
   const { user } = useGlobal();
   const [activeTab, setActiveTab] = useState(null); // null means drawer is closed
@@ -597,29 +599,59 @@ const VideoDetailSidebar = ({
                   animate="show"
                   className="space-y-3"
                 >
-                  {relatedVideos.map((video) => (
-                    <motion.div
-                      key={video.id}
-                      variants={itemVariants}
-                      className="flex gap-3 group cursor-pointer bg-white/30 p-2.5 rounded-xl border border-slate-100/50 hover:bg-white hover:shadow-md transition-all hover:border-slate-200"
-                    >
-                      <div className="relative w-28 aspect-video bg-slate-100 rounded-lg overflow-hidden shrink-0 shadow-sm group-hover:shadow-md transition-shadow">
-                        <img
-                          src={video.thumbnail}
-                          alt=""
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0 flex flex-col justify-center">
-                        <h4 className="font-bold text-slate-800 text-xs line-clamp-2 leading-tight group-hover:text-blue-700 transition-colors">
-                          {video.title}
-                        </h4>
-                        <p className="text-[10px] text-slate-500 mt-1.5 flex items-center gap-1.5 font-medium">
-                          {video.views}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
+                  {isLoadingRelated ? (
+                    <div className="flex flex-col gap-3">
+                      {[...Array(5)].map((_, i) => (
+                        <div key={i} className="flex gap-3 animate-pulse">
+                          <div className="w-28 aspect-video bg-slate-200 rounded-lg shrink-0" />
+                          <div className="flex-1 space-y-2 py-1">
+                            <div className="h-3 bg-slate-200 rounded-full w-3/4" />
+                            <div className="h-2 bg-slate-200 rounded-full w-1/2" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : relatedVideos.length === 0 ? (
+                    <div className="px-3 py-10 text-center bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
+                      <PlaySquare size={32} className="mx-auto mb-3 text-slate-300" />
+                      <p className="text-sm font-bold text-slate-400">No related videos found</p>
+                    </div>
+                  ) : (
+                    relatedVideos.map((video) => (
+                      <Link
+                        key={video._id}
+                        to={`/watch/${video._id}`}
+                        className="flex gap-3 group cursor-pointer bg-white/30 p-2.5 rounded-xl border border-slate-100/50 hover:bg-white hover:shadow-md transition-all hover:border-slate-200"
+                      >
+                        <div className="relative w-28 aspect-video bg-slate-100 rounded-lg overflow-hidden shrink-0 shadow-sm group-hover:shadow-md transition-shadow">
+                          <img
+                            src={video.thumbnail}
+                            alt=""
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0 flex flex-col justify-center">
+                          <h4 className="font-bold text-slate-800 text-[11px] line-clamp-2 leading-tight group-hover:text-blue-700 transition-colors">
+                            {video.title}
+                          </h4>
+                          <div className="flex flex-col gap-0.5 mt-1.5">
+                            <p className="text-[10px] text-slate-500 font-bold truncate">
+                              {video.owner?.fullName}
+                            </p>
+                            <div className="flex items-center gap-1.5 text-[9px] text-slate-400 font-medium">
+                              <span>{video.views} views</span>
+                              <span>•</span>
+                              <span>
+                                {video.createdAt
+                                  ? formatDistanceToNow(new Date(video.createdAt)) + " ago"
+                                  : ""}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))
+                  )}
                 </motion.div>
               )}
             </motion.div>

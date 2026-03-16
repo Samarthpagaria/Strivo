@@ -467,12 +467,89 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     );
 });
 
+const getRelatedVideos = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+
+  if (!mongoose.isValidObjectId(videoId)) {
+    throw new ApiError(400, "Invalid video id");
+  }
+
+  const currentVideo = await Video.findById(videoId);
+  if (!currentVideo) {
+    throw new ApiError(404, "Video not found");
+  }
+
+  // 1. Get up to 5 videos from the same owner (excluding current video)
+  const ownerVideos = await Video.aggregate([
+    {
+      $match: {
+        owner: currentVideo.owner,
+        _id: { $ne: new mongoose.Types.ObjectId(videoId) },
+        isPublished: true,
+      },
+    },
+    { $sample: { size: 5 } }, 
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [{ $project: { fullName: 1, username: 1, avatar: 1 } }],
+      },
+    },
+    { $unwind: "$owner" },
+  ]);
+
+  // 2. Get random videos to fill up to 10 total (excluding current video and owner's sampled videos)
+  const excludeIds = [
+    new mongoose.Types.ObjectId(videoId),
+    ...ownerVideos.map((v) => v._id),
+  ];
+
+  const randomVideos = await Video.aggregate([
+    {
+      $match: {
+        _id: { $nin: excludeIds },
+        isPublished: true,
+      },
+    },
+    { $sample: { size: 10 - ownerVideos.length } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [{ $project: { fullName: 1, username: 1, avatar: 1 } }],
+      },
+    },
+    { $unwind: "$owner" },
+  ]);
+
+  // 3. Combine and shuffle the results
+  let relatedVideos = [...ownerVideos, ...randomVideos];
+  
+  // Fisher-Yates shuffle
+  for (let i = relatedVideos.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [relatedVideos[i], relatedVideos[j]] = [relatedVideos[j], relatedVideos[i]];
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, relatedVideos, "Related videos fetched successfully")
+    );
+});
+
 export {
   togglePublishStatus,
   updateVideo,
   deleteVideo,
-  getAllVideos, 
+  getAllVideos,
   getVideo,
   publishAVideo,
   getHomeFeedVideos,
+  getRelatedVideos,
 };

@@ -27,6 +27,8 @@ router
   );
 
 router.route("/home-feed").get(getHomeFeedVideos);
+router.route("/related/:videoId").get(getRelatedVideos);
+
 
 router
   .route("/:videoId")
