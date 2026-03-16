@@ -39,7 +39,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
   }
 });
 
-const toggleCommenLike = asyncHandler(async (req, res) => {
+const toggleCommentLike = asyncHandler(async (req, res) => {
   const { commentId } = req.params;
   const userId = req.user?._id;
   if (!isValidObjectId(userId) || !isValidObjectId(commentId)) {
@@ -179,4 +179,4 @@ const getLikedVideos = asyncHandler(async (req, res) => {
     );
 });
 
-export { toggleCommenLike, toggleTweetLike, toggleVideoLike, getLikedVideos };
+export { toggleCommentLike, toggleTweetLike, toggleVideoLike, getLikedVideos };

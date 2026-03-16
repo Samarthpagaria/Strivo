@@ -483,7 +483,7 @@ const getRelatedVideos = asyncHandler(async (req, res) => {
   const ownerVideos = await Video.aggregate([
     {
       $match: {
-        owner: currentVideo.owner,
+        owner: new mongoose.Types.ObjectId(currentVideo.owner),
         _id: { $ne: new mongoose.Types.ObjectId(videoId) },
         isPublished: true,
       },
@@ -501,10 +501,10 @@ const getRelatedVideos = asyncHandler(async (req, res) => {
     { $unwind: "$owner" },
   ]);
 
-  // 2. Get random videos to fill up to 10 total (excluding current video and owner's sampled videos)
+  // 2. Get random videos to fill up to 10 total 
   const excludeIds = [
     new mongoose.Types.ObjectId(videoId),
-    ...ownerVideos.map((v) => v._id),
+    ...ownerVideos.map((v) => new mongoose.Types.ObjectId(v._id)),
   ];
 
   const randomVideos = await Video.aggregate([

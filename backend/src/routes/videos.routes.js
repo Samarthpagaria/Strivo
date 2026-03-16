@@ -9,15 +9,20 @@ import {
   getAllVideos,
   getVideo,
   publishAVideo,
+  getRelatedVideos,
 } from "../controllers/videos.controllers.js";
 const router = Router();
+
+// Public routes
+router.route("/related/:videoId").get(getRelatedVideos);
+router.route("/").get(getAllVideos);
+router.route("/:videoId").get(getVideo);
 
 router.use(verifyJWT);
 import { upload } from "../middlewares/multer.middleware.js";
 
 router
   .route("/")
-  .get(getAllVideos)
   .post(
     upload.fields([
       { name: "videoFile", maxCount: 1 },
@@ -27,12 +32,10 @@ router
   );
 
 router.route("/home-feed").get(getHomeFeedVideos);
-router.route("/related/:videoId").get(getRelatedVideos);
 
 
 router
   .route("/:videoId")
-  .get(getVideo)
   .delete(deleteVideo)
   .patch(upload.single("thumbnail"), updateVideo);
 
