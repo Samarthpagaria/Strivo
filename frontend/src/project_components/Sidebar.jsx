@@ -1,6 +1,84 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ListVideo } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { useGlobal } from "../ContentApi/GlobalContext";
+
+const SubscribedChannelsList = () => {
+  const navigate = useNavigate();
+  const { user, token } = useGlobal();
+
+  const { data: subscriptions, isLoading } = useQuery({
+    queryKey: ["subscriptions", user?._id],
+    queryFn: async () => {
+      const res = await axios.get(
+        `http://localhost:8000/api/v1/subscriptions/u/${user._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return res.data.data;
+    },
+    enabled: !!user?._id && !!token,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-2 p-2">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex items-center gap-3 animate-pulse">
+            <div className="w-8 h-8 rounded-full bg-muted" />
+            <div className="h-3 w-20 bg-muted rounded" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  const channels = subscriptions?.subscribedChannel || [];
+
+  if (channels.length === 0) {
+    return (
+      <div className="px-3 py-4 text-center">
+        <p className="text-[10px] font-bold text-muted-foreground/50">No subscriptions</p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {channels.slice(0, 10).map((channel) => (
+        <button
+          key={channel._id}
+          onClick={() => navigate(`/c/${channel.username}`)}
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-muted/70 transition-all group"
+        >
+          <img
+            src={channel.avatar}
+            alt=""
+            className="w-8 h-8 rounded-full object-cover border border-border"
+          />
+          <span className="text-xs font-bold text-foreground/70 group-hover:text-primary truncate">
+            {channel.fullName}
+          </span>
+          <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+        </button>
+      ))}
+      {channels.length > 10 && (
+        <button 
+          onClick={() => navigate("/subscriptions")}
+          className="w-full text-center py-2 text-[10px] font-black uppercase text-blue-600 hover:text-blue-700 hover:underline"
+        >
+          Show {channels.length - 10} more
+        </button>
+      )}
+    </>
+  );
+};
 
 const MenuItem = ({ children, label, onClick, isExpanded }) => (
   <div className="relative group">
@@ -23,6 +101,7 @@ const MenuItem = ({ children, label, onClick, isExpanded }) => (
 
 const Sidebar = ({ isExpanded, setIsExpanded }) => {
   const navigate = useNavigate();
+  const { user } = useGlobal();
 
   return (
     <div className=" h-full flex items-center">
@@ -37,7 +116,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
         <div className={`flex flex-col h-full ${isExpanded ? "p-2" : "p-2"}`}>
           <div className="flex-1 overflow-y-auto">
             {/* Top group */}
-            <nav className="space-y-1 flex-grow" aria-label="Main">
+            <nav className="space-y-1 grow" aria-label="Main">
               <MenuItem
                 label="Home"
                 isExpanded={isExpanded}
@@ -87,7 +166,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
             <div className="my-4 border-t border-border/70" />
 
             {/* Second group */}
-            <nav className="space-y-1 flex-grow" aria-label="Library">
+            <nav className="space-y-1 grow" aria-label="Library">
               <MenuItem
                 label="Subscriptions"
                 isExpanded={isExpanded}
@@ -246,6 +325,21 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
                 </svg>
               </MenuItem>
             </nav>
+
+            {/* Subscriptions Section */}
+            {isExpanded && user && (
+              <>
+                <div className="my-4 border-t border-border/70" />
+                <div className="px-4 mb-2">
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                    Subscriptions
+                  </h3>
+                </div>
+                <nav className="space-y-0.5 px-2 max-h-[200px] overflow-y-auto scrollbar-none">
+                  <SubscribedChannelsList />
+                </nav>
+              </>
+            )}
           </div>
           {/* Bottom area (settings/help) */}
           <div className="mt-auto pt-4">

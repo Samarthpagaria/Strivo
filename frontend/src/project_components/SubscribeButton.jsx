@@ -1,6 +1,7 @@
 import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import confetti from "canvas-confetti";
 import { useGlobal } from "../ContentApi/GlobalContext";
 import { useToast } from "../ContentApi/ToastContext";
 
@@ -34,15 +35,20 @@ const SubscribeButton = ({
       return res.data;
     },
     onSuccess: (data) => {
-      // Invalidate relevant queries to refetch updated data
+      // Invalidate ONLY the directly affected queries
       queryClient.invalidateQueries(["profile"]);
       queryClient.invalidateQueries(["channelSubscribers", channelId]);
+      queryClient.invalidateQueries(["subscriptions", user?._id]);
 
-      // Show success message
-      const message = isSubscribed
-        ? "Unsubscribed successfully"
-        : "Subscribed successfully";
-      showToast(message);
+      // Show success message based on backend response for robustness
+      const msg = data?.message?.toLowerCase() || "";
+      if (msg.includes("unsubscribed")) {
+        showToast("unsubscribed");
+      } else if (msg.includes("subscribed")) {
+        showToast("subscribed");
+      } else {
+        showToast(data?.message || "Subscription updated");
+      }
 
       // Call the optional callback
       if (onSubscriptionChange) {
@@ -57,10 +63,35 @@ const SubscribeButton = ({
     },
   });
 
-  const handleSubscribe = () => {
+  const handleSubscribe = (e) => {
     if (!isAuthenticated) {
       showToast("Please login to subscribe");
       return;
+    }
+
+    if (!isSubscribed) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      confetti({
+        particleCount: 200,
+        spread: 100,
+        origin: {
+          x: (rect.left + rect.width / 2) / window.innerWidth,
+          y: (rect.top + rect.height / 2) / window.innerHeight,
+        },
+        colors: [
+          "#3b82f6",
+          "#ef4444",
+          "#10b981",
+          "#f59e0b",
+          "#6366f1",
+          "#ec4899",
+          "#8b5cf6",
+        ],
+        ticks: 300,
+        gravity: 1.5,
+        scalar: 1,
+        drift: 0,
+      });
     }
 
     toggleSubscriptionMutation.mutate();

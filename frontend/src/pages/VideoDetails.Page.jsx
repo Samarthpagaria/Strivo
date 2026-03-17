@@ -23,6 +23,7 @@ import PixelCard from "../project_components/PixelCard";
 import VideoDetailSidebar from "../project_components/VideoDetailSidebar";
 import { useVideoDetail } from "../ContentApi/VideoDetailContext";
 import { CommentProvider } from "../ContentApi/CommentContext";
+import { useGlobal } from "../ContentApi/GlobalContext";
 
 const VideoDetailsPage = () => {
   const { videoId } = useParams();
@@ -41,6 +42,7 @@ const VideoDetailsPage = () => {
   } = useVideoDetail(videoId);
 
   // UI State
+  const { user } = useGlobal();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [isSubscribedLocal, setIsSubscribedLocal] = useState(false);
@@ -50,7 +52,7 @@ const VideoDetailsPage = () => {
     if (videoData?.owner) {
       setIsSubscribedLocal(!!videoData.owner.isSubscribed);
     }
-  }, [videoData?.owner?._id]);
+  }, [videoData?.owner?._id, videoData?.owner?.isSubscribed]);
 
   // Player State
   const videoRef = useRef(null);
@@ -389,7 +391,7 @@ const VideoDetailsPage = () => {
                           ticks: 300,
                           gravity: 1.5,
                           scalar: 1, // Large, celebratory particles
-                          drift:0,
+                          drift: 0,
                         });
                       }
 
@@ -404,7 +406,7 @@ const VideoDetailsPage = () => {
                       isSubscribedLocal
                         ? "bg-slate-100 text-slate-700 hover:bg-slate-200"
                         : "bg-black text-white hover:bg-slate-800"
-                    }`}
+                    } ${user?._id === videoData.owner._id ? "hidden" : ""}`}
                   >
                     {isSubscribedLocal ? (
                       <>

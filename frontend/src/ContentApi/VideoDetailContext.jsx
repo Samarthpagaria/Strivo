@@ -73,7 +73,17 @@ export const useVideoDetail = (videoId) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries(["videoDetail", videoId]);
-      showToast(data?.message || "Subscription updated");
+      queryClient.invalidateQueries(["profile"]);
+      queryClient.invalidateQueries(["subscriptions", user?._id]);
+      
+      const msg = data?.message?.toLowerCase() || "";
+      if (msg.includes("unsubscribed")) {
+        showToast("unsubscribed");
+      } else if (msg.includes("subscribed")) {
+        showToast("subscribed");
+      } else {
+        showToast(data?.message || "Subscription updated");
+      }
     },
     onError: (error) => {
       const errorMessage = error?.response?.data?.message || "Failed to toggle subscription";
