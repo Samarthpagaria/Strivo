@@ -28,13 +28,33 @@ export const MyChannelProvider = ({ children }) => {
     enabled: !!user?._id && !!isAuthenticated,
   });
 
+  const myChannelStatsQuery = useQuery({
+    queryKey: ["mychannel", "stats", user?.username],
+    queryFn: async () => {
+      const res = await axios.get(`http://localhost:8000/api/v1/dashboard/stats`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data.data;
+    },
+    enabled: !!user?._id && !!isAuthenticated && !!token,
+  });
+
   const myChannelSubscriptionsQuery = useQuery({
     queryKey: ["mychannel", "subscriptions", user?.username],
     queryFn: async () => {
-      const res = await axios.get(`write query route for all subscriptions`);
-      return res.data;
+      const res = await axios.get(
+        `http://localhost:8000/api/v1/subscriptions/u/${user._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return res.data.data.subscribedChannel;
     },
-    enabled: !!user?._id && !!isAuthenticated,
+    enabled: !!user?._id && !!isAuthenticated && !!token,
   });
 
   const myChannelPlaylistsQuery = useQuery({
@@ -267,6 +287,7 @@ export const MyChannelProvider = ({ children }) => {
     <MyChannelContext.Provider
       value={{
         myChannelVideosQuery,
+        myChannelStatsQuery,
         myChannelSubscriptionsQuery,
         myChannelPlaylistsQuery,
         mychannelTweetsQuery,

@@ -35,13 +35,23 @@ const getChannelStats = asyncHandler(async (req, res) => {
       },
     },
 
-    // subscribers of this channel
+    // subscribers of this channel (Followers)
     {
       $lookup: {
         from: "subscriptions",
         localField: "_id",
         foreignField: "channel",
         as: "subscribers",
+      },
+    },
+
+    // channels this user is subscribed to (Following)
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "following",
       },
     },
 
@@ -97,6 +107,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
       $addFields: {
         total_videos: { $size: "$videos" },
         total_subscribers: { $size: "$subscribers" },
+        total_following: { $size: "$following" },
         total_views: {
           $ifNull: [{ $arrayElemAt: ["$viewsAgg.totalViews", 0] }, 0],
         },
@@ -128,6 +139,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
   const data = {
     total_videos: statsDoc.total_videos,
     total_subscribers: statsDoc.total_subscribers,
+    total_following: statsDoc.total_following,
     total_views: statsDoc.total_views,
     total_likes: statsDoc.total_likes,
   };
