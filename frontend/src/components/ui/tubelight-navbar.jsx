@@ -3,8 +3,17 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-export function NavBar({ items, className, scrollContainerRef }) {
-  const [activeTab, setActiveTab] = useState(items[0].name);
+export function NavBar({
+  items,
+  className,
+  scrollContainerRef,
+  activeTab: externalActiveTab,
+  onTabChange,
+}) {
+  const [internalActiveTab, setInternalActiveTab] = useState(items[0].name);
+  const activeTab = externalActiveTab || internalActiveTab;
+  const setActiveTab = onTabChange || setInternalActiveTab;
+
   const [isMobile, setIsMobile] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
@@ -63,7 +72,8 @@ export function NavBar({ items, className, scrollContainerRef }) {
       <div className="flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg">
         {items.map((item) => {
           const Icon = item.icon;
-          const isActive = activeTab === item.name;
+          const itemId = item.id || item.name;
+          const isActive = activeTab === itemId;
 
           return (
             <Link

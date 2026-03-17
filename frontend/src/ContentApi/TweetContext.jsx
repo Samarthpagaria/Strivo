@@ -138,6 +138,46 @@ export const TweetProvider = ({ children }) => {
     },
   });
 
+  const toggleTweetLikeMutation = useMutation({
+    mutationFn: async (tweetId) => {
+      const res = await axios.post(
+        `http://localhost:8000/api/v1/likes/toggle/t/${tweetId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return res.data;
+    },
+    onSuccess: (data, tweetId) => {
+      // Invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ["home-feed-tweets"] });
+      queryClient.invalidateQueries({ queryKey: ["tweets", userId] });
+      queryClient.invalidateQueries({ queryKey: ["liked-tweets"] });
+    },
+    onError: (error) => {
+      showToast(error?.response?.data?.message || "Failed to like tweet");
+    },
+  });
+
+  const [activeTab, setActiveTab] = useState("for-you");
+
+  const followingTweetsQuery = useQuery({
+    queryKey: ["following-tweets"],
+    queryFn: async () => {
+      const res = await axios.get(`http://localhost:8000/api/v1/tweets/following`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data;
+    },
+    enabled: !!token,
+    retry: 1,
+  });
+
   return (
     <TweetContext.Provider
       value={{
@@ -146,8 +186,12 @@ export const TweetProvider = ({ children }) => {
         createTweet: createTweetMutation,
         updateTweet: updateTweetMutation,
         deleteTweet: deleteTweetMutation,
+        toggleTweetLike: toggleTweetLikeMutation,
         homeFeedTweetsQuery,
+        followingTweetsQuery,
         myTweetsQuery,
+        activeTab,
+        setActiveTab,
       }}
     >
       {children}

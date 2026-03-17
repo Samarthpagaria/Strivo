@@ -23,7 +23,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
   }
 
   const agg = [
-    { $match: { _id: mongoose.Types.ObjectId(userId) } },
+    { $match: { _id: new mongoose.Types.ObjectId(userId) } },
 
     // videos owned by this user
     {
@@ -145,7 +145,7 @@ const getChannelVideos = asyncHandler(async (req, res) => {
 
   // Fetch ALL videos created by this channel/user
   const videos = await Video.find({
-    owner: mongoose.Types.ObjectId(userId),
+    owner: new mongoose.Types.ObjectId(userId),
   })
     .sort({ createdAt: -1 }) // newest first (optional)
     .select("-__v") // clean response (optional)

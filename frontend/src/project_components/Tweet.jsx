@@ -29,7 +29,7 @@ const Tweet = ({
   isLiked: initialIsLiked = false,
 }) => {
   const { user } = useGlobal();
-  const { updateTweet, deleteTweet } = useTweet();
+  const { updateTweet, deleteTweet, toggleTweetLike } = useTweet();
   const [isLiked, setIsLiked] = useState(initialIsLiked);
   const [likeCount, setLikeCount] = useState(likesCount);
   const [isEditing, setIsEditing] = useState(false);
@@ -38,10 +38,23 @@ const Tweet = ({
   const isOwner = user?._id === ownerDetails?._id;
   const timestamp = createdAt ? getRelativeTime(createdAt) : "just now";
 
-  const handleLike = (e) => {
+  const handleLike = async (e) => {
     e.stopPropagation();
-    setIsLiked(!isLiked);
-    setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
+    
+    // Optimistic update
+    const prevIsLiked = isLiked;
+    const prevLikeCount = likeCount;
+    
+    setIsLiked(!prevIsLiked);
+    setLikeCount(prevIsLiked ? prevLikeCount - 1 : prevLikeCount + 1);
+
+    try {
+      await toggleTweetLike.mutateAsync(_id);
+    } catch (error) {
+      // Rollback on error
+      setIsLiked(prevIsLiked);
+      setLikeCount(prevLikeCount);
+    }
   };
 
   const handleUpdate = async (e) => {

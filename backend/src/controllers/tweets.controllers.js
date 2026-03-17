@@ -27,40 +27,127 @@ const createTweet = asyncHandler(async (req, res) => {
 });
 const getUserTweets = asyncHandler(async (req, res) => {
   const userId = req.params.userId;
+  const authUserId = req.user?._id;
+
   if (!userId || !isValidObjectId(userId)) {
     throw new ApiError(400, "Invalid userId");
   }
+
   const tweets = await Tweet.aggregate([
     { $match: { owner: new mongoose.Types.ObjectId(userId) } },
     { $sort: { createdAt: -1 } },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "tweet",
+        as: "likes",
+      },
+    },
     {
       $lookup: {
         from: "users",
         localField: "owner",
         foreignField: "_id",
         as: "ownerDetails",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+            },
+          },
+        ],
       },
     },
+    { $unwind: "$ownerDetails" },
     {
-      $unwind: "$ownerDetails",
-    },
-    {
-      $project: {
-        _id: 1,
-        content: 1,
-        createdAt: 1,
-        updatedAt: 1,
-        owner: 1,
-        "ownerDetails.username": 1,
-        "ownerDetails.fullName": 1,
-        "ownerDetails.email": 1,
-        "ownerDetails.avatar": 1,
+      $addFields: {
+        likesCount: { $size: "$likes" },
+        isLiked: {
+          $cond: {
+            if: {
+              $in: [new mongoose.Types.ObjectId(authUserId), "$likes.likedBy"],
+            },
+            then: true,
+            else: false,
+          },
+        },
       },
     },
+    { $project: { likes: 0 } },
   ]);
+
   return res
     .status(200)
     .json(new ApiResponse(200, tweets, "User Tweets fetched Successfully"));
+});
+
+const getFollowingTweets = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized access");
+  }
+
+  const subscriptions = await Subscription.find({ subscriber: userId }).select(
+    "channel"
+  );
+  const channelIds = subscriptions.map((s) => s.channel);
+
+  const tweets = await Tweet.aggregate([
+    {
+      $match: {
+        owner: { $in: channelIds },
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "tweet",
+        as: "likes",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "ownerDetails",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: "$ownerDetails" },
+    {
+      $addFields: {
+        likesCount: { $size: "$likes" },
+        isLiked: {
+          $cond: {
+            if: {
+              $in: [new mongoose.Types.ObjectId(userId), "$likes.likedBy"],
+            },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    { $project: { likes: 0 } },
+    { $sort: { createdAt: -1 } },
+  ]);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, tweets, "Following tweets fetched successfully"));
 });
 
 const updateTweet = asyncHandler(async (req, res) => {
@@ -252,4 +339,5 @@ export {
   updateTweet,
   deleteTweet,
   getHomeFeedTweets,
+  getFollowingTweets,
 };

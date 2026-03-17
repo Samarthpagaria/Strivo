@@ -7,13 +7,14 @@ import { Video } from "../models/video.models.js";
 
 const getvideoComments = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
+  const { page = 1, limit = 10 } = req.query;
   const userId = req.user?._id;
 
   if (!videoId || !isValidObjectId(videoId)) {
     throw new ApiError(400, "Invalid video ID");
   }
 
-  const comments = await Comment.aggregate([
+  const commentAggregate = Comment.aggregate([
     {
       $match: {
         video: new mongoose.Types.ObjectId(videoId),
@@ -72,6 +73,13 @@ const getvideoComments = asyncHandler(async (req, res) => {
       },
     },
   ]);
+
+  const options = {
+    page: parseInt(page, 10),
+    limit: parseInt(limit, 10),
+  };
+
+  const comments = await Comment.aggregatePaginate(commentAggregate, options);
 
   return res
     .status(200)

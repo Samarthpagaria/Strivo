@@ -31,12 +31,63 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
   const isSearchMode = !!searchQuery && !isVideoResultsPage;
 
   // using tweet context
-  const { tweetQuery, homeFeedTweetsQuery, myTweetsQuery } = useTweet();
+  const { 
+    tweetQuery, 
+    homeFeedTweetsQuery, 
+    followingTweetsQuery,
+    myTweetsQuery,
+    activeTab
+  } = useTweet();
 
-  // remove only tweetId while keeping q or other queries intact
+  // remote only tweetId while keeping q or other queries intact
   const handleTweetBack = () => {
     params.delete("tweetId");
     navigate(`${pathname}?${params.toString()}`, { replace: true });
+  };
+
+  const renderContent = () => {
+    if (isTweetDetails) {
+      return <TweetDetails tweetId={tweetId} onBack={handleTweetBack} />;
+    }
+    
+    if (isSearchMode) {
+      return <TweetSearchResults query={searchQuery} />;
+    }
+
+    if (isProfileChannelRoute) {
+      return (
+        <TweetsList
+          tweets={tweetQuery.data?.data || []}
+          emptyMessage="This user hasn't posted any tweets yet."
+        />
+      );
+    }
+
+    if (isMyChannelRoute || activeTab === "me") {
+      return (
+        <TweetsList
+          tweets={myTweetsQuery.data?.data || []}
+          emptyMessage="You haven't posted any tweets yet."
+        />
+      );
+    }
+
+    if (activeTab === "following") {
+      return (
+        <TweetsList
+          tweets={followingTweetsQuery.data?.data || []}
+          emptyMessage="No tweets from users you follow."
+        />
+      );
+    }
+
+    // Default: For You tab
+    return (
+      <TweetsList
+        tweets={homeFeedTweetsQuery.data?.data || []}
+        emptyMessage="No tweets in your feed."
+      />
+    );
   };
 
   return (
@@ -63,28 +114,9 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
         <TweetPost />
       </div>
       <div className="p-4">
-        {homeFeedTweetsQuery.isLoading ? (
-          <div className="text-center py-4 text-gray-400">Loading feed...</div>
-        ) : isTweetDetails ? (
-          <TweetDetails tweetId={tweetId} onBack={handleTweetBack} />
-        ) : isSearchMode ? (
-          <TweetSearchResults query={searchQuery} />
-        ) : isProfileChannelRoute ? (
-          <TweetsList
-            tweets={tweetQuery.data?.data || []}
-            emptyMessage="This user hasn't posted any tweets yet."
-          />
-        ) : isMyChannelRoute ? (
-          <TweetsList
-            tweets={myTweetsQuery.data?.data || []}
-            emptyMessage="You haven't posted any tweets yet."
-          />
-        ) : (
-          <TweetsList
-            tweets={homeFeedTweetsQuery.data?.data || []}
-            emptyMessage="No tweets in your feed."
-          />
-        )}
+        {homeFeedTweetsQuery.isLoading || followingTweetsQuery.isLoading || myTweetsQuery.isLoading ? (
+          <div className="text-center py-4 text-gray-400">Loading...</div>
+        ) : renderContent()}
       </div>
     </div>
   );

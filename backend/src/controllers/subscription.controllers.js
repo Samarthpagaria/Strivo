@@ -46,7 +46,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
     console.log("Subscribed successfully:", subscribe);
     return res
       .status(201)
-      .json(new ApiResponse(true, subscribe, "Channel subscribed."));
+      .json(new ApiResponse(201, subscribe, "Channel subscribed."));
   }
 });
 

@@ -23,7 +23,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
     }
     return res
       .status(200)
-      .json(new ApiResponse(201, like, "Video liked successfully"));
+      .json(new ApiResponse(200, like, "Video liked successfully"));
   } else {
     const unlike = await Like.findOneAndDelete({
       likedBy: userId,
@@ -33,7 +33,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
       throw new ApiError(500, "Not able to unlike the video.");
     } else {
       return res
-        .status(201)
+        .status(200)
         .json(new ApiResponse(200, unlike, "Video unliked successfully"));
     }
   }
@@ -61,7 +61,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
     }
     return res
       .status(200)
-      .json(new ApiResponse(201, like, "Comment liked successfully"));
+      .json(new ApiResponse(200, like, "Comment liked successfully"));
   } else {
     const unlike = await Like.findOneAndDelete({
       likedBy: userId,
@@ -71,7 +71,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
       throw new ApiError(500, "Not able to unlike the comment.");
     } else {
       return res
-        .status(201)
+        .status(200)
         .json(new ApiResponse(200, unlike, "Comment unliked successfully"));
     }
   }
@@ -99,7 +99,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
     }
     return res
       .status(200)
-      .json(new ApiResponse(201, like, "Tweet liked successfully"));
+      .json(new ApiResponse(200, like, "Tweet liked successfully"));
   } else {
     const unlike = await Like.findOneAndDelete({
       likedBy: userId,
@@ -109,7 +109,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
       throw new ApiError(500, "Not able to unlike the tweet.");
     } else {
       return res
-        .status(201)
+        .status(200)
         .json(new ApiResponse(200, unlike, "Tweet unliked successfully"));
     }
   }
