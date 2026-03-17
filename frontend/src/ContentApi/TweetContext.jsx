@@ -178,6 +178,20 @@ export const TweetProvider = ({ children }) => {
     retry: 1,
   });
 
+  const likedTweetsQuery = useQuery({
+    queryKey: ["liked-tweets"],
+    queryFn: async () => {
+      const res = await axios.get(`http://localhost:8000/api/v1/likes/tweets`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data;
+    },
+    enabled: !!token,
+    retry: 1,
+  });
+
   return (
     <TweetContext.Provider
       value={{
@@ -189,6 +203,7 @@ export const TweetProvider = ({ children }) => {
         toggleTweetLike: toggleTweetLikeMutation,
         homeFeedTweetsQuery,
         followingTweetsQuery,
+        likedTweetsQuery,
         myTweetsQuery,
         activeTab,
         setActiveTab,

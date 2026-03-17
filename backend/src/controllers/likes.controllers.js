@@ -179,4 +179,57 @@ const getLikedVideos = asyncHandler(async (req, res) => {
     );
 });
 
-export { toggleCommentLike, toggleTweetLike, toggleVideoLike, getLikedVideos };
+const getLikedTweets = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+  if (!isValidObjectId(userId)) throw new ApiError(400, "Invalid user id");
+
+  const pipeline = [
+    {
+      $match: {
+        likedBy: new mongoose.Types.ObjectId(userId),
+        tweet: { $exists: true, $ne: null },
+      },
+    },
+    {
+      $lookup: {
+        from: "tweets",
+        localField: "tweet",
+        foreignField: "_id",
+        as: "tweet",
+      },
+    },
+    { $unwind: "$tweet" },
+    {
+      $lookup: {
+        from: "users",
+        localField: "tweet.owner",
+        foreignField: "_id",
+        as: "tweet.owner",
+        pipeline: [{ $project: { username: 1, fullName: 1, avatar: 1 } }],
+      },
+    },
+    { $unwind: "$tweet.owner" },
+    { $sort: { createdAt: -1 } },
+    { $replaceRoot: { newRoot: "$tweet" } },
+  ];
+
+  const tweets = await Like.aggregate(pipeline).exec();
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { total: tweets.length, tweets },
+        "Liked tweets fetched"
+      )
+    );
+});
+
+export {
+  toggleCommentLike,
+  toggleTweetLike,
+  toggleVideoLike,
+  getLikedVideos,
+  getLikedTweets,
+};

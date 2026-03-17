@@ -60,6 +60,20 @@ export const VideoProvider = ({ children, username, userId }) => {
 
     enabled: !!user?._id && !!isAuthenticated,
   });
+
+  const watchHistoryQuery = useQuery({
+    queryKey: ["watchHistory", user?.username],
+    queryFn: async () => {
+      const res = await axios.get("http://localhost:8000/api/v1/users/history", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data.data;
+    },
+    enabled: !!user?._id && !!isAuthenticated,
+  });
+
   return (
     <VideoContext.Provider
       value={{
@@ -71,6 +85,7 @@ export const VideoProvider = ({ children, username, userId }) => {
         setPage,
         homeFeedQuery,
         likedVideosQuery,
+        watchHistoryQuery,
       }}
     >
       {children}
