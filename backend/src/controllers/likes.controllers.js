@@ -72,7 +72,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
     } else {
       return res
         .status(201)
-        .json(new ApiResponse(200, unlike, "Video unliked successfully"));
+        .json(new ApiResponse(200, unlike, "Comment unliked successfully"));
     }
   }
 });

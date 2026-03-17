@@ -72,13 +72,11 @@ export const useVideoDetail = (videoId) => {
       return res.data;
     },
     onSuccess: (data) => {
-      // Invalidate the current video query to update subscription status
       queryClient.invalidateQueries(["videoDetail", videoId]);
       showToast(data?.message || "Subscription updated");
     },
     onError: (error) => {
-      const errorMessage =
-        error?.response?.data?.message || "Failed to toggle subscription";
+      const errorMessage = error?.response?.data?.message || "Failed to toggle subscription";
       showToast(errorMessage);
     },
   });

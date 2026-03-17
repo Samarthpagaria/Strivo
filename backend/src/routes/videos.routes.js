@@ -16,6 +16,7 @@ const router = Router();
 // Public routes
 router.route("/related/:videoId").get(getRelatedVideos);
 router.route("/").get(getAllVideos);
+router.route("/home-feed").get(verifyJWT, getHomeFeedVideos);
 router.route("/:videoId").get(getVideo);
 
 router.use(verifyJWT);
@@ -31,7 +32,7 @@ router
     publishAVideo // Done
   );
 
-router.route("/home-feed").get(getHomeFeedVideos);
+
 
 
 router

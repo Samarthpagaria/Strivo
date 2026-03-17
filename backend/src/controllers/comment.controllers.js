@@ -6,15 +6,72 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { Video } from "../models/video.models.js";
 
 const getvideoComments = asyncHandler(async (req, res) => {
-  //TODO:Get list of comments of video
-  const videoId = req.params.videoId;
+  const { videoId } = req.params;
+  const userId = req.user?._id;
+
   if (!videoId || !isValidObjectId(videoId)) {
     throw new ApiError(400, "Invalid video ID");
   }
 
-  const comments = await Comment.find({ video: videoId })
-    .populate("owner", "username avatar email fullName")
-    .sort({ createdAt: -1 });
+  const comments = await Comment.aggregate([
+    {
+      $match: {
+        video: new mongoose.Types.ObjectId(videoId),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        owner: { $first: "$owner" },
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "comment",
+        as: "likes",
+      },
+    },
+    {
+      $addFields: {
+        likesCount: { $size: "$likes" },
+        isLiked: {
+          $cond: {
+            if: { $in: [userId, "$likes.likedBy"] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        likes: 0,
+      },
+    },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+  ]);
 
   return res
     .status(200)

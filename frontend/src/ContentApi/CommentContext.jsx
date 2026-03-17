@@ -49,7 +49,7 @@ export const CommentProvider = ({ children, videoId }) => {
       );
       return res.data.data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       // Refresh the comments list after adding a new one
       queryClient.invalidateQueries(["comments", videoId]);
       showToast("Comment added successfully!");
@@ -58,7 +58,7 @@ export const CommentProvider = ({ children, videoId }) => {
       showToast(error?.response?.data?.message || "Failed to add comment");
     },
   });
-    
+
   // delete comment
   const removeCommentMutation = useMutation({
     mutationFn: async ({ commentId }) => {
@@ -108,6 +108,30 @@ export const CommentProvider = ({ children, videoId }) => {
     },
   });
 
+  // likeComment
+  const likeCommentMutation = useMutation({
+    mutationFn: async ({ commentId }) => {
+      const res = await axios.post(
+        `http://localhost:8000/api/v1/likes/toggle/c/${commentId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return res.data.data;
+    },
+    onSuccess: () => {
+      // Refresh the comments list after liking a comment
+      queryClient.invalidateQueries(["comments", videoId]);
+      showToast("Operation successful!");
+    },
+    onError: (error) => {
+      showToast(error?.response?.data?.message || "Failed to toggle like");
+    },
+  });
+
   return (
     <CommentContext.Provider
       value={{
@@ -119,6 +143,7 @@ export const CommentProvider = ({ children, videoId }) => {
         createCommentMutation,
         removeCommentMutation,
         updateCommentMutation,
+        likeCommentMutation,
       }}
     >
       {children}
