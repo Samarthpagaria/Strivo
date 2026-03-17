@@ -28,7 +28,7 @@ export const CommentProvider = ({ children, videoId }) => {
         }
       );
 
-      return res.data.data;
+      return res.data.data.docs;
     },
     enabled: !!videoId && !!token,
   });

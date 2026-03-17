@@ -307,7 +307,7 @@ const VideoDetailSidebar = ({
                           </div>
                         ) : (
                           <>
-                            <p className="text-sm text-slate-600 leading-relaxed break-words">{comment.content}</p>
+                            <p className="text-sm text-slate-600 leading-relaxed wrap-break-word">{comment.content}</p>
                             <div className="mt-2.5 flex items-center gap-4">
                               <button
                                 onClick={() => {

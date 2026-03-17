@@ -180,7 +180,7 @@ const Tweet = ({
               </div>
             </div>
           ) : (
-            <div className="mt-1 text-gray-900 whitespace-pre-wrap break-words leading-relaxed text-sm">
+            <div className="mt-1 text-gray-900 whitespace-pre-wrap wrap-break-word leading-relaxed text-sm">
               {content}
             </div>
           )}
