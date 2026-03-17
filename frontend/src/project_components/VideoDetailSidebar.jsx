@@ -60,6 +60,7 @@ const VideoDetailSidebar = ({
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editContent, setEditContent] = useState("");
   const [likedComments, setLikedComments] = useState({});
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
 
   const isLoadingPlaylist = isAddingVideoToPlaylist || isRemovingVideoFromPlaylist;
   const comments = getCommentsQuery.data || [];
@@ -101,6 +102,14 @@ const VideoDetailSidebar = ({
       onSuccess: () => {
         setEditingCommentId(null);
         setEditContent("");
+      }
+    });
+  };
+
+  const handleConfirmDelete = (commentId) => {
+    removeCommentMutation.mutate({ commentId }, {
+      onSuccess: () => {
+        setDeletingCommentId(null);
       }
     });
   };
@@ -290,9 +299,19 @@ const VideoDetailSidebar = ({
                             <span className="text-[10px] text-slate-400">{comment.createdAt && formatDistanceToNow(new Date(comment.createdAt)) + " ago"}</span>
                           </div>
                           {user?._id === comment.owner?._id && !editingCommentId && (
-                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button onClick={() => { setEditingCommentId(comment._id); setEditContent(comment.content); }} className="p-1.5 hover:bg-blue-50 rounded-lg text-slate-400 hover:text-blue-600"><Pencil size={11} /></button>
-                              <button onClick={() => removeCommentMutation.mutate({ commentId: comment._id })} className="p-1.5 hover:bg-rose-50 rounded-lg text-slate-400 hover:text-rose-600"><Trash2 size={12} /></button>
+                            <div className="flex items-center gap-1">
+                              {deletingCommentId === comment._id ? (
+                                <div className="flex items-center gap-1 mr-2 px-2 py-1 bg-red-50 rounded-lg animate-in fade-in slide-in-from-right-2 duration-300">
+                                  <span className="text-[9px] font-bold text-red-600">Delete?</span>
+                                  <button onClick={() => handleConfirmDelete(comment._id)} className="text-[9px] font-black text-red-700 hover:underline">Yes</button>
+                                  <button onClick={() => setDeletingCommentId(null)} className="text-[9px] font-black text-slate-400 hover:underline">No</button>
+                                </div>
+                              ) : (
+                                <>
+                                  <button onClick={() => { setEditingCommentId(comment._id); setEditContent(comment.content); }} className="p-1.5 hover:bg-blue-50 rounded-lg text-slate-400 hover:text-blue-600 transition-colors" title="Edit comment"><Pencil size={11} /></button>
+                                  <button onClick={() => setDeletingCommentId(comment._id)} className="p-1.5 hover:bg-rose-50 rounded-lg text-slate-400 hover:text-rose-600 transition-colors" title="Delete comment"><Trash2 size={12} /></button>
+                                </>
+                              )}
                             </div>
                           )}
                         </div>
