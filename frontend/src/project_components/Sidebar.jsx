@@ -18,7 +18,7 @@ const SubscribedChannelsList = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data.data;
     },
@@ -44,7 +44,9 @@ const SubscribedChannelsList = () => {
   if (channels.length === 0) {
     return (
       <div className="px-3 py-4 text-center">
-        <p className="text-[10px] font-bold text-muted-foreground/50">No subscriptions</p>
+        <p className="text-[10px] font-bold text-muted-foreground/50">
+          No subscriptions
+        </p>
       </div>
     );
   }
@@ -69,7 +71,7 @@ const SubscribedChannelsList = () => {
         </button>
       ))}
       {channels.length > 10 && (
-        <button 
+        <button
           onClick={() => navigate("/subscriptions")}
           className="w-full text-center py-2 text-[10px] font-black uppercase text-blue-600 hover:text-blue-700 hover:underline"
         >
@@ -114,7 +116,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
         onMouseLeave={() => setIsExpanded(false)}
       >
         <div className={`flex flex-col h-full ${isExpanded ? "p-2" : "p-2"}`}>
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto scrollbar-none">
             {/* Top group */}
             <nav className="space-y-1 grow" aria-label="Main">
               <MenuItem

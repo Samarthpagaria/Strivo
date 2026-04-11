@@ -5,21 +5,27 @@ import { Link } from "react-router-dom";
 import strivoWhiteLogo from "@/assets/strivo_white_logo.png";
 import { useState } from "react";
 import { useAuth } from "../ContentApi/AuthContext";
-
+import { useNavigate } from "react-router-dom";
 export function LoginForm({ className, ...props }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const { login, isLoggingIn } = useAuth();
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = {
       email: email,
       username: name,
       password: password,
     };
-    login(formData);
+    try {
+      await login(formData);
+      navigate("/");
+    } catch (error) {
+      console.log("Login failed", error);
+    }
   };
 
   return (
