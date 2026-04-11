@@ -13,23 +13,47 @@ const Toast = ({ message, onClose }) => {
 
   return (
     <motion.div
-      initial={{ x: 100, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: 100, opacity: 0 }}
-      className="fixed bottom-5 right-5 z-[9999] flex items-center gap-3 bg-white border border-gray-200 shadow-xl rounded-lg p-4 pr-10 min-w-[250px]"
+      initial={{ y: -120, opacity: 0, scale: 0.9 }}
+      animate={{ y: 0, opacity: 1, scale: 1 }}
+      whileHover={{ scale: 1.05 }}
+      exit={{ y: -120, opacity: 0, scale: 0.9 }}
+      transition={{
+        type: "spring",
+        stiffness: 300,
+        damping: 25,
+        mass: 0.8,
+      }}
+      className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-4 bg-white/95 backdrop-blur-md border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-4xl p-2 min-w-[320px] max-w-[450px] overflow-hidden"
     >
+      {/* Internal Shimmer Layer */}
+      <motion.div
+        animate={{
+          x: ["-100%", "200%"],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[-20deg] pointer-events-none"
+      />
+
       <img
         src={strivoLogo}
         alt="Strivo Logo"
-        className="w-8 h-8 object-contain"
+        className="w-10 h-10 object-contain shrink-0 relative z-10"
       />
-      <p className="text-sm font-medium text-gray-800">{message}</p>
-      <button
+      <p className="text-sm font-bold text-slate-800 flex-1 leading-tight relative z-10">
+        {message}
+      </p>
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
         onClick={onClose}
-        className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+        className="text-slate-400 hover:text-slate-600 transition-colors p-1 relative z-10"
       >
-        <X className="w-4 h-4" />
-      </button>
+        <X className="w-5 h-5" />
+      </motion.button>
     </motion.div>
   );
 };

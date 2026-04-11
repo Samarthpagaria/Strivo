@@ -1,20 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import strivoLogo from "@/assets/strivo_black_logo.png";
+import strivoWhiteLogo from "@/assets/strivo_white_logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../ContentApi/AuthContext";
@@ -42,120 +29,110 @@ export function SignupForm({ className, ...props }) {
     await register(formData);
     navigate("/");
   };
+
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader className="text-center">
-          <div className="flex items-center justify-center gap-3 ">
-            <img src={strivoLogo} alt="Strivo Logo" className="w-10 h-10" />
-            <span className="text-xl font-bold text-black">Create account</span>
+    <div className={cn("flex flex-col items-center w-full max-w-[350px] gap-10 py-4", className)} {...props}>
+      {/* Header Section */}
+      <div className="flex flex-col items-center text-center gap-2">
+        <img src={strivoWhiteLogo} alt="Strivo Logo" className="w-40 h-40 object-contain" />
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-sm">
+            Register
+          </h1>
+          <p className="text-white/60 font-medium text-sm">
+            Simple, beautiful video analytics.
+          </p>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="w-full flex flex-col items-center gap-6">
+        <div className="w-full space-y-4">
+          <Input
+            id="fullName"
+            type="text"
+            value={fullname}
+            onChange={(e) => setFullname(e.target.value)}
+            placeholder="Full Name"
+            className="h-11 rounded-2xl border-none bg-white/10 px-6 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-white/50 transition-all font-bold"
+            required
+          />
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setemail(e.target.value)}
+            placeholder="Email address"
+            className="h-11 rounded-2xl border-none bg-white/10 px-6 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-white/50 transition-all font-bold"
+            required
+          />
+          <Input
+            id="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+            className="h-11 rounded-2xl border-none bg-white/10 px-6 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-white/50 transition-all font-bold"
+            required
+          />
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            className="h-11 rounded-2xl border-none bg-white/10 px-6 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-white/50 transition-all font-bold"
+            required
+          />
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label htmlFor="avatar" className="text-[10px] uppercase tracking-wider font-bold text-white/40 ml-4">Avatar</label>
+              <Input
+                id="avatar"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setAvatar(e.target.files[0])}
+                className="h-11 rounded-2xl border-none bg-white/10 px-4 text-[10px] text-white file:hidden pt-4 cursor-pointer font-bold"
+                required
+              />
+            </div>
+            <div className="space-y-1">
+              <label htmlFor="coverImage" className="text-[10px] uppercase tracking-wider font-bold text-white/40 ml-4">Cover (Optional)</label>
+              <Input
+                id="coverImage"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setCoverImage(e.target.files[0])}
+                className="h-11 rounded-2xl border-none bg-white/10 px-4 text-[10px] text-white file:hidden pt-4 cursor-pointer font-bold"
+              />
+            </div>
           </div>
-          <CardDescription className="text-black">
-            Enter your details below to sign up
-          </CardDescription>
-        </CardHeader>
+        </div>
 
-        <CardContent>
-          <form onSubmit={handleSubmit}>
-            <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="fullName">Full Name</FieldLabel>
-                <Input
-                  id="fullName"
-                  type="text"
-                  placeholder="Your full name"
-                  required
-                  value={fullname}
-                  onChange={(e) => setFullname(e.target.value)}
-                />
-              </Field>
+        <Button 
+          type="submit" 
+          disabled={isRegistering}
+          className="px-12 h-12 rounded-2xl bg-[#fb8934] hover:bg-[#e57a2e] text-white font-bold text-base transition-all duration-300 border-none w-fit shadow-none"
+        >
+          {isRegistering ? "Registering..." : "Register"}
+        </Button>
+      </form>
 
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  value={email}
-                  onChange={(e) => setemail(e.target.value)}
-                />
-              </Field>
+      <div className="w-full flex flex-col gap-6">
+        <p className="text-center text-white/60 font-medium text-sm">
+          Already have an account?{" "}
+          <Link to="/login" className="text-white font-light hover:underline opacity-60 hover:opacity-100 transition-all duration-300">
+            Login
+          </Link>
+        </p>
 
-              <Field>
-                <FieldLabel htmlFor="username">Username</FieldLabel>
-                <Input
-                  id="username"
-                  type="text"
-                  placeholder="Choose a username"
-                  required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </Field>
-
-              <Field>
-                <FieldLabel htmlFor="password">Password</FieldLabel>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </Field>
-
-              <Field>
-                <FieldLabel htmlFor="avatar">Avatar</FieldLabel>
-                <Input
-                  id="avatar"
-                  type="file"
-                  accept="image/*"
-                  required
-                  onChange={(e) => setAvatar(e.target.files[0])}
-                />
-              </Field>
-
-              <Field>
-                <FieldLabel htmlFor="coverImage">
-                  Cover Image (optional)
-                </FieldLabel>
-                <Input
-                  id="coverImage"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setCoverImage(e.target.files[0])}
-                />
-              </Field>
-
-              <Field>
-                <Button type="submit">
-                  {isRegistering ? "Registering..." : "Register"}
-                </Button>
-                <FieldDescription className="text-center">
-                  Already have an account?{" "}
-                  <Link to="/login" className="underline text-white">
-                    Login
-                  </Link>
-                </FieldDescription>
-              </Field>
-            </FieldGroup>
-          </form>
-        </CardContent>
-      </Card>
-
-      {/* Bottom Terms Section */}
-      <FieldDescription className="px-6 text-center text-white">
-        By clicking continue, you agree to our{" "}
-        <Link to="/terms" className="underline text-white">
-          Terms of Service
-        </Link>{" "}
-        and{" "}
-        <Link to="/privacy" className="underline text-white">
-          Privacy Policy
-        </Link>
-        .
-      </FieldDescription>
+        <p className="px-6 text-center text-[10px] text-white/40 leading-relaxed">
+          By clicking continue, you agree to our{" "}
+          <Link to="/terms" className="underline hover:text-white transition-colors">Terms of Service</Link>
+          {" "}and{" "}
+          <Link to="/privacy" className="underline hover:text-white transition-colors">Privacy Policy</Link>.
+        </p>
+      </div>
     </div>
   );
 }

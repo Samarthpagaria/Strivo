@@ -1,23 +1,11 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-import strivoLogo from "@/assets/strivo_black_logo.png";
+import strivoWhiteLogo from "@/assets/strivo_white_logo.png";
 import { useState } from "react";
 import { useAuth } from "../ContentApi/AuthContext";
+
 export function LoginForm({ className, ...props }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -31,88 +19,73 @@ export function LoginForm({ className, ...props }) {
       username: name,
       password: password,
     };
-    console.log(formData);
     login(formData);
   };
+
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="rounded-[inherit] overflow-hidden">
-        {/* -------- Updated Header (Same as SignupForm) -------- */}
-        <CardHeader className="text-center">
-          <div className="flex items-center justify-center gap-3">
-            <img src={strivoLogo} alt="Strivo Logo" className="w-10 h-10" />
-            <span className="text-xl font-bold text-black">Login</span>
-          </div>
-          <CardDescription className="text-black">
-            Enter your email & password to continue
-          </CardDescription>
-        </CardHeader>
-        {/* ------------------------------------------------------ */}
+    <div className={cn("flex flex-col items-center w-full max-w-[350px] gap-10 py-4", className)} {...props}>
+      {/* Header Section */}
+      <div className="flex flex-col items-center text-center gap-2">
+        <img src={strivoWhiteLogo} alt="Strivo Logo" className="w-40 h-40 object-contain" />
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-sm">
+            Login
+          </h1>
+          <p className="text-white/60 font-medium text-sm">
+            Simple, beautiful video analytics.
+          </p>
+        </div>
+      </div>
 
-        <CardContent>
-          <form onSubmit={handleSubmit}>
-            <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                  placeholder="m@example.com"
-                  required
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="username">Username</FieldLabel>
-                <Input
-                  id="username"
-                  type="username"
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
-                  placeholder=""
-                  required
-                />
-              </Field>
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Link
-                    to="/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </Field>
+      <form onSubmit={handleSubmit} className="w-full flex flex-col items-center gap-6">
+        <div className="w-full space-y-4">
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email address"
+            className="h-11 rounded-2xl border-none bg-white/10 px-6 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-white/50 transition-all font-bold"
+            required
+          />
+          <Input
+            id="username"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Username"
+            className="h-11 rounded-2xl border-none bg-white/10 px-6 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-white/50 transition-all font-bold"
+            required
+          />
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            className="h-11 rounded-2xl border-none bg-white/10 px-6 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-white/50 transition-all font-bold"
+            required
+          />
+        </div>
 
-              <Field className="flex flex-col gap-2">
-                <Button type="submit">
-                  {isLoggingIn ? "Logging in ...." : "Login"}
-                </Button>
+        <Button 
+          type="submit" 
+          disabled={isLoggingIn}
+          className="px-12 h-12 rounded-2xl bg-[#fb8934] hover:bg-[#e57a2e] text-white font-bold text-base transition-all duration-300 border-none w-fit shadow-none"
+        >
+          {isLoggingIn ? "Logging in..." : "Login"}
+        </Button>
+      </form>
 
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account?{" "}
-                  <Link to="/register" className="underline text-white">
-                    Sign up
-                  </Link>
-                </FieldDescription>
-              </Field>
-            </FieldGroup>
-          </form>
-        </CardContent>
-      </Card>
+      {/* Footer Section */}
+      <div className="w-full flex flex-col gap-4">
+        <p className="text-center text-white/60 font-medium text-sm">
+          Don&apos;t have an account?{" "}
+          <Link to="/register" className="text-white font-light hover:underline opacity-60 hover:opacity-100 transition-all duration-300">
+            Sign up
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

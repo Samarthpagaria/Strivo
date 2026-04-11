@@ -25,7 +25,7 @@ export const CommentProvider = ({ children, videoId }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       return res.data.data.docs;
@@ -45,7 +45,7 @@ export const CommentProvider = ({ children, videoId }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data.data;
     },
@@ -68,7 +68,7 @@ export const CommentProvider = ({ children, videoId }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data.data;
     },
@@ -94,7 +94,7 @@ export const CommentProvider = ({ children, videoId }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data.data;
     },
@@ -118,7 +118,7 @@ export const CommentProvider = ({ children, videoId }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data.data;
     },
