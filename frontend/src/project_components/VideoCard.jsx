@@ -1,7 +1,12 @@
-import React from "react";
-import { MoreVertical } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { MoreVertical, Heart } from "lucide-react";
 import VideoCardMenu from "./VideoCardMenu";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { useGlobal } from "../ContentApi/GlobalContext";
+import { useToast } from "../ContentApi/ToastContext";
+import { useVideo } from "../ContentApi/VideoContext";
 
 // Helper function to format relative time
 const getRelativeTime = (dateString) => {
@@ -25,6 +30,44 @@ const getRelativeTime = (dateString) => {
 
 const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
   const navigate = useNavigate();
+  const { token, user } = useGlobal();
+  const { showToast } = useToast();
+  const queryClient = useQueryClient();
+  const { likedVideosQuery } = useVideo();
+
+  // Check if this video is in the user's liked videos
+  const isLiked = likedVideosQuery.data?.data?.videos?.some(v => v._id === _id);
+
+  const toggleLikeMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.post(
+        `http://localhost:8000/api/v1/likes/toggle/v/${_id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return res.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["likedVideos", user?.username]);
+      showToast(data.message);
+    },
+    onError: (error) => {
+      showToast(error.response?.data?.message || "Failed to toggle like");
+    },
+  });
+
+  const handleLikeClick = (e) => {
+    e.stopPropagation();
+    if (!token) {
+      showToast("Please login to like videos");
+      return;
+    }
+    toggleLikeMutation.mutate();
+  };
 
   // Handle both API data (owner object) and mock data (channel string)
   const channelName = owner?.username || owner?.fullName || "Unknown Channel";
@@ -48,7 +91,7 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
   return (
     <div
       onClick={handleCardClick}
-      className="w-full hover:opacity-75 hover:bg-gray-200 rounded-3xl transition-all duration-300 p-2 cursor-pointer"
+      className="w-full hover:opacity-75 hover:bg-gray-200 rounded-3xl transition-all duration-300 p-2 cursor-pointer group"
     >
       <div className="bg-gray-200 w-full aspect-video rounded-xl overflow-hidden ">
         <img
@@ -77,12 +120,22 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
             {viewCount} views · {uploadedTime}
           </p>
         </div>
-        <div onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+          <button
+            onClick={handleLikeClick}
+            disabled={toggleLikeMutation.isPending}
+            className={`p-1.5 rounded-full hover:bg-gray-300 transition-colors ${
+              isLiked ? "text-red-500" : "text-gray-400 hover:text-gray-600"
+            }`}
+          >
+            <Heart size={18} fill={isLiked ? "currentColor" : "none"} />
+          </button>
           <VideoCardMenu videoId={_id} />
         </div>
       </div>
     </div>
   );
 };
+
 
 export default VideoCard;
