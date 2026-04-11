@@ -23,10 +23,20 @@ export function LoginForm({ className, ...props }) {
   };
 
   return (
-    <div className={cn("flex flex-col items-center w-full max-w-[350px] gap-10 py-4", className)} {...props}>
+    <div
+      className={cn(
+        "flex flex-col items-center w-full max-w-[350px] gap-10 py-4",
+        className,
+      )}
+      {...props}
+    >
       {/* Header Section */}
       <div className="flex flex-col items-center text-center gap-2">
-        <img src={strivoWhiteLogo} alt="Strivo Logo" className="w-40 h-40 object-contain" />
+        <img
+          src={strivoWhiteLogo}
+          alt="Strivo Logo"
+          className="w-40 h-40 object-contain"
+        />
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-sm">
             Login
@@ -37,7 +47,10 @@ export function LoginForm({ className, ...props }) {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="w-full flex flex-col items-center gap-6">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full flex flex-col items-center gap-6"
+      >
         <div className="w-full space-y-4">
           <Input
             id="email"
@@ -68,10 +81,10 @@ export function LoginForm({ className, ...props }) {
           />
         </div>
 
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           disabled={isLoggingIn}
-          className="px-12 h-12 rounded-2xl bg-[#fb8934] hover:bg-[#e57a2e] text-white font-bold text-base transition-all duration-300 border-none w-fit shadow-none"
+          className="px-12 h-12 rounded-2xl bg-[#f18d40] hover:bg-[#fd8732] text-white font-bold text-base transition-all duration-300 border-none w-fit shadow-none"
         >
           {isLoggingIn ? "Logging in..." : "Login"}
         </Button>
@@ -81,7 +94,10 @@ export function LoginForm({ className, ...props }) {
       <div className="w-full flex flex-col gap-4">
         <p className="text-center text-white/60 font-medium text-sm">
           Don&apos;t have an account?{" "}
-          <Link to="/register" className="text-white font-light hover:underline opacity-60 hover:opacity-100 transition-all duration-300">
+          <Link
+            to="/register"
+            className="text-white font-light hover:underline opacity-60 hover:opacity-100 transition-all duration-300"
+          >
             Sign up
           </Link>
         </p>
