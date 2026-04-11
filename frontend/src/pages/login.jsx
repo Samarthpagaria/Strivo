@@ -12,7 +12,7 @@ const Login = () => {
 "
       >
         {/* sign in component */}
-        <LoginForm className="w-full max-w-md" />
+        <LoginForm className="w-full max-w-md rounded-3xl" />
       </div>
     </div>
   );

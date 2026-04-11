@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
         formData,
         {
           withCredentials: true,
-        }
+        },
       );
       return res.data;
     },
@@ -26,12 +26,16 @@ export const AuthProvider = ({ children }) => {
       setUser(data.data.user);
       setToken(data.data.accessToken);
       setRefreshToken(data.data.refreshToken);
-      showToast("Login successful");
-      console.log(user); 
+      showToast(data.message);
+      console.log(user);
       localStorage.setItem("user", JSON.stringify(data.data.user));
       localStorage.setItem("accessToken", data.data.accessToken);
       localStorage.setItem("refreshToken", data.data.refreshToken);
       sessionStorage.setItem("sessionActive", "true");
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message || "Login Failed.";
+      showToast(errorMessage);
     },
   });
 
@@ -43,7 +47,7 @@ export const AuthProvider = ({ children }) => {
         formData,
         {
           withCredentials: true,
-        }
+        },
       );
       return res.data;
     },
@@ -51,12 +55,17 @@ export const AuthProvider = ({ children }) => {
       setUser(data.data.user);
       setToken(data.data.accessToken);
       setRefreshToken(data.data.refreshToken);
-      showToast("Registration successful");
+      showToast(data.message);
       console.log(user);
       localStorage.setItem("user", JSON.stringify(data.data.user));
       localStorage.setItem("accessToken", data.data.accessToken);
       localStorage.setItem("refreshToken", data.data.refreshToken);
       sessionStorage.setItem("sessionActive", "true");
+    },
+    onError: (error) => {
+      const errorMessage =
+        error.response?.data?.message || "Registration Failed.";
+      showToast(errorMessage);
     },
   });
   const logoutMutation = useMutation({
@@ -69,7 +78,7 @@ export const AuthProvider = ({ children }) => {
             Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
-        }
+        },
       );
       return res.data;
     },
@@ -77,15 +86,16 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       setToken(null);
       setRefreshToken(null);
-      showToast("Logged out successfully");
+      showToast(data.message);
 
       localStorage.removeItem("user");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       sessionStorage.removeItem("sessionActive");
     },
-    onError: () => {
-      console.log("Logout failed");
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message || "Logout failed";
+      showToast(errorMessage);
     },
   });
   return (

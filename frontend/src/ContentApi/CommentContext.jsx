@@ -52,7 +52,7 @@ export const CommentProvider = ({ children, videoId }) => {
     onSuccess: () => {
       // Refresh the comments list after adding a new one
       queryClient.invalidateQueries(["comments", videoId]);
-      showToast("Comment added successfully!");
+      showToast(data?.message || "Comment added successfully!");
     },
     onError: (error) => {
       showToast(error?.response?.data?.message || "Failed to add comment");
@@ -75,7 +75,7 @@ export const CommentProvider = ({ children, videoId }) => {
     onSuccess: () => {
       // Refresh the comments list after deleting a comment
       queryClient.invalidateQueries(["comments", videoId]);
-      showToast("Comment deleted successfully!");
+      showToast(data?.message || "Comment deleted successfully!");
     },
     onError: (error) => {
       showToast(error?.response?.data?.message || "Failed to delete comment");
@@ -101,7 +101,7 @@ export const CommentProvider = ({ children, videoId }) => {
     onSuccess: () => {
       // Refresh the comments list after updating
       queryClient.invalidateQueries(["comments", videoId]);
-      showToast("Comment updated successfully!");
+      showToast(data?.message || "Comment updated successfully!");
     },
     onError: (error) => {
       showToast(error?.response?.data?.message || "Failed to update comment");
@@ -125,7 +125,7 @@ export const CommentProvider = ({ children, videoId }) => {
     onSuccess: () => {
       // Refresh the comments list after liking a comment
       queryClient.invalidateQueries(["comments", videoId]);
-      showToast("Operation successful!");
+      showToast(data?.message || "Operation successful!");
     },
     onError: (error) => {
       showToast(error?.response?.data?.message || "Failed to toggle like");

@@ -73,7 +73,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
     throw new ApiError(400, "Avatar image is required.");
   }
   const avatar = await uploadOnCloudinary(avatarLocalPath);
-  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+const coverImage = await uploadOnCloudinary(coverImageLocalPath);
   if (!avatar) {
     throw new ApiError(400, "Avatar image is required.");
   }
@@ -128,6 +128,10 @@ const loginUser = asyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
   if (!username && !email) {
     throw new ApiError(400, "Email or Username is required.");
+  }
+
+  if (!password) {
+    throw new ApiError(400, "Password is required.");
   }
   const user = await User.findOne({ $or: [{ username }, { email }] });
   if (!user) {

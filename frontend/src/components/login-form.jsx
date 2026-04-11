@@ -36,7 +36,7 @@ export function LoginForm({ className, ...props }) {
   };
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
+      <Card className="rounded-[inherit] overflow-hidden">
         {/* -------- Updated Header (Same as SignupForm) -------- */}
         <CardHeader className="text-center">
           <div className="flex items-center justify-center gap-3">
