@@ -14,6 +14,7 @@ export const TweetProvider = ({ children }) => {
   const { showToast } = useToast();
   const queryClient = useQueryClient();
   const [userId, setUserId] = useState(null);
+  const [prefillTweet, setPrefillTweet] = useState(null);
 
   useEffect(() => {
     if (userProfile) {
@@ -39,13 +40,23 @@ export const TweetProvider = ({ children }) => {
     retry: 1,
   });
   const createTweetMutation = useMutation({
-    mutationFn: async (tweetText) => {
+    mutationFn: async ({ tweetText, images = [], videos = [], videoMention = null }) => {
+      const formData = new FormData();
+      formData.append("content", tweetText);
+      images.forEach((file) => formData.append("images", file));
+      videos.forEach((file) => formData.append("videos", file));
+      
+      if (videoMention) {
+        formData.append("videoMention", videoMention);
+      }
+
       const res = await axios.post(
         `http://localhost:8000/api/v1/tweets`,
-        { content: tweetText },
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
           },
         },
       );
@@ -207,6 +218,8 @@ export const TweetProvider = ({ children }) => {
         myTweetsQuery,
         activeTab,
         setActiveTab,
+        prefillTweet,
+        setPrefillTweet,
       }}
     >
       {children}

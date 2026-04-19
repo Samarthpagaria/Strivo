@@ -141,6 +141,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
                 </svg>
               </MenuItem>
 
+              {/* 
               <MenuItem
                 label="Notifications"
                 isExpanded={isExpanded}
@@ -162,6 +163,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
                   />
                 </svg>
               </MenuItem>
+              */}
             </nav>
 
             {/* Divider */}

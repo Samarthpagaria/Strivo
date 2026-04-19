@@ -81,23 +81,23 @@ const RootLayout = () => {
         />
 
         <ProfileProvider username={username}>
-          {/* Main Content Area - Videos Section */}
-          <div
-            className={`flex-1 flex flex-col overflow-hidden   transition-all duration-300 ${
-              isSidebarExpanded ? "ml-50" : "ml-16"
-            }`}
-          >
-            <main
-              ref={mainContentRef}
-              className="flex-1 overflow-y-auto no-scrollbar relative"
-            >
-              <Outlet context={{ scrollRef: mainContentRef }} />
-              <ScrollToTop containerRef={mainContentRef} />
-            </main>
-          </div>
-
-          {/* Tweets Section */}
           <TweetProvider>
+            {/* Main Content Area - Videos Section */}
+            <div
+              className={`flex-1 flex flex-col overflow-hidden   transition-all duration-300 ${
+                isSidebarExpanded ? "ml-50" : "ml-16"
+              }`}
+            >
+              <main
+                ref={mainContentRef}
+                className="flex-1 overflow-y-auto no-scrollbar relative"
+              >
+                <Outlet context={{ scrollRef: mainContentRef }} />
+                <ScrollToTop containerRef={mainContentRef} />
+              </main>
+            </div>
+
+            {/* Tweets Section */}
             <TweetsLayout
               width={tweetPanelWidth}
               onResizeStart={handleMouseDown}

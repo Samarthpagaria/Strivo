@@ -14,7 +14,7 @@ const createTweet = asyncHandler(async (req, res) => {
   if (!userId || !isValidObjectId(userId)) {
     throw new ApiError(400, "Invalid userId");
   }
-  const { content } = req.body;
+  const { content, videoMention } = req.body;
   if (!content || content.trim().length <= 0) {
     throw new ApiError(400, "Tweet content is required");
   }
@@ -39,12 +39,18 @@ const createTweet = asyncHandler(async (req, res) => {
   const finalImages = uploadedImages.filter((url) => url !== undefined);
   const finalVideos = uploadedVideos.filter((url) => url !== undefined);
 
-  const tweet = await Tweet.create({ 
+  const tweetData = {
     owner: userId, 
     content: content.trim(),
-    image: finalImages,
-    video: finalVideos
-  });
+    images: finalImages,
+    videos: finalVideos
+  };
+
+  if (videoMention && isValidObjectId(videoMention)) {
+    tweetData.videoMention = videoMention;
+  }
+
+  const tweet = await Tweet.create(tweetData);
 
   if (!tweet) {
     throw new ApiError(500, "Failed to create tweet");
@@ -91,6 +97,28 @@ const getUserTweets = asyncHandler(async (req, res) => {
       },
     },
     { $unwind: "$ownerDetails" },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "videoMention",
+        foreignField: "_id",
+        as: "videoMentionDetails",
+        pipeline: [
+          {
+            $project: {
+              title: 1,
+              thumbnail: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: {
+        path: "$videoMentionDetails",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
     {
       $addFields: {
         likesCount: { $size: "$likes" },
@@ -156,6 +184,16 @@ const getFollowingTweets = asyncHandler(async (req, res) => {
       },
     },
     { $unwind: "$ownerDetails" },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "videoMention",
+        foreignField: "_id",
+        as: "videoMentionDetails",
+        pipeline: [{ $project: { title: 1, thumbnail: 1 } }],
+      },
+    },
+    { $unwind: { path: "$videoMentionDetails", preserveNullAndEmptyArrays: true } },
     {
       $addFields: {
         likesCount: { $size: "$likes" },
@@ -276,6 +314,16 @@ const getHomeFeedTweets = asyncHandler(async (req, res) => {
     },
     { $unwind: "$ownerDetails" },
     {
+      $lookup: {
+        from: "videos",
+        localField: "videoMention",
+        foreignField: "_id",
+        as: "videoMentionDetails",
+        pipeline: [{ $project: { title: 1, thumbnail: 1 } }],
+      },
+    },
+    { $unwind: { path: "$videoMentionDetails", preserveNullAndEmptyArrays: true } },
+    {
       $addFields: {
         likesCount: { $size: "$likes" },
         isLiked: {
@@ -322,6 +370,16 @@ const getHomeFeedTweets = asyncHandler(async (req, res) => {
       },
     },
     { $unwind: "$ownerDetails" },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "videoMention",
+        foreignField: "_id",
+        as: "videoMentionDetails",
+        pipeline: [{ $project: { title: 1, thumbnail: 1 } }],
+      },
+    },
+    { $unwind: { path: "$videoMentionDetails", preserveNullAndEmptyArrays: true } },
     {
       $addFields: {
         likesCount: { $size: "$likes" },

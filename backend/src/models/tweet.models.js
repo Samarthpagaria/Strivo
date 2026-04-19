@@ -16,6 +16,10 @@ const tweetSchema = new mongoose.Schema(
     videos: {
       type: [String],
     },
+    videoMention: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Video",
+    },
   },
   { timestamps: true }
 );

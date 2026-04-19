@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -25,6 +25,7 @@ import { useGlobal } from "../ContentApi/GlobalContext";
 import { useComment } from "../ContentApi/CommentContext";
 import { usePlaylist } from "../ContentApi/PlaylistContext";
 import { useToast } from "../ContentApi/ToastContext";
+import { useTweet } from "../ContentApi/TweetContext";
 
 const VideoDetailSidebar = ({
   relatedVideos = [],
@@ -36,6 +37,8 @@ const VideoDetailSidebar = ({
 }) => {
   const { user } = useGlobal();
   const { showToast } = useToast();
+  const { setPrefillTweet } = useTweet();
+  const navigate = useNavigate();
 
   // Tab Management
   const [activeTab, setActiveTab] = useState("discussion");
@@ -65,6 +68,7 @@ const VideoDetailSidebar = ({
   const [editContent, setEditContent] = useState("");
   const [likedComments, setLikedComments] = useState({});
   const [deletingCommentId, setDeletingCommentId] = useState(null);
+  const [isTweeting, setIsTweeting] = useState(false);
 
   const isLoadingPlaylist =
     isAddingVideoToPlaylist || isRemovingVideoFromPlaylist;
@@ -128,6 +132,19 @@ const VideoDetailSidebar = ({
         },
       },
     );
+  };
+
+  const handleShareToTwitter = () => {
+    if (!videoId) return;
+    
+    setPrefillTweet({
+      content: `Check out this awesome video: ${videoData?.title}!`,
+      videoMention: videoId
+    });
+    
+    // The TweetPost component lives on the home feed (or other specific areas)
+    // Send them back to the home route to see the pre-filled post box.
+    navigate("/");
   };
 
   // Animation Variants
@@ -246,7 +263,8 @@ const VideoDetailSidebar = ({
 
             <PixelCard
               variant="blue"
-              className="w-10 h-10 rounded-full border border-slate-200/40 p-0 cursor-pointer"
+              onClick={handleShareToTwitter}
+              className={`w-10 h-10 rounded-full border border-slate-200/40 p-0 cursor-pointer ${isTweeting ? "opacity-50" : ""}`}
               gap={3}
               speed={15}
               colors="#0ea5e9,#38bdf8,#7dd3fc"

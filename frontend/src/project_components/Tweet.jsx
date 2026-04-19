@@ -1,4 +1,5 @@
-import { Heart, Edit2, Trash2, X, Check } from "lucide-react";
+import { Heart, Edit2, Trash2, X, Check, PlaySquare } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useGlobal } from "../ContentApi/GlobalContext";
 import { useTweet } from "../ContentApi/TweetContext";
 import { useState } from "react";
@@ -27,6 +28,9 @@ const Tweet = ({
   createdAt,
   likesCount = 0,
   isLiked: initialIsLiked = false,
+  images = [],
+  videos = [],
+  videoMentionDetails = null,
 }) => {
   const { user } = useGlobal();
   const { updateTweet, deleteTweet, toggleTweetLike } = useTweet();
@@ -180,9 +184,63 @@ const Tweet = ({
               </div>
             </div>
           ) : (
-            <div className="mt-1 text-gray-900 whitespace-pre-wrap wrap-break-word leading-relaxed text-sm">
-              {content}
-            </div>
+            <>
+              <div className="mt-1 flex-1 text-gray-900 whitespace-pre-wrap wrap-break-word leading-relaxed text-[15px]">
+                {content}
+              </div>
+
+              {/* Video Mention Card */}
+              {videoMentionDetails && (
+                <Link
+                  to={`/watch/${videoMentionDetails._id}`}
+                  className="mt-3 block group/mention filter drop-shadow-sm hover:drop-shadow-md transition-all"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 flex flex-col sm:flex-row max-w-lg">
+                    <div className="relative w-full sm:w-40 aspect-video shrink-0 overflow-hidden bg-slate-200">
+                      <img 
+                        src={videoMentionDetails.thumbnail} 
+                        alt={videoMentionDetails.title}
+                        className="w-full h-full object-cover group-hover/mention:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-3 flex items-center flex-1 min-w-0">
+                      <h4 className="text-sm font-bold text-slate-800 line-clamp-2 leading-tight group-hover/mention:text-blue-600 transition-colors">
+                        {videoMentionDetails.title}
+                      </h4>
+                    </div>
+                  </div>
+                </Link>
+              )}
+              
+              {/* Media Display - Images */}
+              {images?.length > 0 && (
+                <div className={`mt-3 grid gap-2 ${images.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                  {images.map((imgUrl, i) => (
+                    <img 
+                      key={i} 
+                      src={imgUrl} 
+                      alt="Tweet attachment" 
+                      className="rounded-2xl border border-gray-200 object-cover w-full max-h-80"
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Media Display - Videos */}
+              {videos?.length > 0 && (
+                <div className={`mt-3 grid gap-2 ${videos.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                  {videos.map((vidUrl, i) => (
+                    <video 
+                      key={i} 
+                      src={vidUrl} 
+                      controls 
+                      className="rounded-2xl border border-gray-200 w-full max-h-80 bg-black"
+                    />
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
