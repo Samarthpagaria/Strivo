@@ -6,6 +6,8 @@ import { Subscription } from "../models/subscription.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+
 
 const createTweet = asyncHandler(async (req, res) => {
   const userId = req.user?._id;
@@ -16,7 +18,34 @@ const createTweet = asyncHandler(async (req, res) => {
   if (!content || content.trim().length <= 0) {
     throw new ApiError(400, "Tweet content is required");
   }
-  const tweet = await Tweet.create({ owner: userId, content: content.trim() });
+  const imageLocalPaths = req.files?.images?.map((file) => file.path) || [];
+  const videoLocalPaths = req.files?.videos?.map((file) => file.path) || [];
+
+  const uploadedImages = await Promise.all(
+    imageLocalPaths.map(async (path) => {
+      const result = await uploadOnCloudinary(path);
+      return result?.url;
+    })
+  );
+
+  const uploadedVideos = await Promise.all(
+    videoLocalPaths.map(async (path) => {
+      const result = await uploadOnCloudinary(path);
+      return result?.url;
+    })
+  );
+
+  
+  const finalImages = uploadedImages.filter((url) => url !== undefined);
+  const finalVideos = uploadedVideos.filter((url) => url !== undefined);
+
+  const tweet = await Tweet.create({ 
+    owner: userId, 
+    content: content.trim(),
+    image: finalImages,
+    video: finalVideos
+  });
+
   if (!tweet) {
     throw new ApiError(500, "Failed to create tweet");
   }
