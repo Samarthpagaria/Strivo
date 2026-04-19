@@ -36,7 +36,9 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
   const { likedVideosQuery } = useVideo();
 
   // Check if this video is in the user's liked videos
-  const isLiked = likedVideosQuery.data?.data?.videos?.some(v => v._id === _id);
+  const isLiked = likedVideosQuery.data?.data?.videos?.some(
+    (v) => v._id === _id,
+  );
 
   const toggleLikeMutation = useMutation({
     mutationFn: async () => {
@@ -47,7 +49,7 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       return res.data;
     },
@@ -120,7 +122,10 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
             {viewCount} views · {uploadedTime}
           </p>
         </div>
-        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex items-center gap-1"
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             onClick={handleLikeClick}
             disabled={toggleLikeMutation.isPending}
@@ -136,6 +141,5 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
     </div>
   );
 };
-
 
 export default VideoCard;
