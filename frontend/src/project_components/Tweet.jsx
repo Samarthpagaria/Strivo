@@ -1,8 +1,9 @@
-import { Heart, Edit2, Trash2, X, Check, PlaySquare } from "lucide-react";
+import { Heart, Edit2, Trash2, X, Check, PlaySquare, MessageCircle, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useGlobal } from "../ContentApi/GlobalContext";
 import { useTweet } from "../ContentApi/TweetContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import TweetPost from "./TweetPost";
 
 const getRelativeTime = (dateString) => {
   const now = new Date();
@@ -31,9 +32,11 @@ const Tweet = ({
   images = [],
   videos = [],
   videoMentionDetails = null,
+  isComment = false,
+  commentsCount = 0,
 }) => {
   const { user } = useGlobal();
-  const { updateTweet, deleteTweet, toggleTweetLike } = useTweet();
+  const { updateTweet, deleteTweet, toggleTweetLike, getTweetComments } = useTweet();
   const [isLiked, setIsLiked] = useState(initialIsLiked);
   const [likeCount, setLikeCount] = useState(likesCount);
   const [isEditing, setIsEditing] = useState(false);
@@ -41,6 +44,25 @@ const Tweet = ({
 
   const isOwner = user?._id === ownerDetails?._id;
   const timestamp = createdAt ? getRelativeTime(createdAt) : "just now";
+
+  const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+
+  const fetchComments = async () => {
+    setIsLoadingComments(true);
+    const result = await getTweetComments(_id);
+    setComments(result.data || []);
+    setIsLoadingComments(false);
+  };
+
+  const handleToggleComments = (e) => {
+    e.stopPropagation();
+    if (!showComments) {
+      fetchComments();
+    }
+    setShowComments(!showComments);
+  };
 
   const handleLike = async (e) => {
     e.stopPropagation();
@@ -77,7 +99,10 @@ const Tweet = ({
   };
 
   return (
-    <div className="border-b border-gray-200 p-4 hover:bg-gray-50 transition-colors cursor-pointer group/card">
+    <div className="relative p-2 hover:bg-gray-50 transition-colors cursor-pointer group/card">
+      {/* Disappearing Border (Bottom) */}
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-linear-to-r from-transparent via-gray-200 to-transparent" />
+      
       <div className="flex gap-3">
         {/* Avatar */}
         <div className="shrink-0">
@@ -121,6 +146,21 @@ const Tweet = ({
                   </button>
                 </div>
               )}
+
+              {/* Comment Button */}
+              <button
+                onClick={handleToggleComments}
+                className="flex items-center gap-1 group shrink-0"
+              >
+                <div className="p-1.5 rounded-full transition-colors group-hover:bg-blue-100">
+                  <MessageSquare
+                    className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"
+                  />
+                </div>
+                <span className="text-xs text-gray-400 group-hover:text-blue-500 transition-colors">
+                  {commentsCount > 0 ? commentsCount : ""}
+                </span>
+              </button>
 
               {/* Like Button */}
               <button
@@ -244,6 +284,40 @@ const Tweet = ({
           )}
         </div>
       </div>
+
+      {/* Comments Section */}
+      {showComments && (
+        <div className="mt-2 ml-10 space-y-0" onClick={(e) => e.stopPropagation()}>
+          <div className="relative">
+             <TweetPost 
+                isReply={true} 
+                parentTweetId={_id} 
+                onPostSuccess={fetchComments} 
+             />
+          </div>
+          
+          {isLoadingComments ? (
+            <div className="py-4 flex justify-center">
+              <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <div className="space-y-0">
+              {comments.map((comment, idx) => (
+                <div key={comment._id} className="relative pl-4">
+                  {/* The Curved Branch Connector */}
+                  <div className={`absolute left-0 top-0 w-[1px] bg-black opacity-30 shadow-[0.5px_0_3px_rgba(0,0,0,0.05)] ${idx === comments.length - 1 ? 'h-6' : 'bottom-0'}`} />
+                  <div className="absolute left-0 top-6 w-4 h-4 border-l-[1px] border-b-[1px] border-black rounded-bl-xl opacity-30" />
+                  
+                  <Tweet 
+                    {...comment} 
+                    isComment={true} 
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

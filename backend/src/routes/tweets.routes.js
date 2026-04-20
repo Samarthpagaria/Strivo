@@ -7,6 +7,7 @@ import {
   getUserTweets,
   getHomeFeedTweets,
   getFollowingTweets,
+  getTweetComments,
 } from "../controllers/tweets.controllers.js";
 import { upload } from "../middlewares/multer.middleware.js";
 const router = Router();
@@ -22,6 +23,7 @@ router.route("/").post(
 );
 router.route("/feed").get(getHomeFeedTweets);
 router.route("/following").get(getFollowingTweets);
+router.route("/comments/:tweetId").get(getTweetComments);
 router.route("/user/:userId").get(getUserTweets);
 router.route("/:tweetId").patch(updateTweet).delete(deleteTweet);
 export default router;

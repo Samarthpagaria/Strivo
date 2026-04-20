@@ -14,7 +14,7 @@ const createTweet = asyncHandler(async (req, res) => {
   if (!userId || !isValidObjectId(userId)) {
     throw new ApiError(400, "Invalid userId");
   }
-  const { content, videoMention } = req.body;
+  const { content, videoMention, parentTweetId } = req.body;
   if (!content || content.trim().length <= 0) {
     throw new ApiError(400, "Tweet content is required");
   }
@@ -48,6 +48,10 @@ const createTweet = asyncHandler(async (req, res) => {
 
   if (videoMention && isValidObjectId(videoMention)) {
     tweetData.videoMention = videoMention;
+  }
+
+  if (parentTweetId && isValidObjectId(parentTweetId)) {
+    tweetData.parentTweetId = parentTweetId;
   }
 
   const tweet = await Tweet.create(tweetData);
@@ -133,6 +137,20 @@ const getUserTweets = asyncHandler(async (req, res) => {
         },
       },
     },
+    {
+      $lookup: {
+        from: "tweets",
+        localField: "_id",
+        foreignField: "parentTweetId",
+        as: "comments",
+      },
+    },
+    {
+      $addFields: {
+        commentsCount: { $size: "$comments" },
+      },
+    },
+    { $project: { comments: 0 } },
     { $project: { likes: 0 } },
   ]);
 
@@ -208,6 +226,20 @@ const getFollowingTweets = asyncHandler(async (req, res) => {
         },
       },
     },
+    {
+      $lookup: {
+        from: "tweets",
+        localField: "_id",
+        foreignField: "parentTweetId",
+        as: "comments",
+      },
+    },
+    {
+      $addFields: {
+        commentsCount: { $size: "$comments" },
+      },
+    },
+    { $project: { comments: 0 } },
     { $project: { likes: 0 } },
     { $sort: { createdAt: -1 } },
   ]);
@@ -337,6 +369,20 @@ const getHomeFeedTweets = asyncHandler(async (req, res) => {
         },
       },
     },
+    {
+      $lookup: {
+        from: "tweets",
+        localField: "_id",
+        foreignField: "parentTweetId",
+        as: "comments",
+      },
+    },
+    {
+      $addFields: {
+        commentsCount: { $size: "$comments" },
+      },
+    },
+    { $project: { comments: 0 } },
     { $project: { likes: 0 } },
     { $sort: { createdAt: -1 } },
     { $limit: 20 },
@@ -394,6 +440,20 @@ const getHomeFeedTweets = asyncHandler(async (req, res) => {
         },
       },
     },
+    {
+      $lookup: {
+        from: "tweets",
+        localField: "_id",
+        foreignField: "parentTweetId",
+        as: "comments",
+      },
+    },
+    {
+      $addFields: {
+        commentsCount: { $size: "$comments" },
+      },
+    },
+    { $project: { comments: 0 } },
     { $project: { likes: 0 } },
   ]);
 
@@ -420,6 +480,83 @@ const getHomeFeedTweets = asyncHandler(async (req, res) => {
     );
 });
 
+const getTweetComments = asyncHandler(async (req, res) => {
+  const { tweetId } = req.params;
+  const authUserId = req.user?._id;
+
+  if (!tweetId || !isValidObjectId(tweetId)) {
+    throw new ApiError(400, "Invalid tweetId");
+  }
+
+  const comments = await Tweet.aggregate([
+    {
+      $match: {
+        parentTweetId: new mongoose.Types.ObjectId(tweetId),
+      },
+    },
+    {
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "tweet",
+        as: "likes",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "ownerDetails",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              fullName: 1,
+              avatar: 1,
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: "$ownerDetails" },
+    {
+      $addFields: {
+        likesCount: { $size: "$likes" },
+        isLiked: {
+          $cond: {
+            if: {
+              $in: [new mongoose.Types.ObjectId(authUserId), "$likes.likedBy"],
+            },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: "tweets",
+        localField: "_id",
+        foreignField: "parentTweetId",
+        as: "nestedComments",
+      },
+    },
+    {
+      $addFields: {
+        commentsCount: { $size: "$nestedComments" },
+      },
+    },
+    { $project: { nestedComments: 0 } },
+    { $project: { likes: 0 } },
+    { $sort: { createdAt: 1 } }, // Oldest first for threads
+  ]);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, comments, "Comments fetched successfully"));
+});
+
 export {
   createTweet,
   getUserTweets,
@@ -427,4 +564,5 @@ export {
   deleteTweet,
   getHomeFeedTweets,
   getFollowingTweets,
+  getTweetComments,
 };

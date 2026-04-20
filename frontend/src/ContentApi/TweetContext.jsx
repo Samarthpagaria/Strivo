@@ -40,7 +40,7 @@ export const TweetProvider = ({ children }) => {
     retry: 1,
   });
   const createTweetMutation = useMutation({
-    mutationFn: async ({ tweetText, images = [], videos = [], videoMention = null }) => {
+    mutationFn: async ({ tweetText, images = [], videos = [], videoMention = null, parentTweetId = null }) => {
       const formData = new FormData();
       formData.append("content", tweetText);
       images.forEach((file) => formData.append("images", file));
@@ -48,6 +48,10 @@ export const TweetProvider = ({ children }) => {
       
       if (videoMention) {
         formData.append("videoMention", videoMention);
+      }
+
+      if (parentTweetId) {
+        formData.append("parentTweetId", parentTweetId);
       }
 
       const res = await axios.post(
@@ -203,6 +207,15 @@ export const TweetProvider = ({ children }) => {
     retry: 1,
   });
 
+  const getTweetComments = async (tweetId) => {
+    const res = await axios.get(`http://localhost:8000/api/v1/tweets/comments/${tweetId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  };
+
   return (
     <TweetContext.Provider
       value={{
@@ -220,6 +233,7 @@ export const TweetProvider = ({ children }) => {
         setActiveTab,
         prefillTweet,
         setPrefillTweet,
+        getTweetComments,
       }}
     >
       {children}

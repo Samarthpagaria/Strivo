@@ -20,6 +20,11 @@ const tweetSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Video",
     },
+    parentTweetId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tweet",
+      default: null,
+    },
   },
   { timestamps: true }
 );

@@ -113,7 +113,7 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
       <div className="pt-28">
         <TweetPost />
       </div>
-      <div className="p-4">
+      <div className="pt-2 pb-2">
         {homeFeedTweetsQuery.isLoading || followingTweetsQuery.isLoading || myTweetsQuery.isLoading ? (
           <div className="text-center py-4 text-gray-400">Loading...</div>
         ) : renderContent()}

@@ -11,7 +11,11 @@ import {
   ImagePlus,
 } from "lucide-react";
 import { useGlobal } from "../ContentApi/GlobalContext";
-const TweetPost = () => {
+const TweetPost = ({
+  parentTweetId = null,
+  onPostSuccess = null,
+  isReply = false,
+}) => {
   const [tweetText, setTweetText] = useState("");
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
@@ -22,14 +26,14 @@ const TweetPost = () => {
   const { createTweet, prefillTweet, setPrefillTweet } = useTweet();
 
   useEffect(() => {
-    if (prefillTweet) {
+    if (prefillTweet && !isReply) {
       setTweetText(prefillTweet.content || "");
       if (prefillTweet.videoMention) {
         setVideoMention(prefillTweet.videoMention);
       }
       setPrefillTweet(null); // Clear context once we've grabbed it
     }
-  }, [prefillTweet, setPrefillTweet]);
+  }, [prefillTweet, setPrefillTweet, isReply]);
 
   const handlePost = async () => {
     if (
@@ -43,11 +47,13 @@ const TweetPost = () => {
         images,
         videos,
         videoMention,
+        parentTweetId,
       });
       setTweetText("");
       setImages([]);
       setVideos([]);
       setVideoMention(null);
+      if (onPostSuccess) onPostSuccess();
     }
   };
 
@@ -80,28 +86,50 @@ const TweetPost = () => {
   };
 
   return (
-    <div className="w-full bg-white border-b border-gray-200">
-      <div className="p-4">
+    <div className={`w-full  ${!isReply ? "border-b border-gray-200" : ""}`}>
+      <div className={isReply ? "pt-2 pb-2" : "p-4"}>
         <div className="flex gap-3">
           {/* Avatar */}
-          <div className="shrink-0">
-            <img
-              src={user?.avatar}
-              alt="User avatar"
-              className="w-12 h-12 rounded-full"
-            />
-          </div>
+          {!isReply && (
+            <div className="shrink-0">
+              <img
+                src={user?.avatar}
+                alt="User avatar"
+                className="w-12 h-12 rounded-full"
+              />
+            </div>
+          )}
 
           {/* Tweet Input Area */}
           <div className="flex-1">
-            <textarea
-              value={tweetText}
-              onChange={(e) => setTweetText(e.target.value)}
-              placeholder="What's happening?"
-              className="w-full resize-none border-none outline-none text-lg placeholder:font-satoshi font-inter text-slate-800 placeholder-gray-500 bg-transparent"
-              rows="3"
-              maxLength={maxLength}
-            />
+            <div
+              className={
+                isReply
+                  ? "rounded-2xl border border-gray-100 p-3 focus-within:border-gray-900 transition-all duration-300"
+                  : ""
+              }
+            >
+              <div className="flex gap-2">
+                {isReply && (
+                  <img
+                    src={user?.avatar}
+                    alt="User avatar"
+                    className="w-8 h-8 rounded-full shrink-0"
+                  />
+                )}
+                <textarea
+                  value={tweetText}
+                  onChange={(e) => setTweetText(e.target.value)}
+                  placeholder={
+                    isReply ? "Post your reply" : "What's happening?"
+                  }
+                  className={`w-full resize-none border-none outline-none placeholder:font-satoshi font-inter text-slate-800 placeholder-gray-400 bg-transparent py-1 ${isReply ? "text-[15px]" : "text-lg"}`}
+                  rows={isReply ? "1" : "3"}
+                  style={{ minHeight: isReply ? "40px" : "auto" }}
+                  maxLength={maxLength}
+                />
+              </div>
+            </div>
 
             {videoMention && (
               <div className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-semibold border border-blue-100">
@@ -151,51 +179,46 @@ const TweetPost = () => {
               </div>
             )}
 
-            {/* Action Bar */}
-            <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+            <div
+              className={`flex items-center justify-between mt-3 ${!isReply ? "pt-3 border-t border-gray-100" : ""}`}
+            >
               {/* Left side - Media buttons */}
-              <div className="flex gap-1 relative">
+              <div className="flex gap-1 relative text-gray-500">
                 <input
                   type="file"
-                  id="tweet-image-upload"
+                  id={`image-upload-${parentTweetId || "new"}`}
                   multiple
                   accept="image/*"
                   className="hidden"
                   onChange={handleImageSelect}
                 />
                 <label
-                  htmlFor="tweet-image-upload"
-                  className="cursor-pointer p-2 hover:bg-blue-50 rounded-full transition-colors group"
+                  htmlFor={`image-upload-${parentTweetId || "new"}`}
+                  className="cursor-pointer p-1.5 hover:bg-gray-100 rounded-full transition-colors group"
                 >
-                  <ImagePlus className="w-5 h-5" />
+                  <ImagePlus className="w-4 h-4" />
                 </label>
 
                 <input
                   type="file"
-                  id="tweet-video-upload"
+                  id={`video-upload-${parentTweetId || "new"}`}
                   multiple
                   accept="video/*"
                   className="hidden"
                   onChange={handleVideoSelect}
                 />
                 <label
-                  htmlFor="tweet-video-upload"
-                  className="cursor-pointer p-2 hover:bg-blue-50 rounded-full transition-colors group"
+                  htmlFor={`video-upload-${parentTweetId || "new"}`}
+                  className="cursor-pointer p-1.5 hover:bg-gray-100 rounded-full transition-colors group"
                 >
-                  <Video className="w-5 h-5" />
+                  <Video className="w-4 h-4" />
                 </label>
               </div>
 
               {/* Right side - Character count and Post button */}
               <div className="flex items-center gap-3">
                 {tweetText.length > 0 && (
-                  <span
-                    className={`text-sm ${
-                      tweetText.length > maxLength * 0.9
-                        ? "text-red-500"
-                        : "text-gray-500"
-                    }`}
-                  >
+                  <span className="text-[10px] font-medium text-gray-400">
                     {tweetText.length}/{maxLength}
                   </span>
                 )}
@@ -207,16 +230,16 @@ const TweetPost = () => {
                     videos.length === 0 &&
                     !videoMention
                   }
-                  className={`px-4 py-2 rounded-full font-bold font-satoshi text-sm transition-all ${
+                  className={`px-5 py-1.5 rounded-full font-bold font-satoshi text-xs transition-all duration-300 ${
                     tweetText.trim() ||
                     images.length > 0 ||
                     videos.length > 0 ||
                     videoMention
-                      ? "bg-blue-500 text-white hover:bg-blue-600"
-                      : "bg-blue-300 text-white cursor-not-allowed"
+                      ? "bg-black text-white hover:bg-gray-800 shadow-md transform hover:-translate-y-0.5 active:translate-y-0"
+                      : "bg-gray-200 text-gray-400 cursor-not-allowed"
                   }`}
                 >
-                  Post
+                  {isReply ? "Reply" : "Post"}
                 </button>
               </div>
             </div>
