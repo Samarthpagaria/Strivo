@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { verifyJWT, softVerifyJWT } from "../middlewares/auth.middleware.js";
 
 import {
   togglePublishStatus,
@@ -17,7 +17,7 @@ const router = Router();
 router.route("/related/:videoId").get(getRelatedVideos);
 router.route("/").get(getAllVideos);
 router.route("/home-feed").get(verifyJWT, getHomeFeedVideos);
-router.route("/:videoId").get(getVideo);
+router.route("/:videoId").get(softVerifyJWT, getVideo);
 
 router.use(verifyJWT);
 import { upload } from "../middlewares/multer.middleware.js";

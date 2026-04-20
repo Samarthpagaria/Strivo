@@ -60,7 +60,7 @@ const VideoCardMenu = ({ videoId }) => {
           <MoreVertical className="w-4 h-4 text-gray-600" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-48 p-0 border-none shadow-lg">
+      <PopoverContent className="w-48 p-0 border-none shadow-lg font-inter">
         <div className="py-1">
           {/* Nested Popover for Playlist Selection */}
           <Popover>

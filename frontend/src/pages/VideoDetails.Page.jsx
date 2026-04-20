@@ -24,10 +24,12 @@ import VideoDetailSidebar from "../project_components/VideoDetailSidebar";
 import { useVideoDetail } from "../ContentApi/VideoDetailContext";
 import { CommentProvider } from "../ContentApi/CommentContext";
 import { useGlobal } from "../ContentApi/GlobalContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 const VideoDetailsPage = () => {
   const { videoId } = useParams();
   const { scrollRef } = useOutletContext() || {};
+  const queryClient = useQueryClient();
 
   // Data Fetching
   const {
@@ -43,6 +45,13 @@ const VideoDetailsPage = () => {
 
   // UI State
   const { user } = useGlobal();
+
+  // Invalidate watch history when a video is viewed
+  useEffect(() => {
+    if (videoData) {
+      queryClient.invalidateQueries(["watchHistory", user?.username]);
+    }
+  }, [videoData?._id, queryClient, user?.username]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [isSubscribedLocal, setIsSubscribedLocal] = useState(false);

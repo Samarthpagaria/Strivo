@@ -4,7 +4,6 @@ import {
   Image,
   Video,
   Smile,
-  Calendar,
   MapPin,
   X,
   PlaySquare,

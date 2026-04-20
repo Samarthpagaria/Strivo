@@ -322,10 +322,19 @@ const getVideo = asyncHandler(async (req, res) => {
     $inc: { views: 1 },
   });
 
-  // Add to user's watch history
+  // Add to user's watch history (Move to top if already exists)
   if (userId) {
+    const videoObjectId = new mongoose.Types.ObjectId(videoId);
     await User.findByIdAndUpdate(userId, {
-      $addToSet: { watchHistory: videoId },
+      $pull: { watchHistory: videoObjectId },
+    });
+    await User.findByIdAndUpdate(userId, {
+      $push: {
+        watchHistory: {
+          $each: [videoObjectId],
+          $position: 0,
+        },
+      },
     });
   }
 

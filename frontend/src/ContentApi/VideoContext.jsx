@@ -1,7 +1,8 @@
 import { useContext, createContext, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useGlobal } from "./GlobalContext";
+import { useToast } from "./ToastContext";
 
 const VideoContext = createContext();
 
@@ -9,6 +10,8 @@ export const useVideo = () => useContext(VideoContext);
 
 export const VideoProvider = ({ children, username, userId }) => {
   const { token, user, isAuthenticated } = useGlobal();
+  const { showToast } = useToast();
+  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
 
   const videoQuery = useQuery({
@@ -73,6 +76,24 @@ export const VideoProvider = ({ children, username, userId }) => {
     },
     enabled: !!user?._id && !!isAuthenticated,
   });
+  
+  const clearWatchHistoryMutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.delete("http://localhost:8000/api/v1/users/history", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["watchHistory", user?.username]);
+      showToast(data.message || "Watch history cleared");
+    },
+    onError: (error) => {
+      showToast(error.response?.data?.message || "Failed to clear history");
+    },
+  });
 
   return (
     <VideoContext.Provider
@@ -86,6 +107,7 @@ export const VideoProvider = ({ children, username, userId }) => {
         homeFeedQuery,
         likedVideosQuery,
         watchHistoryQuery,
+        clearWatchHistoryMutation,
       }}
     >
       {children}

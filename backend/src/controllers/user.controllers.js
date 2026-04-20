@@ -378,7 +378,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
         from: "videos",
         localField: "watchHistory",
         foreignField: "_id",
-        as: "watchHistory",
+        as: "watchHistoryDetails",
         pipeline: [
           {
             $lookup: {
@@ -401,16 +401,65 @@ const getWatchHistory = asyncHandler(async (req, res) => {
         ],
       },
     },
+    {
+      $addFields: {
+        watchHistory: {
+          $map: {
+            input: "$watchHistory",
+            as: "id",
+            in: {
+              $arrayElemAt: [
+                {
+                  $filter: {
+                    input: "$watchHistoryDetails",
+                    as: "video",
+                    cond: { $eq: ["$$video._id", "$$id"] },
+                  },
+                },
+                0,
+              ],
+            },
+          },
+        },
+      },
+    },
+    {
+      $set: {
+        watchHistory: {
+          $filter: {
+            input: "$watchHistory",
+            as: "video",
+            cond: { $ne: ["$$video", null] },
+          },
+        },
+      },
+    },
   ]);
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        user[0].watchHistory,
+        user[0]?.watchHistory || [],
         "Watch history fetched successfully"
       )
     );
+});
+
+const clearWatchHistory = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        watchHistory: [],
+      },
+    },
+    { new: true }
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, [], "Watch history cleared successfully"));
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -448,6 +497,6 @@ export {
   updateUserAvatar,
   updateUserCoverImage,
   getWatchHistory,
+  clearWatchHistory,
   getUserChannelProfile,
 };
-//TODO:read Api Error file and also read about the some in js --->also read all console.log
