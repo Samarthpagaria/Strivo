@@ -33,6 +33,7 @@ export const PlaylistProvider = ({ children }) => {
       setAllPlaylists((prev) => [...prev, data.data]);
       showToast(data?.message || "Playlist created successfully! 🎉");
       console.log("Playlist created successfully:", data);
+      queryClient.invalidateQueries({ queryKey: ["allPlaylists", userId] });
     },
     onError: (error) => {
       const errorMessage =

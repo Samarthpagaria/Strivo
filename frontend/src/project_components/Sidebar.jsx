@@ -5,6 +5,14 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useGlobal } from "../ContentApi/GlobalContext";
 
+// The Crosshair component creates the "+" design at the corners
+const Crosshair = ({ className }) => (
+  <div className={`absolute w-3 h-3 flex items-center justify-center pointer-events-none ${className}`}>
+    <div className="absolute w-full h-[1px] bg-gray-300" />
+    <div className="absolute h-full w-[1px] bg-gray-300" />
+  </div>
+);
+
 const SubscribedChannelsList = () => {
   const navigate = useNavigate();
   const { user, token } = useGlobal();
@@ -52,33 +60,41 @@ const SubscribedChannelsList = () => {
   }
 
   return (
-    <>
-      {channels.slice(0, 10).map((channel) => (
-        <button
-          key={channel._id}
-          onClick={() => navigate(`/c/${channel.username}`)}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-muted/70 transition-all group"
-        >
-          <img
-            src={channel.avatar}
-            alt=""
-            className="w-8 h-8 rounded-full object-cover border border-border"
-          />
-          <span className="text-xs font-medium font-satoshi text-foreground/70 group-hover:text-primary truncate">
-            {channel.fullName}
-          </span>
-          <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-        </button>
-      ))}
-      {channels.length > 10 && (
-        <button
-          onClick={() => navigate("/subscriptions")}
-          className="w-full text-center py-2 text-[10px] font-black uppercase text-blue-600 hover:text-blue-700 hover:underline"
-        >
-          Show {channels.length - 10} more
-        </button>
-      )}
-    </>
+    <div className="relative border-t border-l border-gray-200 bg-white mt-2 mx-1">
+      <Crosshair className="-top-1.5 -left-1.5" />
+      <Crosshair className="-top-1.5 -right-1.5" />
+      <Crosshair className="-bottom-1.5 -left-1.5" />
+      <Crosshair className="-bottom-1.5 -right-1.5" />
+      
+      <div className="grid grid-cols-1">
+        {channels.slice(0, 10).map((channel) => (
+          <button
+            key={channel._id}
+            onClick={() => navigate(`/c/${channel.username}`)}
+            className="relative border-r border-b border-gray-200 w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-50 transition-all group overflow-hidden"
+          >
+            <Crosshair className="-bottom-1.5 -right-1.5 z-10" />
+            <img
+              src={channel.avatar}
+              alt=""
+              className="w-7 h-7 shrink-0 rounded-full object-cover grayscale group-hover:grayscale-0 transition-all border border-gray-200"
+            />
+            <span className="text-xs font-bold font-satoshi text-gray-700 group-hover:text-blue-600 truncate whitespace-nowrap overflow-hidden">
+              {channel.fullName}
+            </span>
+          </button>
+        ))}
+        {channels.length > 10 && (
+          <button
+            onClick={() => navigate("/subscriptions")}
+            className="w-full text-center py-2 text-[10px] font-black uppercase text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors border-r border-b border-gray-200 relative"
+          >
+            <Crosshair className="-bottom-1.5 -right-1.5 z-10" />
+            Show {channels.length - 10} more
+          </button>
+        )}
+      </div>
+    </div>
   );
 };
 
