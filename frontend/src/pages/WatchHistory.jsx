@@ -5,6 +5,14 @@ import VideoCard from "../project_components/VideoCard";
 import { useVideo } from "../ContentApi/VideoContext";
 import { useNavigate } from "react-router-dom";
 
+// The Crosshair component creates the "+" design at the corners
+const Crosshair = ({ className }) => (
+  <div className={`absolute w-3 h-3 flex items-center justify-center pointer-events-none ${className}`}>
+    <div className="absolute w-full h-[1px] bg-gray-300" />
+    <div className="absolute h-full w-[1px] bg-gray-300" />
+  </div>
+);
+
 const WatchHistory = () => {
   const { watchHistoryQuery, clearWatchHistoryMutation } = useVideo();
   const videos = watchHistoryQuery?.data || [];
@@ -37,9 +45,25 @@ const WatchHistory = () => {
     );
   }
 
+  // Handle potential query errors
+  if (watchHistoryQuery.isError) {
+    return (
+      <div className="w-full h-screen flex flex-col items-center justify-center gap-4 bg-white">
+         <div className="p-6 border border-gray-200 text-center relative">
+            <Crosshair className="-top-1.5 -left-1.5" />
+            <Crosshair className="-top-1.5 -right-1.5" />
+            <Crosshair className="-bottom-1.5 -left-1.5" />
+            <Crosshair className="-bottom-1.5 -right-1.5" />
+            <h2 className="text-xl font-black font-satoshi text-gray-900 tracking-tight">Sync Error</h2>
+            <p className="text-gray-500 font-inter text-sm mt-2 font-medium">Unable to fetch your watch history.</p>
+         </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-white pb-20">
-      <div className="max-w-7xl mx-auto px-6 pt-10">
+    <div className="min-h-screen bg-white pb-20 overflow-x-hidden">
+      <div className="w-full mx-auto px-6 pt-10">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b border-gray-100">
           <div className="space-y-2">
@@ -75,32 +99,41 @@ const WatchHistory = () => {
           </div>
         </div>
 
-        {/* Content Section */}
+        {/* Content Section - Tabular Grid */}
         <div className="mt-12">
           {videos.length > 0 ? (
-            <div className="space-y-12">
-                <div className="flex items-center gap-2 text-gray-400 mb-6">
-                    <Clock size={14} />
-                    <span className="text-[10px] font-black uppercase tracking-widest font-satoshi">Recent Activity</span>
-                    <div className="h-[1px] flex-1 bg-gray-100 ml-4" />
-                </div>
+            <div className="relative border-t border-l border-gray-200 bg-white">
+               {/* Outer Crosshairs for the entire grid container */}
+               <Crosshair className="-top-1.5 -left-1.5" />
+               <Crosshair className="-top-1.5 -right-1.5" />
+               <Crosshair className="-bottom-1.5 -left-1.5" />
+               <Crosshair className="-bottom-1.5 -right-1.5" />
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
-                {videos.map((video, index) => (
-                    <motion.div
-                    key={video._id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    >
-                    <VideoCard {...video} />
-                    </motion.div>
-                ))}
-                </div>
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                 {videos.map((video, index) => (
+                   <motion.div
+                     key={video._id}
+                     initial={{ opacity: 0, y: 10 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     transition={{ delay: index * 0.05 }}
+                     className="relative border-r border-b border-gray-200 p-4 flex flex-col hover:bg-gray-50 transition-colors"
+                   >
+                     {/* Inner Crosshair for cells */}
+                     <Crosshair className="-bottom-1.5 -right-1.5 z-10" />
+
+                     <VideoCard {...video} />
+                   </motion.div>
+                 ))}
+               </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-40">
-              <div className="p-6 bg-gray-50 rounded-full mb-6">
+            <div className="flex flex-col items-center justify-center py-40 relative border border-gray-200 bg-gray-50/30">
+              <Crosshair className="-top-1.5 -left-1.5" />
+              <Crosshair className="-top-1.5 -right-1.5" />
+              <Crosshair className="-bottom-1.5 -left-1.5" />
+              <Crosshair className="-bottom-1.5 -right-1.5" />
+              
+              <div className="p-6 bg-white border border-gray-100 rounded-full mb-6">
                 <History size={40} className="text-gray-300" />
               </div>
               <h3 className="text-xl font-black font-satoshi text-gray-900 uppercase tracking-tight">Timeline Empty</h3>

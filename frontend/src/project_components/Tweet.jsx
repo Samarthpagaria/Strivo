@@ -34,6 +34,7 @@ const Tweet = ({
   videoMentionDetails = null,
   isComment = false,
   commentsCount = 0,
+  isGridView = false,
 }) => {
   const { user } = useGlobal();
   const { updateTweet, deleteTweet, toggleTweetLike, getTweetComments } = useTweet();
@@ -101,7 +102,9 @@ const Tweet = ({
   return (
     <div className="relative p-2 hover:bg-gray-50 transition-colors cursor-pointer group/card">
       {/* Disappearing Border (Bottom) */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-linear-to-r from-transparent via-gray-200 to-transparent" />
+      {!isGridView && (
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-linear-to-r from-transparent via-gray-200 to-transparent" />
+      )}
       
       <div className="flex gap-3">
         {/* Avatar */}
@@ -148,19 +151,21 @@ const Tweet = ({
               )}
 
               {/* Comment Button */}
-              <button
-                onClick={handleToggleComments}
-                className="flex items-center gap-1 group shrink-0"
-              >
-                <div className="p-1.5 rounded-full transition-colors group-hover:bg-blue-100">
-                  <MessageSquare
-                    className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"
-                  />
-                </div>
-                <span className="text-xs text-gray-400 group-hover:text-blue-500 transition-colors">
-                  {commentsCount > 0 ? commentsCount : ""}
-                </span>
-              </button>
+              {!isGridView && (
+                <button
+                  onClick={handleToggleComments}
+                  className="flex items-center gap-1 group shrink-0"
+                >
+                  <div className="p-1.5 rounded-full transition-colors group-hover:bg-blue-100">
+                    <MessageSquare
+                      className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"
+                    />
+                  </div>
+                  <span className="text-xs text-gray-400 group-hover:text-blue-500 transition-colors">
+                    {commentsCount > 0 ? commentsCount : ""}
+                  </span>
+                </button>
+              )}
 
               {/* Like Button */}
               <button
