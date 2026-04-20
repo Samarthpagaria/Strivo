@@ -46,10 +46,10 @@ export default function UserProfile({ user, onLogout }) {
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col items-start">
-              <PopoverTitle className="text-sm font-semibold">
+              <PopoverTitle className="text-sm font-bold font-satoshi">
                 {user.fullName}
               </PopoverTitle>
-              <PopoverDescription className="text-xs text-muted-foreground">
+              <PopoverDescription className="text-xs font-inter text-muted-foreground">
                 {user.email}
               </PopoverDescription>
             </div>
@@ -59,7 +59,7 @@ export default function UserProfile({ user, onLogout }) {
           <Link to="/channel">
             <Button
               variant="ghost"
-              className="w-full justify-start cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="w-full justify-start cursor-pointer font-inter hover:bg-gray-100 dark:hover:bg-gray-800"
               size="sm"
             >
               <User className="mr-2 h-4 w-4" />
@@ -68,7 +68,7 @@ export default function UserProfile({ user, onLogout }) {
           </Link>
           <Button
             variant="ghost"
-            className="w-full justify-start cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="w-full justify-start cursor-pointer font-inter hover:bg-gray-100 dark:hover:bg-gray-800"
             size="sm"
           >
             <Settings className="mr-2 h-4 w-4" />

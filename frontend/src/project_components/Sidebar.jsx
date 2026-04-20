@@ -64,7 +64,7 @@ const SubscribedChannelsList = () => {
             alt=""
             className="w-8 h-8 rounded-full object-cover border border-border"
           />
-          <span className="text-xs font-bold text-foreground/70 group-hover:text-primary truncate">
+          <span className="text-xs font-medium font-satoshi text-foreground/70 group-hover:text-primary truncate">
             {channel.fullName}
           </span>
           <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -96,7 +96,7 @@ const MenuItem = ({ children, label, onClick, isExpanded }) => (
       <span className="w-6 h-6 flex items-center justify-center text-foreground/80 shrink-0">
         {children}
       </span>
-      {isExpanded && <span className="truncate">{label}</span>}
+      {isExpanded && <span className="truncate font-satoshi font-medium">{label}</span>}
     </button>
   </div>
 );

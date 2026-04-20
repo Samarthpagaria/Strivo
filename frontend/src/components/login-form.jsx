@@ -44,11 +44,11 @@ export function LoginForm({ className, ...props }) {
           className="w-40 h-40 object-contain"
         />
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-sm">
-            Login
+          <h1 className="font-satoshi text-3xl  tracking-tight text-white drop-shadow-sm">
+            Yoo, Welcome Back!
           </h1>
-          <p className="text-white/60 font-medium text-sm">
-            Simple, beautiful video analytics.
+          <p className="font-inter text-white/60 font-medium text-sm">
+            Where ideas post, and stories stream.
           </p>
         </div>
       </div>

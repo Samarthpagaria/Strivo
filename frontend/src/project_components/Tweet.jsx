@@ -93,11 +93,11 @@ const Tweet = ({
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1 flex-wrap">
-              <span className="font-semibold text-gray-900 hover:underline">
+              <span className="font-bold font-satoshi text-gray-900 hover:underline">
                 {ownerDetails?.username}
               </span>
-              <span className="text-gray-500 text-sm">
-                {ownerDetails?.fullName} · {timestamp}
+              <span className="text-gray-500 font-satoshi font-medium text-sm">
+                @{ownerDetails?.fullName} · {timestamp}
               </span>
             </div>
 
@@ -185,7 +185,7 @@ const Tweet = ({
             </div>
           ) : (
             <>
-              <div className="mt-1 flex-1 text-gray-900 whitespace-pre-wrap wrap-break-word leading-relaxed text-[15px]">
+              <div className="mt-1 flex-1 font-inter text-slate-800 whitespace-pre-wrap wrap-break-word leading-relaxed text-[15px]">
                 {content}
               </div>
 

@@ -32,7 +32,7 @@ const CreatePlaylistModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
       ></div>
 
       {/* Modal */}
-      <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 z-10">
+      <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 z-10 font-inter">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -86,7 +86,7 @@ const CreatePlaylistModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-3 pt-4 font-inter">
             <button
               type="button"
               onClick={handleClose}

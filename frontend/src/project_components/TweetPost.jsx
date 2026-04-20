@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useTweet } from "../ContentApi/TweetContext";
-import { Image, Video, Smile, Calendar, MapPin, X, PlaySquare } from "lucide-react";
+import {
+  Image,
+  Video,
+  Smile,
+  Calendar,
+  MapPin,
+  X,
+  PlaySquare,
+  ImagePlus,
+} from "lucide-react";
 import { useGlobal } from "../ContentApi/GlobalContext";
-
 const TweetPost = () => {
   const [tweetText, setTweetText] = useState("");
   const [images, setImages] = useState([]);
@@ -24,8 +32,18 @@ const TweetPost = () => {
   }, [prefillTweet, setPrefillTweet]);
 
   const handlePost = async () => {
-    if (tweetText.trim() || images.length > 0 || videos.length > 0 || videoMention) {
-      await createTweet.mutateAsync({ tweetText, images, videos, videoMention });
+    if (
+      tweetText.trim() ||
+      images.length > 0 ||
+      videos.length > 0 ||
+      videoMention
+    ) {
+      await createTweet.mutateAsync({
+        tweetText,
+        images,
+        videos,
+        videoMention,
+      });
       setTweetText("");
       setImages([]);
       setVideos([]);
@@ -80,7 +98,7 @@ const TweetPost = () => {
               value={tweetText}
               onChange={(e) => setTweetText(e.target.value)}
               placeholder="What's happening?"
-              className="w-full resize-none border-none outline-none text-lg placeholder-gray-500 bg-transparent"
+              className="w-full resize-none border-none outline-none text-lg placeholder:font-satoshi font-inter text-slate-800 placeholder-gray-500 bg-transparent"
               rows="3"
               maxLength={maxLength}
             />
@@ -89,7 +107,7 @@ const TweetPost = () => {
               <div className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-semibold border border-blue-100">
                 <PlaySquare className="w-4 h-4" />
                 <span>Video Attached</span>
-                <button 
+                <button
                   onClick={() => setVideoMention(null)}
                   className="ml-2 hover:bg-blue-100 p-0.5 rounded-full"
                 >
@@ -149,7 +167,7 @@ const TweetPost = () => {
                   htmlFor="tweet-image-upload"
                   className="cursor-pointer p-2 hover:bg-blue-50 rounded-full transition-colors group"
                 >
-                  <Image className="w-5 h-5 text-blue-500" />
+                  <ImagePlus className="w-5 h-5" />
                 </label>
 
                 <input
@@ -164,7 +182,7 @@ const TweetPost = () => {
                   htmlFor="tweet-video-upload"
                   className="cursor-pointer p-2 hover:bg-blue-50 rounded-full transition-colors group"
                 >
-                  <Video className="w-5 h-5 text-blue-500" />
+                  <Video className="w-5 h-5" />
                 </label>
               </div>
 
@@ -189,8 +207,11 @@ const TweetPost = () => {
                     videos.length === 0 &&
                     !videoMention
                   }
-                  className={`px-4 py-2 rounded-full font-semibold text-sm transition-all ${
-                    tweetText.trim() || images.length > 0 || videos.length > 0 || videoMention
+                  className={`px-4 py-2 rounded-full font-bold font-satoshi text-sm transition-all ${
+                    tweetText.trim() ||
+                    images.length > 0 ||
+                    videos.length > 0 ||
+                    videoMention
                       ? "bg-blue-500 text-white hover:bg-blue-600"
                       : "bg-blue-300 text-white cursor-not-allowed"
                   }`}

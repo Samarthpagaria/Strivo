@@ -50,7 +50,7 @@ const { searchQuery, setSearchQuery } = useSearch();
               }}
               onKeyDown={(e) => (e.key === "Enter" ? handleSearch() : null)}
               placeholder="Search..."
-              className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 placeholder-gray-500"
+              className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 placeholder:font-satoshi font-inter placeholder-gray-500"
             />
           </div>
         </div>

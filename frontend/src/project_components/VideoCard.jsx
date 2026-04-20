@@ -111,14 +111,14 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
           title={channelName}
         />
         <div className="flex flex-col flex-1">
-          <h3 className="text-sm font-semibold line-clamp-2">{title}</h3>
+          <h3 className="text-sm font-bold font-satoshi line-clamp-2">{title}</h3>
           <p
-            className="text-xs text-gray-500 hover:text-gray-800 transition-colors"
+            className="text-xs font-medium font-satoshi text-gray-500 hover:text-gray-800 transition-colors"
             onClick={handleProfileClick}
           >
             {channelName}
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs font-inter text-gray-500">
             {viewCount} views · {uploadedTime}
           </p>
         </div>

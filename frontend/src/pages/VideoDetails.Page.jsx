@@ -335,7 +335,7 @@ const VideoDetailsPage = () => {
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                   <div className="flex-1">
-                    <h1 className="text-xl md:text-2xl font-bold text-gray-900 leading-tight mb-1">
+                    <h1 className="text-xl md:text-2xl font-bold font-satoshi text-gray-900 leading-tight mb-1">
                       {videoData.title}
                     </h1>
                     <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -357,7 +357,7 @@ const VideoDetailsPage = () => {
                       className="w-12 h-12 rounded-full border-2 border-white shadow-sm"
                     />
                     <div>
-                      <h3 className="text-base font-bold text-gray-900">
+                      <h3 className="text-base font-bold font-satoshi text-gray-900">
                         {videoData.owner.fullName}
                       </h3>
                       <p className="text-xs text-gray-500">
@@ -372,8 +372,8 @@ const VideoDetailsPage = () => {
 
                       if (beingSubscribed) {
                         confetti({
-                          particleCount: 200,
-                          spread: 100,
+                          particleCount: 80,
+                          spread: 70,
                           origin: {
                             x: (rect.left + rect.width / 2) / window.innerWidth,
                             y:
@@ -388,9 +388,9 @@ const VideoDetailsPage = () => {
                             "#ec4899",
                             "#8b5cf6",
                           ],
-                          ticks: 300,
-                          gravity: 1.5,
-                          scalar: 1, // Large, celebratory particles
+                          ticks: 200,
+                          gravity: 1.2,
+                          scalar: 0.6, // Smaller particles
                           drift: 0,
                         });
                       }
@@ -420,7 +420,7 @@ const VideoDetailsPage = () => {
                 </div>
 
                 {/* Description Box */}
-                <div className="prose prose-sm max-w-none text-gray-600 leading-relaxed bg-gray-50/30 p-4 rounded-xl border border-gray-100/50">
+                <div className="prose prose-sm max-w-none font-inter text-gray-600 leading-relaxed bg-gray-50/30 p-4 rounded-xl border border-gray-100/50">
                   <p className="whitespace-pre-wrap">{videoData.description}</p>
                 </div>
               </div>

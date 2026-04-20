@@ -90,7 +90,7 @@ const VideoListCard = ({
       {/* Content Section */}
       <div className="flex-1 min-w-0 py-1">
         <div className="flex justify-between items-start gap-2">
-          <h3 className="text-lg font-medium leading-snug text-gray-900 line-clamp-2 mb-1">
+          <h3 className="text-lg font-bold font-satoshi leading-snug text-gray-900 line-clamp-2 mb-1">
             {title}
           </h3>
           <button className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-200 rounded-full transition-all">
@@ -98,7 +98,7 @@ const VideoListCard = ({
           </button>
         </div>
 
-        <div className="flex items-center text-xs text-gray-600 mb-3">
+        <div className="flex items-center text-xs font-inter text-gray-600 mb-3">
           <span>{viewCount} views</span>
           <span className="mx-1">•</span>
           <span>{uploadedTime}</span>
@@ -110,7 +110,7 @@ const VideoListCard = ({
             alt={channelName}
             className="w-6 h-6 rounded-full object-cover"
           />
-          <span className="text-sm text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-1">
+          <span className="text-sm font-medium font-satoshi text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-1">
             {channelName}
             {isVerified && (
               <CheckCircle2 className="w-3.5 h-3.5 text-gray-500 fill-current" />
@@ -118,7 +118,7 @@ const VideoListCard = ({
           </span>
         </div>
 
-        <p className="text-sm text-gray-500 line-clamp-2 sm:line-clamp-1">
+        <p className="text-sm font-inter text-gray-500 line-clamp-2 sm:line-clamp-1">
           {description}
         </p>
       </div>

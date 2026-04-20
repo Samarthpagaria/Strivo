@@ -168,7 +168,7 @@ const VideoDetailSidebar = ({
         initial={false}
         animate={{ width: isOpen ? 320 : 64, height: isOpen ? "100%" : "auto" }}
         transition={{ type: "spring", stiffness: 400, damping: 35 }}
-        className="bg-white/80 backdrop-blur-3xl border border-white/60 rounded-2xl shadow-2xl shadow-slate-200/50 flex flex-col overflow-hidden"
+        className="bg-background/5 border border-border backdrop-blur-lg shadow-lg rounded-2xl flex flex-col overflow-hidden"
       >
         {/* Navigation / Header */}
         <motion.div
@@ -180,43 +180,31 @@ const VideoDetailSidebar = ({
             className={`flex ${isOpen ? "flex-row justify-between items-center px-1" : "flex-col gap-6"}`}
           >
             {/* Quick Actions */}
-            <PixelCard
-              variant="blue"
-              className="w-10 h-10 rounded-full border border-slate-200/40 p-0 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
-              gap={3}
-              speed={15}
-              colors="#3b82f6,#60a5fa,#93c5fd"
+            <button
+              className={`w-10 h-10 rounded-full border border-slate-200/40 p-0 flex flex-col items-center justify-center relative cursor-pointer ${videoData.isLiked ? "text-blue-500" : "text-slate-400"}`}
               onClick={onLike}
             >
-              <div
-                className={`flex flex-col items-center justify-center relative z-10 ${videoData.isLiked ? "text-blue-500" : "text-slate-400"}`}
-              >
-                <ThumbsUp
-                  size={16}
-                  fill={videoData.isLiked ? "currentColor" : "none"}
-                />
-                <span className="text-[9px] font-bold mt-0.5">
-                  {videoData.likesCount}
-                </span>
-              </div>
-            </PixelCard>
+              <ThumbsUp
+                size={16}
+                fill={videoData.isLiked ? "currentColor" : "none"}
+              />
+              <span className="text-[9px] font-bold mt-0.5">
+                {videoData.likesCount}
+              </span>
+            </button>
 
             {isOpen && <div className="w-px h-6 bg-slate-200/50" />}
 
             <Popover>
               <PopoverTrigger asChild>
-                <PixelCard
-                  variant="blue"
-                  className="w-10 h-10 rounded-full border border-slate-200/40 p-0 cursor-pointer shadow-sm"
-                  gap={3}
-                  speed={15}
-                  colors="#10b981,#34d399,#6ee7b7"
+                <button
+                  className="w-10 h-10 rounded-full border border-slate-200/40 p-0 flex items-center justify-center cursor-pointer"
                 >
                   <ListPlus
                     size={16}
                     className="text-emerald-600 relative z-10"
                   />
-                </PixelCard>
+                </button>
               </PopoverTrigger>
               <PopoverContent
                 side={isOpen ? "bottom" : "left"}
@@ -261,16 +249,12 @@ const VideoDetailSidebar = ({
               </PopoverContent>
             </Popover>
 
-            <PixelCard
-              variant="blue"
+            <button
               onClick={handleShareToTwitter}
-              className={`w-10 h-10 rounded-full border border-slate-200/40 p-0 cursor-pointer ${isTweeting ? "opacity-50" : ""}`}
-              gap={3}
-              speed={15}
-              colors="#0ea5e9,#38bdf8,#7dd3fc"
+              className={`w-10 h-10 rounded-full border border-slate-200/40 p-0 flex items-center justify-center cursor-pointer ${isTweeting ? "opacity-50" : ""}`}
             >
               <Twitter size={16} className="text-sky-500 relative z-10" />
-            </PixelCard>
+            </button>
 
             {isOpen && <div className="w-px h-6 bg-slate-200/50" />}
             {isOpen && (
@@ -291,13 +275,8 @@ const VideoDetailSidebar = ({
           <div
             className={`flex ${isOpen ? "flex-row gap-2" : "flex-col gap-6"}`}
           >
-            <PixelCard
-              variant="blue"
-              active={activeTab === "discussion" && isOpen}
-              className={`rounded-full border p-0 cursor-pointer transition-all ${isOpen ? "w-full h-11" : "w-10 h-10"} ${activeTab === "discussion" && isOpen ? "border-blue-500/50 shadow-lg shadow-blue-200/30" : "border-slate-200/40"}`}
-              gap={3}
-              speed={15}
-              colors="#6366f1,#818cf8,#a5b4fc"
+            <button
+              className={`rounded-full border p-0 cursor-pointer transition-all flex items-center justify-center ${isOpen ? "w-full h-11" : "w-10 h-10"} ${activeTab === "discussion" && isOpen ? "border-blue-500/50 shadow-lg shadow-blue-200/30" : "border-slate-200/40"}`}
               onClick={() => handleTabClick("discussion")}
             >
               <div className="relative z-10 flex items-center justify-center gap-2 h-full">
@@ -311,34 +290,29 @@ const VideoDetailSidebar = ({
                 />
                 {isOpen && (
                   <span
-                    className={`text-[11px] font-bold ${activeTab === "discussion" && isOpen ? "text-blue-700" : "text-slate-600"}`}
+                    className={`text-[11px] font-bold font-satoshi ${activeTab === "discussion" && isOpen ? "text-blue-700" : "text-slate-600"}`}
                   >
                     Discussions
                   </span>
                 )}
               </div>
-            </PixelCard>
+            </button>
 
-            <PixelCard
-              variant="blue"
-              active={activeTab === "upnext" && isOpen}
-              className={`rounded-full border p-0 cursor-pointer transition-all ${isOpen ? "w-full h-11" : "w-10 h-10"} ${activeTab === "upnext" && isOpen ? "border-amber-500/50 shadow-lg shadow-amber-200/30" : "border-slate-200/40"}`}
-              gap={3}
-              speed={15}
-              colors="#f59e0b,#fbbf24,#fcd34d"
+            <button
+              className={`rounded-full border p-0 cursor-pointer transition-all flex items-center justify-center ${isOpen ? "w-full h-11" : "w-10 h-10"} ${activeTab === "upnext" && isOpen ? "border-amber-500/50 shadow-lg shadow-amber-200/30" : "border-slate-200/40"}`}
               onClick={() => handleTabClick("upnext")}
             >
               <div className="relative z-10 flex items-center justify-center gap-2 h-full">
                 <PlaySquare size={16} className="text-amber-600" />
                 {isOpen && (
                   <span
-                    className={`text-[11px] font-bold ${activeTab === "upnext" && isOpen ? "text-amber-700" : "text-slate-600"}`}
+                    className={`text-[11px] font-bold font-satoshi ${activeTab === "upnext" && isOpen ? "text-amber-700" : "text-slate-600"}`}
                   >
                     Up Next
                   </span>
                 )}
               </div>
-            </PixelCard>
+            </button>
           </div>
         </motion.div>
 
@@ -428,7 +402,7 @@ const VideoDetailSidebar = ({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-0.5">
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-slate-900 text-xs truncate">
+                            <span className="font-bold font-satoshi text-slate-900 text-xs truncate">
                               @{comment.owner?.username}
                             </span>
                             <span className="text-[10px] text-slate-400">
@@ -519,7 +493,7 @@ const VideoDetailSidebar = ({
                           </div>
                         ) : (
                           <>
-                            <p className="text-sm text-slate-600 leading-relaxed wrap-break-word">
+                            <p className="text-sm font-inter text-slate-600 leading-relaxed wrap-break-word">
                               {comment.content}
                             </p>
                             <div className="mt-2.5 flex items-center gap-4">
@@ -606,11 +580,11 @@ const VideoDetailSidebar = ({
                           />
                         </div>
                         <div className="flex-1 min-w-0 flex flex-col justify-center">
-                          <h4 className="font-bold text-slate-800 text-[11px] line-clamp-2 leading-tight group-hover:text-blue-700">
+                          <h4 className="font-bold font-satoshi text-slate-800 text-[11px] line-clamp-2 leading-tight group-hover:text-blue-700">
                             {video.title}
                           </h4>
                           <div className="flex flex-col gap-0.5 mt-1.5">
-                            <p className="text-[10px] text-slate-500 font-bold truncate">
+                            <p className="text-[10px] text-slate-500 font-bold font-satoshi truncate">
                               {video.owner?.fullName}
                             </p>
                             <div className="flex items-center gap-1.5 text-[9px] text-slate-400 font-medium">
