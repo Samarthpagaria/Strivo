@@ -46,7 +46,10 @@ function Home() {
 
   return (
     <>
-      <div className="p-4 grid lg:grid-cols-3 gap-2 no-scrollbar">
+      <div 
+        className="p-6 grid gap-6 no-scrollbar" 
+        style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}
+      >
         {videos.map((video) => {
           return <VideoCard key={video._id} {...video} />;
         })}

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useTweet } from "../ContentApi/TweetContext";
 import {
-  Image,
-  Video,
+  Files,
+  Film,
   Smile,
   MapPin,
   X,
   PlaySquare,
-  ImagePlus,
+  ThumbsUp,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useGlobal } from "../ContentApi/GlobalContext";
 const TweetPost = ({
   parentTweetId = null,
@@ -181,8 +182,11 @@ const TweetPost = ({
             <div
               className={`flex items-center justify-between mt-3 ${!isReply ? "pt-3 border-t border-gray-100" : ""}`}
             >
-              {/* Left side - Media buttons */}
-              <div className="flex gap-1 relative text-gray-500">
+              {/* Left side spacer - can be used for emojis/mentions later */}
+              <div />
+
+              {/* Right side - Media, Character count and Post button */}
+              <div className="flex items-center gap-4">
                 <input
                   type="file"
                   id={`image-upload-${parentTweetId || "new"}`}
@@ -191,13 +195,6 @@ const TweetPost = ({
                   className="hidden"
                   onChange={handleImageSelect}
                 />
-                <label
-                  htmlFor={`image-upload-${parentTweetId || "new"}`}
-                  className="cursor-pointer p-1.5 hover:bg-gray-100 rounded-full transition-colors group"
-                >
-                  <ImagePlus className="w-4 h-4" />
-                </label>
-
                 <input
                   type="file"
                   id={`video-upload-${parentTweetId || "new"}`}
@@ -206,16 +203,31 @@ const TweetPost = ({
                   className="hidden"
                   onChange={handleVideoSelect}
                 />
-                <label
-                  htmlFor={`video-upload-${parentTweetId || "new"}`}
-                  className="cursor-pointer p-1.5 hover:bg-gray-100 rounded-full transition-colors group"
-                >
-                  <Video className="w-4 h-4" />
-                </label>
-              </div>
 
-              {/* Right side - Character count and Post button */}
-              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-0 border border-border/50 rounded-lg overflow-hidden bg-background/50 font-inter">
+                  <Button
+                    asChild
+                    className="h-8 px-2 text-muted-foreground hover:text-foreground bg-transparent hover:bg-muted/50 border-r border-border/40 rounded-none font-inter"
+                    variant="ghost"
+                  >
+                    <label htmlFor={`image-upload-${parentTweetId || "new"}`} className="cursor-pointer flex items-center gap-1.5">
+                      <Files size={15} strokeWidth={2} />
+                      <span className="text-[11px] font-medium tracking-wider font-inter">Files</span>
+                    </label>
+                  </Button>
+                  
+                  <Button
+                    asChild
+                    className="h-8 px-2 text-muted-foreground hover:text-foreground bg-transparent hover:bg-muted/50 rounded-none font-inter"
+                    variant="ghost"
+                  >
+                    <label htmlFor={`video-upload-${parentTweetId || "new"}`} className="cursor-pointer flex items-center gap-1.5">
+                      <Film size={15} strokeWidth={2} />
+                      <span className="text-[11px] font-medium tracking-wider font-inter">Video</span>
+                    </label>
+                  </Button>
+                </div>
+
                 {tweetText.length > 0 && (
                   <span className="text-[10px] font-medium text-gray-400">
                     {tweetText.length}/{maxLength}

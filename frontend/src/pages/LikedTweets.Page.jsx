@@ -93,7 +93,10 @@ const LikedTweets = () => {
               <Crosshair className="-bottom-1.5 -left-1.5" />
               <Crosshair className="-bottom-1.5 -right-1.5" />
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+              <div 
+                className="grid" 
+                style={{ gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))" }}
+              >
                 {tweets.map((tweet, index) => (
                   <motion.div
                     key={tweet._id}

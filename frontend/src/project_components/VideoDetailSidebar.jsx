@@ -13,19 +13,29 @@ import {
   Twitter,
   Trash2,
   Pencil,
+  Ellipsis,
+  AtSign,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import PixelCard from "./PixelCard";
 import { useGlobal } from "../ContentApi/GlobalContext";
 import { useComment } from "../ContentApi/CommentContext";
 import { usePlaylist } from "../ContentApi/PlaylistContext";
 import { useToast } from "../ContentApi/ToastContext";
 import { useTweet } from "../ContentApi/TweetContext";
+
+// The Crosshair component creates the "+" design at the corners
+const Crosshair = ({ className }) => (
+  <div className={`absolute w-3 h-3 flex items-center justify-center pointer-events-none ${className}`}>
+    <div className="absolute w-full h-[1px] bg-border" />
+    <div className="absolute h-full w-[1px] bg-border" />
+  </div>
+);
 
 const VideoDetailSidebar = ({
   relatedVideos = [],
@@ -136,12 +146,12 @@ const VideoDetailSidebar = ({
 
   const handleShareToTwitter = () => {
     if (!videoId) return;
-    
+
     setPrefillTweet({
       content: `Check out this awesome video: ${videoData?.title}!`,
-      videoMention: videoId
+      videoMention: videoId,
     });
-    
+
     // The TweetPost component lives on the home feed (or other specific areas)
     // Send them back to the home route to see the pre-filled post box.
     navigate("/");
@@ -162,151 +172,168 @@ const VideoDetailSidebar = ({
   };
 
   return (
-    <div className="flex h-[calc(100vh-64px)] sticky top-4 items-start">
+    <div className="flex h-[calc(100vh-64px)] sticky top-4 items-start font-inter">
       <motion.div
-        layout
         initial={false}
-        animate={{ width: isOpen ? 320 : 64, height: isOpen ? "100%" : "auto" }}
-        transition={{ type: "spring", stiffness: 400, damping: 35 }}
-        className="bg-background/5 border border-border backdrop-blur-lg shadow-lg rounded-2xl flex flex-col overflow-hidden"
+        animate={{ 
+          width: isOpen ? 360 : 72, 
+          height: "80vh" 
+        }}
+        transition={{ type: "spring", stiffness: 150, damping: 25 }}
+        className="bg-background/5 border border-border backdrop-blur-xl flex flex-col overflow-hidden shadow-lg rounded-2xl relative"
       >
         {/* Navigation / Header */}
-        <motion.div
-          layout
-          className={`flex ${isOpen ? "flex-col p-3 gap-3 border-b border-slate-100/50 bg-slate-50/30" : "flex-col items-center py-6 gap-6"}`}
+        <div
+          className={`flex ${isOpen ? "flex-col p-4 border-b border-border bg-muted/20" : "flex-col items-center py-6 gap-6"}`}
         >
-          <motion.div
-            layout
-            className={`flex ${isOpen ? "flex-row justify-between items-center px-1" : "flex-col gap-6"}`}
+          <div
+            className={`flex ${isOpen ? "flex-row justify-between items-center" : "flex-col gap-6"}`}
           >
             {/* Quick Actions */}
-            <button
-              className={`w-10 h-10 rounded-full border border-slate-200/40 p-0 flex flex-col items-center justify-center relative cursor-pointer ${videoData.isLiked ? "text-blue-500" : "text-slate-400"}`}
-              onClick={onLike}
+            <div 
+               className={`flex ${isOpen ? "flex-row items-center gap-2" : "flex-col items-center gap-6"}`}
             >
-              <ThumbsUp
-                size={16}
-                fill={videoData.isLiked ? "currentColor" : "none"}
-              />
-              <span className="text-[9px] font-bold mt-0.5">
-                {videoData.likesCount}
-              </span>
-            </button>
-
-            {isOpen && <div className="w-px h-6 bg-slate-200/50" />}
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <button
-                  className="w-10 h-10 rounded-full border border-slate-200/40 p-0 flex items-center justify-center cursor-pointer"
+                <Button
+                  onClick={onLike}
+                  variant="outline"
+                  className={`transition-all duration-300 relative overflow-hidden group font-inter rounded-full ${isOpen ? "h-9 py-0 pe-0 ps-2.5 border-border/50 bg-background/50 hover:bg-muted/50" : "w-10 h-12 flex-col p-1 border-border/50 bg-background/50"} ${videoData?.isLiked ? "border-rose-500/50 bg-rose-500/10 text-rose-500" : "text-foreground/80"}`}
+                  title="Like Video"
                 >
-                  <ListPlus
-                    size={16}
-                    className="text-emerald-600 relative z-10"
-                  />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent
-                side={isOpen ? "bottom" : "left"}
-                className="w-56 p-2 bg-white/80 backdrop-blur-xl border border-slate-200/50 shadow-2xl rounded-2xl z-200"
-              >
-                <div className="space-y-1">
-                  <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 px-3 py-2">
-                    Add to Playlist
-                  </p>
-                  <div className="max-h-[240px] overflow-y-auto scrollbar-none space-y-0.5">
-                    {allPlaylists?.length > 0 ? (
-                      allPlaylists.map((playlist) => (
-                        <button
-                          key={playlist._id}
-                          onClick={() => handleTogglePlaylist(playlist)}
-                          disabled={isLoadingPlaylist}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-bold rounded-xl transition-all ${isLoadingPlaylist ? "opacity-50" : "hover:bg-slate-50 text-slate-700 hover:text-emerald-600"}`}
-                        >
-                          <span className="truncate">{playlist?.name}</span>
-                          <div
-                            className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${isVideoInPlaylist(playlist) ? "bg-emerald-500 border-emerald-500" : "border-slate-200"}`}
-                          >
-                            {isVideoInPlaylist(playlist) && (
-                              <div className="w-1.5 h-1.5 bg-white rounded-full" />
-                            )}
-                          </div>
-                        </button>
-                      ))
-                    ) : (
-                      <div className="px-3 py-8 text-center bg-slate-50/50 rounded-xl">
-                        <PlaySquare
-                          size={24}
-                          className="mx-auto mb-2 text-slate-300"
-                        />
-                        <p className="text-[10px] font-bold text-slate-400">
-                          No playlists found
-                        </p>
-                      </div>
-                    )}
+                  <div className={`flex items-center ${isOpen ? "gap-2" : "flex-col justify-center gap-1"}`}>
+                    <ThumbsUp
+                      size={isOpen ? 15 : 18}
+                      strokeWidth={2.5}
+                      fill={videoData?.isLiked ? "currentColor" : "none"}
+                      className={isOpen ? "opacity-90" : ""}
+                    />
+                    {!isOpen && <span className="text-[10px] font-bold font-inter">{videoData?.likesCount || 0}</span>}
                   </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+                  
+                  {isOpen && (
+                    <span className="relative ms-3 inline-flex h-full items-center justify-center px-3 text-[11px] font-bold text-muted-foreground/60 before:absolute before:inset-0 before:left-0 before:w-px before:bg-border/50 font-inter">
+                      {videoData?.likesCount || 0}
+                    </span>
+                  )}
+                </Button>
 
-            <button
-              onClick={handleShareToTwitter}
-              className={`w-10 h-10 rounded-full border border-slate-200/40 p-0 flex items-center justify-center cursor-pointer ${isTweeting ? "opacity-50" : ""}`}
-            >
-              <Twitter size={16} className="text-sky-500 relative z-10" />
-            </button>
+                <Popover>
+                <PopoverTrigger asChild>
+                    <button
+                    className="w-9 h-9 border border-border/50 rounded-xl flex items-center justify-center cursor-pointer hover:border-border hover:bg-muted/50 transition-all text-foreground/80"
+                    title="Add to Playlist"
+                    >
+                    <ListPlus
+                        size={18}
+                        strokeWidth={2}
+                    />
+                    </button>
+                </PopoverTrigger>
+                <PopoverContent
+                    side={isOpen ? "bottom" : "left"}
+                    className="w-64 p-0 bg-background/95 backdrop-blur-md border border-border shadow-xl rounded-xl font-inter overflow-hidden"
+                >
+                    <div className="border-b border-border bg-muted/30 px-3 py-2">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                        Add to Playlist
+                      </p>
+                    </div>
+                    <div className="max-h-[240px] overflow-y-auto scrollbar-none">
+                        {allPlaylists?.length > 0 ? (
+                        <div className="grid grid-cols-1 border-t border-border relative">
+                        {allPlaylists.map((playlist) => (
+                            <button
+                            key={playlist._id}
+                            onClick={() => handleTogglePlaylist(playlist)}
+                            disabled={isLoadingPlaylist}
+                            className={`w-full flex items-center justify-between p-3 text-xs font-bold transition-all border-b border-border/50 last:border-b-0 ${isLoadingPlaylist ? "opacity-50" : "hover:bg-muted/50 text-foreground"}`}
+                            >
+                            <span className="truncate">{playlist?.name}</span>
+                            <div
+                                className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${isVideoInPlaylist(playlist) ? "bg-primary border-primary" : "border-border"}`}
+                            >
+                                {isVideoInPlaylist(playlist) && (
+                                <div className="w-1.5 h-1.5 bg-background rounded-full" />
+                                )}
+                            </div>
+                            </button>
+                        ))}
+                        </div>
+                        ) : (
+                        <div className="px-3 py-8 text-center">
+                            <PlaySquare
+                            size={20}
+                            className="mx-auto mb-2 text-gray-300"
+                            />
+                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                            No playlists
+                            </p>
+                        </div>
+                        )}
+                    </div>
+                </PopoverContent>
+                </Popover>
 
-            {isOpen && <div className="w-px h-6 bg-slate-200/50" />}
+                <button
+                onClick={handleShareToTwitter}
+                title="Share to Tweets"
+                className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 relative border-none bg-gradient-to-tr from-orange-500 via-rose-500 to-emerald-500 shadow-sm hover:animate-glow-pulse hover:ring-2 hover:ring-white/40 hover:scale-110 hover:brightness-125 ${isTweeting ? "opacity-50" : ""}`}
+                >
+                <AtSign size={16} strokeWidth={2.5} className="text-white drop-shadow-md" />
+                </button>
+            </div>
+
+            {isOpen && <div className="w-px h-6 bg-border mx-2" />}
             {isOpen && (
               <button
                 onClick={() => {
                   setIsOpen(false);
                   setActiveTab(null);
                 }}
-                className="w-10 h-10 flex items-center justify-center hover:bg-slate-100 rounded-full transition-colors text-slate-400"
+                className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-muted bg-muted/50 transition-all text-foreground/70 hover:text-foreground border border-border/50"
               >
-                <X size={20} />
+                <X size={18} strokeWidth={2} />
               </button>
             )}
-          </motion.div>
+          </div>
 
           {/* Tab Toggles */}
-          {!isOpen && <div className="w-8 h-px bg-slate-200/50" />}
+          {!isOpen && <div className="w-6 h-px bg-border" />}
           <div
-            className={`flex ${isOpen ? "flex-row gap-2" : "flex-col gap-6"}`}
+            className={`flex ${isOpen ? "flex-row gap-2 mt-4" : "flex-col gap-6"}`}
           >
             <button
-              className={`rounded-full border p-0 cursor-pointer transition-all flex items-center justify-center ${isOpen ? "w-full h-11" : "w-10 h-10"} ${activeTab === "discussion" && isOpen ? "border-blue-500/50 shadow-lg shadow-blue-200/30" : "border-slate-200/40"}`}
+              className={`p-0 cursor-pointer transition-all flex items-center justify-center border rounded-xl ${isOpen ? "flex-1 h-9" : "w-10 h-9"} ${activeTab === "discussion" && isOpen ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background/50 backdrop-blur-sm hover:bg-muted text-muted-foreground"}`}
               onClick={() => handleTabClick("discussion")}
             >
-              <div className="relative z-10 flex items-center justify-center gap-2 h-full">
+              <div className="flex items-center justify-center gap-2 h-full">
                 <MessageSquare
                   size={16}
+                  strokeWidth={2}
                   className={
                     activeTab === "discussion" && isOpen
-                      ? "text-blue-600"
-                      : "text-indigo-600"
+                      ? "text-primary-foreground"
+                      : "text-foreground/80"
                   }
                 />
                 {isOpen && (
                   <span
-                    className={`text-[11px] font-bold font-satoshi ${activeTab === "discussion" && isOpen ? "text-blue-700" : "text-slate-600"}`}
+                    className={`text-[11px] font-bold font-inter ${activeTab === "discussion" && isOpen ? "text-primary-foreground" : "text-foreground/70"}`}
                   >
-                    Discussions
+                    Discuss
                   </span>
                 )}
               </div>
             </button>
 
             <button
-              className={`rounded-full border p-0 cursor-pointer transition-all flex items-center justify-center ${isOpen ? "w-full h-11" : "w-10 h-10"} ${activeTab === "upnext" && isOpen ? "border-amber-500/50 shadow-lg shadow-amber-200/30" : "border-slate-200/40"}`}
+              className={`p-0 cursor-pointer transition-all flex items-center justify-center border rounded-xl ${isOpen ? "flex-1 h-9" : "w-10 h-9"} ${activeTab === "upnext" && isOpen ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background/50 backdrop-blur-sm hover:bg-muted text-muted-foreground"}`}
               onClick={() => handleTabClick("upnext")}
             >
-              <div className="relative z-10 flex items-center justify-center gap-2 h-full">
-                <PlaySquare size={16} className="text-amber-600" />
+              <div className="flex items-center justify-center gap-2 h-full">
+                <PlaySquare size={16} strokeWidth={2} className={activeTab === "upnext" && isOpen ? "text-primary-foreground" : "text-foreground/80"} />
                 {isOpen && (
                   <span
-                    className={`text-[11px] font-bold font-satoshi ${activeTab === "upnext" && isOpen ? "text-amber-700" : "text-slate-600"}`}
+                    className={`text-[11px] font-bold font-inter ${activeTab === "upnext" && isOpen ? "text-primary-foreground" : "text-foreground/70"}`}
                   >
                     Up Next
                   </span>
@@ -314,7 +341,7 @@ const VideoDetailSidebar = ({
               </div>
             </button>
           </div>
-        </motion.div>
+        </div>
 
         {/* Content Area */}
         <AnimatePresence mode="wait">
@@ -324,283 +351,320 @@ const VideoDetailSidebar = ({
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="flex-1 overflow-y-auto custom-scrollbar p-4 bg-white/40"
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="flex-1 overflow-y-auto custom-scrollbar bg-transparent"
             >
               {activeTab === "discussion" && (
-                <div className="space-y-1">
-                  {/* Create Comment */}
-                  <div className="relative bg-white/50 backdrop-blur-md rounded-2xl border border-slate-200/60 p-4 shadow-sm group focus-within:shadow-lg focus-within:border-blue-500/30 transition-all duration-500 mb-8">
-                    <div className="flex gap-4">
-                      <div className="shrink-0 pt-1">
+                <div className="flex flex-col">
+                  {/* Create Comment Form - Tweet Style */}
+                  <div className="border-b border-border bg-muted/10 p-4 transition-all">
+                    <div className="flex gap-3">
+                      <div className="shrink-0">
                         {user?.avatar ? (
-                          <div className="relative">
-                            <img
-                              src={user.avatar}
-                              alt=""
-                              className="w-10 h-10 rounded-full border-2 border-white object-cover"
-                            />
-                            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full" />
-                          </div>
+                          <img
+                            src={user.avatar}
+                            alt=""
+                            className="w-10 h-10 object-cover rounded-full border border-border shadow-sm"
+                          />
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-sm border-2 border-white">
+                          <div className="w-10 h-10 bg-primary text-primary-foreground flex items-center justify-center rounded-full font-bold text-sm border border-border shadow-sm">
                             {user?.fullName?.charAt(0)}
                           </div>
                         )}
                       </div>
-                      <div className="flex-1 space-y-3">
+                      <div className="flex-1 space-y-2">
                         <textarea
                           placeholder="Share your thoughts..."
                           value={commentText}
                           onChange={(e) => setCommentText(e.target.value)}
                           disabled={createCommentMutation.isPending}
-                          className="w-full bg-transparent text-sm focus:outline-none resize-none min-h-[44px] placeholder:text-slate-400 text-slate-700 font-medium"
+                          className="w-full bg-transparent text-sm focus:outline-none resize-none min-h-[44px] placeholder:text-muted-foreground/50 text-foreground font-medium py-1"
                         />
-                        <div className="flex items-center justify-end gap-3 h-0 group-focus-within:h-10 overflow-hidden transition-all opacity-0 group-focus-within:opacity-100">
-                          <button
-                            onClick={() => setCommentText("")}
-                            className="px-4 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition-all"
-                          >
-                            Cancel
-                          </button>
+                        <div className="flex items-center justify-end gap-3 transition-opacity">
+                          {commentText.trim() && (
+                              <button
+                              onClick={() => setCommentText("")}
+                              className="px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-all"
+                              >
+                              Cancel
+                              </button>
+                          )}
                           <button
                             onClick={handleCommentSubmit}
                             disabled={
                               createCommentMutation.isPending ||
                               !commentText.trim()
                             }
-                            className={`px-6 py-2 rounded-xl text-xs font-black shadow-lg ${createCommentMutation.isPending ? "bg-slate-400" : "bg-slate-900 text-white hover:bg-black"}`}
+                            className={`px-5 py-2 text-[10px] uppercase tracking-widest font-black rounded-lg transition-all ${createCommentMutation.isPending ? "bg-muted text-muted-foreground" : !commentText.trim() ? "bg-muted/50 text-muted-foreground/30" : "bg-primary text-primary-foreground hover:opacity-90 active:scale-95"}`}
                           >
                             {createCommentMutation.isPending
-                              ? "Posting..."
-                              : "Comment"}
+                              ? "Posting"
+                              : "Reply"}
                           </button>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Comment List */}
-                  {comments.map((comment) => (
-                    <motion.div
-                      key={comment._id}
-                      variants={itemVariants}
-                      className="flex gap-3 group px-2 py-3 rounded-xl hover:bg-slate-50 transition-all"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs shrink-0 border border-indigo-100 overflow-hidden">
-                        {comment.owner?.avatar ? (
-                          <img
-                            src={comment.owner.avatar}
-                            alt=""
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <span>
-                            {comment.owner?.username?.charAt(0).toUpperCase()}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-0.5">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold font-satoshi text-slate-900 text-xs truncate">
-                              @{comment.owner?.username}
+                  {/* Comment List - Tweet Style */}
+                  <div className="flex flex-col">
+                      {comments.length === 0 ? (
+                           <div className="py-12 text-center text-sm font-medium text-gray-400">
+                             Be the first to share your thoughts.
+                           </div>
+                      ) : (
+                      comments.map((comment) => (
+                        <motion.div
+                        key={comment._id}
+                        initial="hidden"
+                        animate="show"
+                        variants={itemVariants}
+                        className="flex gap-3 px-4 py-4 border-b border-border bg-background/5 group hover:bg-muted/40 transition-all duration-300"
+                        >
+                        <div className="w-10 h-10 bg-muted text-muted-foreground flex items-center justify-center font-bold shrink-0 border border-border rounded-full overflow-hidden shadow-sm">
+                            {comment.owner?.avatar ? (
+                            <img
+                                src={comment.owner.avatar}
+                                alt=""
+                                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                            />
+                            ) : (
+                            <span className="text-xs uppercase">
+                                {comment.owner?.username?.charAt(0)}
                             </span>
-                            <span className="text-[10px] text-slate-400">
-                              {comment.createdAt &&
-                                formatDistanceToNow(
-                                  new Date(comment.createdAt),
-                                ) + " ago"}
-                            </span>
-                          </div>
-                          {user?._id === comment.owner?._id &&
-                            !editingCommentId && (
-                              <div className="flex items-center gap-1">
-                                {deletingCommentId === comment._id ? (
-                                  <div className="flex items-center gap-1 mr-2 px-2 py-1 bg-red-50 rounded-lg animate-in fade-in slide-in-from-right-2 duration-300">
-                                    <span className="text-[9px] font-bold text-red-600">
-                                      Delete?
-                                    </span>
-                                    <button
-                                      onClick={() =>
-                                        handleConfirmDelete(comment._id)
-                                      }
-                                      className="text-[9px] font-black text-red-700 hover:underline"
-                                    >
-                                      Yes
-                                    </button>
-                                    <button
-                                      onClick={() => setDeletingCommentId(null)}
-                                      className="text-[9px] font-black text-slate-400 hover:underline"
-                                    >
-                                      No
-                                    </button>
-                                  </div>
-                                ) : (
-                                  <>
-                                    <button
-                                      onClick={() => {
-                                        setEditingCommentId(comment._id);
-                                        setEditContent(comment.content);
-                                      }}
-                                      className="p-1.5 hover:bg-blue-50 rounded-lg text-slate-400 hover:text-blue-600 transition-colors"
-                                      title="Edit comment"
-                                    >
-                                      <Pencil size={11} />
-                                    </button>
-                                    <button
-                                      onClick={() =>
-                                        setDeletingCommentId(comment._id)
-                                      }
-                                      className="p-1.5 hover:bg-rose-50 rounded-lg text-slate-400 hover:text-rose-600 transition-colors"
-                                      title="Delete comment"
-                                    >
-                                      <Trash2 size={12} />
-                                    </button>
-                                  </>
-                                )}
-                              </div>
                             )}
                         </div>
-
-                        {editingCommentId === comment._id ? (
-                          <div className="mt-2 space-y-2">
-                            <textarea
-                              value={editContent}
-                              onChange={(e) => setEditContent(e.target.value)}
-                              className="w-full bg-slate-50 border rounded-lg p-2 text-sm focus:outline-none focus:border-blue-500 min-h-[60px]"
-                              autoFocus
-                            />
-                            <div className="flex justify-end gap-2">
-                              <button
-                                onClick={() => setEditingCommentId(null)}
-                                className="px-3 py-1 text-[10px] font-bold text-slate-500 hover:bg-slate-100 rounded-md"
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                onClick={() => handleEditSave(comment._id)}
-                                disabled={
-                                  updateCommentMutation.isPending ||
-                                  !editContent.trim()
-                                }
-                                className="px-4 py-1 text-[10px] bg-blue-600 text-white rounded-md"
-                              >
-                                {updateCommentMutation.isPending
-                                  ? "Saving..."
-                                  : "Save"}
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
-                          <>
-                            <p className="text-sm font-inter text-slate-600 leading-relaxed wrap-break-word">
-                              {comment.content}
-                            </p>
-                            <div className="mt-2.5 flex items-center gap-4">
-                              <button
-                                onClick={() => {
-                                  const isLiked =
-                                    likedComments[comment._id] ??
-                                    comment.isLiked;
-                                  setLikedComments((prev) => ({
-                                    ...prev,
-                                    [comment._id]: !isLiked,
-                                  }));
-                                  likeCommentMutation.mutate({
-                                    commentId: comment._id,
-                                  });
-                                }}
-                                className={`flex items-center gap-1.5 transition-all ${(likedComments[comment._id] ?? comment.isLiked) ? "text-blue-600" : "text-slate-400 hover:text-slate-600"}`}
-                              >
-                                <ThumbsUp
-                                  size={12}
-                                  fill={
-                                    (likedComments[comment._id] ??
-                                    comment.isLiked)
-                                      ? "currentColor"
-                                      : "none"
-                                  }
-                                />
-                                <span className="text-[10px] font-black tabular-nums">
-                                  {(comment.likesCount || 0) +
-                                    (likedComments[comment._id] === true &&
-                                    !comment.isLiked
-                                      ? 1
-                                      : likedComments[comment._id] === false &&
-                                          comment.isLiked
-                                        ? -1
-                                        : 0)}
+                        <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-1">
+                             <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="font-bold text-foreground text-sm truncate hover:underline cursor-pointer">
+                                {comment.owner?.fullName || comment.owner?.username}
                                 </span>
-                              </button>
+                                <span className="font-medium text-muted-foreground text-[11px] truncate">
+                                @{comment.owner?.username}
+                                </span>
+                                <span className="text-muted-foreground/30 text-[10px]">·</span>
+                                <span className="text-[10px] text-muted-foreground/60 hover:text-foreground transition-colors cursor-pointer font-bold uppercase tracking-tighter">
+                                {comment.createdAt && formatDistanceToNow(new Date(comment.createdAt), {addSuffix: false})}
+                                </span>
                             </div>
-                          </>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
+                            
+                            {user?._id === comment.owner?._id &&
+                                !editingCommentId && (
+                                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    {deletingCommentId === comment._id ? (
+                                    <div className="flex items-center gap-2 bg-red-50 px-2 py-0.5 border border-red-100 text-[10px]">
+                                        <span className="font-bold text-red-600">Delete?</span>
+                                        <button
+                                        onClick={() =>
+                                            handleConfirmDelete(comment._id)
+                                        }
+                                        className="font-black text-red-700 hover:underline"
+                                        >
+                                        Yes
+                                        </button>
+                                        <button
+                                        onClick={() => setDeletingCommentId(null)}
+                                        className="font-black text-gray-500 hover:underline"
+                                        >
+                                        No
+                                        </button>
+                                    </div>
+                                    ) : (
+                                    <>
+                                        <button
+                                        onClick={() => {
+                                            setEditingCommentId(comment._id);
+                                            setEditContent(comment.content);
+                                        }}
+                                        className="text-gray-400 hover:text-blue-600 transition-colors"
+                                        title="Edit comment"
+                                        >
+                                        <Pencil size={12} />
+                                        </button>
+                                        <button
+                                        onClick={() =>
+                                            setDeletingCommentId(comment._id)
+                                        }
+                                        className="text-gray-400 hover:text-red-600 transition-colors"
+                                        title="Delete comment"
+                                        >
+                                        <Trash2 size={12} />
+                                        </button>
+                                    </>
+                                    )}
+                                </div>
+                                )}
+                            </div>
+
+                            {editingCommentId === comment._id ? (
+                            <div className="mt-2 space-y-2 pr-4">
+                                <textarea
+                                value={editContent}
+                                onChange={(e) => setEditContent(e.target.value)}
+                                className="w-full bg-muted/30 border border-border p-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary rounded-lg min-h-[60px] text-foreground"
+                                autoFocus
+                                />
+                                <div className="flex justify-end gap-2">
+                                <button
+                                    onClick={() => setEditingCommentId(null)}
+                                    className="px-3 py-1.5 text-[10px] font-bold text-gray-500 hover:bg-gray-100 transition-colors uppercase tracking-widest"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => handleEditSave(comment._id)}
+                                    disabled={
+                                    updateCommentMutation.isPending ||
+                                    !editContent.trim()
+                                    }
+                                    className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-primary hover:opacity-90 text-primary-foreground transition-all rounded-lg disabled:opacity-50"
+                                >
+                                    {updateCommentMutation.isPending
+                                    ? "Saving..."
+                                    : "Save"}
+                                </button>
+                                </div>
+                            </div>
+                            ) : (
+                            <>
+                                <p className="text-sm text-foreground/90 leading-relaxed wrap-break-word font-inter pr-4">
+                                {comment.content}
+                                </p>
+                                <div className="mt-3 flex items-center gap-6">
+                                <button
+                                    onClick={() => {
+                                    const isLiked =
+                                        likedComments[comment._id] ??
+                                        comment.isLiked;
+                                    setLikedComments((prev) => ({
+                                        ...prev,
+                                        [comment._id]: !isLiked,
+                                    }));
+                                    likeCommentMutation.mutate({
+                                        commentId: comment._id,
+                                    });
+                                    }}
+                                    className={`flex items-center gap-1.5 transition-all text-xs font-semibold group/like ${(likedComments[comment._id] ?? comment.isLiked) ? "text-rose-600" : "text-gray-500 hover:text-rose-600"}`}
+                                >
+                                    <div className={`p-1.5 rounded-full transition-colors ${ (likedComments[comment._id] ?? comment.isLiked) ? "bg-rose-50" : "group-hover/like:bg-rose-50" }`}>
+                                        <ThumbsUp
+                                        size={14}
+                                        fill={
+                                            (likedComments[comment._id] ??
+                                            comment.isLiked)
+                                            ? "currentColor"
+                                            : "none"
+                                        }
+                                        />
+                                    </div>
+                                    <span className="tabular-nums mt-0.5">
+                                    {(comment.likesCount || 0) +
+                                        (likedComments[comment._id] === true &&
+                                        !comment.isLiked
+                                        ? 1
+                                        : likedComments[comment._id] === false &&
+                                            comment.isLiked
+                                            ? -1
+                                            : 0)}
+                                    </span>
+                                </button>
+                                <button className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary group/reply transition-all">
+                                   <div className="p-1.5 rounded-full group-hover/reply:bg-primary/10 transition-colors text-foreground/50 group-hover/reply:text-primary">
+                                       <MessageSquare size={14} />
+                                   </div>
+                                </button>
+                                </div>
+                            </>
+                            )}
+                        </div>
+                        </motion.div>
+                    ))
+                   )}
+                  </div>
                 </div>
               )}
 
               {activeTab === "upnext" && (
-                <div className="space-y-3">
+                <div className="w-full relative bg-transparent">
                   {isLoadingRelated ? (
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col border-t border-l border-border mt-4 mx-4 relative overflow-hidden">
+                      <Crosshair className="-top-1.5 -left-1.5 z-10" />
+                      <Crosshair className="-top-1.5 -right-1.5 z-10" />
+                      
                       {[...Array(5)].map((_, i) => (
-                        <div key={i} className="flex gap-3 animate-pulse">
-                          <div className="w-28 aspect-video bg-slate-200 rounded-lg shrink-0" />
+                        <div key={i} className="flex gap-3 animate-pulse border-r border-b border-border p-3 bg-muted/10">
+                          <div className="w-28 aspect-video bg-muted shrink-0 border border-border rounded-lg" />
                           <div className="flex-1 space-y-2 py-1">
-                            <div className="h-3 bg-slate-200 rounded-full w-3/4" />
-                            <div className="h-2 bg-slate-200 rounded-full w-1/2" />
+                            <div className="h-3 bg-muted rounded-full w-3/4" />
+                            <div className="h-2 bg-muted rounded-full w-1/2" />
                           </div>
                         </div>
                       ))}
                     </div>
                   ) : relatedVideos.length === 0 ? (
-                    <div className="px-3 py-10 text-center bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
-                      <PlaySquare
-                        size={32}
-                        className="mx-auto mb-3 text-slate-300"
-                      />
-                      <p className="text-sm font-bold text-slate-400">
-                        No related videos found
+                    <div className="px-4 py-16 text-center border-t border-l border-border mt-4 mx-4 relative bg-muted/5 rounded-xl">
+                      <Crosshair className="-top-1.5 -left-1.5" />
+                      <Crosshair className="-top-1.5 -right-1.5" />
+                      <Crosshair className="-bottom-1.5 -left-1.5" />
+                      <Crosshair className="-bottom-1.5 -right-1.5" />
+                      <div className="border border-border/50 w-12 h-12 flex items-center justify-center mx-auto mb-4 bg-muted/20 rounded-full">
+                         <PlaySquare size={20} className="text-muted-foreground/30" />
+                      </div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+                        No related videos
                       </p>
                     </div>
                   ) : (
-                    relatedVideos.map((video) => (
-                      <Link
-                        key={video._id}
-                        to={`/watch/${video._id}`}
-                        className="flex gap-3 group bg-white/30 p-2.5 rounded-xl border border-slate-100 hover:bg-white hover:shadow-md transition-all"
-                      >
-                        <div className="relative w-28 aspect-video bg-slate-100 rounded-lg overflow-hidden shrink-0">
-                          <img
-                            src={video.thumbnail}
-                            alt=""
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
+                    <div className="flex flex-col border-t border-l border-border mt-4 mx-4 mb-4 relative bg-background/10 shadow-sm rounded-xl overflow-hidden">
+                        {/* Outer Grid Crosshairs */}
+                        <Crosshair className="-top-1.5 -left-1.5 z-10" />
+                        <Crosshair className="-top-1.5 -right-1.5 z-10" />
+                        <Crosshair className="-bottom-1.5 -left-1.5 z-10" />
+                        <Crosshair className="-bottom-1.5 -right-1.5 z-10" />
+
+                        <div className="grid grid-cols-1">
+                            {relatedVideos.map((video) => (
+                            <Link
+                                key={video._id}
+                                to={`/watch/${video._id}`}
+                                className="relative border-r border-b border-border p-3 flex gap-3 group bg-background/5 hover:bg-muted/40 transition-all duration-300"
+                            >
+                                <Crosshair className="-bottom-1.5 -right-1.5 z-10" />
+                                
+                                <div className="relative w-32 aspect-video bg-gray-100 shrink-0 border border-gray-200 overflow-hidden">
+                                <img
+                                    src={video.thumbnail}
+                                    alt=""
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity mix-blend-overlay" />
+                                </div>
+                                <div className="flex-1 min-w-0 flex flex-col justify-start py-1">
+                                 <h4 className="font-bold font-satoshi text-foreground text-xs line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                                    {video.title}
+                                </h4>
+                                <div className="flex flex-col gap-0.5 mt-auto pt-2">
+                                    <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wide truncate group-hover:text-foreground transition-colors">
+                                       {video.owner?.fullName}
+                                    </p>
+                                    <div className="flex items-center gap-1.5 text-[9.5px] text-muted-foreground/60 font-medium">
+                                       <span>{video.views} views</span>
+                                       <span>•</span>
+                                       <span className="uppercase tracking-tighter">
+                                           {video.createdAt &&
+                                           formatDistanceToNow(
+                                               new Date(video.createdAt),
+                                               { addSuffix: false }
+                                           )}
+                                       </span>
+                                    </div>
+                                </div>
+                                </div>
+                            </Link>
+                            ))}
                         </div>
-                        <div className="flex-1 min-w-0 flex flex-col justify-center">
-                          <h4 className="font-bold font-satoshi text-slate-800 text-[11px] line-clamp-2 leading-tight group-hover:text-blue-700">
-                            {video.title}
-                          </h4>
-                          <div className="flex flex-col gap-0.5 mt-1.5">
-                            <p className="text-[10px] text-slate-500 font-bold font-satoshi truncate">
-                              {video.owner?.fullName}
-                            </p>
-                            <div className="flex items-center gap-1.5 text-[9px] text-slate-400 font-medium">
-                              <span>{video.views} views</span>
-                              <span>•</span>
-                              <span>
-                                {video.createdAt &&
-                                  formatDistanceToNow(
-                                    new Date(video.createdAt),
-                                  ) + " ago"}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    ))
+                    </div>
                   )}
                 </div>
               )}

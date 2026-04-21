@@ -61,7 +61,7 @@ const PlaylistCard = ({
         {/* Top Bar with Actions and Badge */}
         <div className="absolute left-0 right-0 top-0 flex items-start justify-between p-4">
           {/* Action Group: Play & Settings (Horizontal) */}
-          <div className="flex flex-row items-center gap-2">
+          <div className="flex flex-col items-start gap-2">
             {/* Play Button */}
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-xl opacity-0 scale-50 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 hover:bg-white/40 shadow-lg border border-white/20">
               <PlayCircle className="h-6 w-6 fill-white/10" />

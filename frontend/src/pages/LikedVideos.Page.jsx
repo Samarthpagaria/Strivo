@@ -97,7 +97,10 @@ const LikedVideos = () => {
               <Crosshair className="-bottom-1.5 -left-1.5" />
               <Crosshair className="-bottom-1.5 -right-1.5" />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div 
+                className="grid" 
+                style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}
+              >
                 {videos.map((video, index) => (
                   <motion.div
                     key={video._id}
@@ -108,7 +111,6 @@ const LikedVideos = () => {
                   >
                     {/* Inner Crosshair for cells */}
                     <Crosshair className="-bottom-1.5 -right-1.5 z-10" />
-
                     <VideoCard {...video} />
                   </motion.div>
                 ))}

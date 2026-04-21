@@ -7,7 +7,9 @@ import { useGlobal } from "../ContentApi/GlobalContext";
 
 // The Crosshair component creates the "+" design at the corners
 const Crosshair = ({ className }) => (
-  <div className={`absolute w-3 h-3 flex items-center justify-center pointer-events-none ${className}`}>
+  <div
+    className={`absolute w-3 h-3 flex items-center justify-center pointer-events-none ${className}`}
+  >
     <div className="absolute w-full h-[1px] bg-gray-300" />
     <div className="absolute h-full w-[1px] bg-gray-300" />
   </div>
@@ -65,7 +67,7 @@ const SubscribedChannelsList = () => {
       <Crosshair className="-top-1.5 -right-1.5" />
       <Crosshair className="-bottom-1.5 -left-1.5" />
       <Crosshair className="-bottom-1.5 -right-1.5" />
-      
+
       <div className="grid grid-cols-1">
         {channels.slice(0, 10).map((channel) => (
           <button
@@ -112,7 +114,9 @@ const MenuItem = ({ children, label, onClick, isExpanded }) => (
       <span className="w-6 h-6 flex items-center justify-center text-foreground/80 shrink-0">
         {children}
       </span>
-      {isExpanded && <span className="truncate font-satoshi font-medium">{label}</span>}
+      {isExpanded && (
+        <span className="truncate font-satoshi font-medium">{label}</span>
+      )}
     </button>
   </div>
 );
