@@ -51,7 +51,6 @@ export const router = createBrowserRouter([
       { path: "watch/:videoId", element: <VideoDetailsPage /> },
       { path: "/c/:username", element: <ChannelProfile /> },
       { path: "/channel", element: <MyChannelProfile /> },
-      { path: "/playlist/:playlistId", element: <PlaylistDetails /> },
     ],
   },
   {

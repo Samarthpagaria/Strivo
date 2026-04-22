@@ -630,7 +630,7 @@ const MyChannelProfile = () => {
                   myChannelPlaylistsQuery.data.map((playlist) => (
                     <div
                       key={playlist._id}
-                      onClick={() => navigate(`/playlist/${playlist._id}`)}
+                      onClick={() => navigate(`/playlists/${playlist._id}`)}
                       className="p-5 bg-white border border-gray-200 rounded-xl hover:shadow-md transition-shadow cursor-pointer group"
                     >
                       <h3 className="font-bold text-lg text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">

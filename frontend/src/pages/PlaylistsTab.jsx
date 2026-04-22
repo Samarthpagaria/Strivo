@@ -68,7 +68,7 @@ const PlaylistsTab = ({ userId }) => {
         {data.map((playlist) => (
           <div
             key={playlist._id}
-            onClick={() => navigate(`/playlist/${playlist._id}`)}
+            onClick={() => navigate(`/playlists/${playlist._id}`)}
             className="p-6 transition-all cursor-pointer group relative border-r border-b border-border hover:bg-muted/50 flex flex-col"
           >
             <Crosshair className="-bottom-1.5 -right-1.5 z-10" />

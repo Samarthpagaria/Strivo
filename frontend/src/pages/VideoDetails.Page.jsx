@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useParams, useOutletContext } from "react-router-dom";
+import { useParams, useOutletContext, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import confetti from "canvas-confetti";
@@ -29,6 +29,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const VideoDetailsPage = () => {
   const { videoId } = useParams();
   const { scrollRef } = useOutletContext() || {};
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   // Data Fetching
@@ -151,6 +152,12 @@ const VideoDetailsPage = () => {
       playerRef.current.requestFullscreen().catch((err) => console.error(err));
     } else {
       document.exitFullscreen();
+    }
+  };
+
+  const handleProfileClick = () => {
+    if (videoData?.owner?.username) {
+        navigate(`/c/${videoData.owner.username}`);
     }
   };
 
@@ -363,10 +370,14 @@ const VideoDetailsPage = () => {
                     <img
                       src={videoData.owner.avatar}
                       alt=""
-                      className="w-12 h-12 rounded-full border-2 border-white shadow-sm"
+                      onClick={handleProfileClick}
+                      className="w-12 h-12 rounded-full border-2 border-white shadow-sm cursor-pointer hover:opacity-80 transition-opacity"
                     />
                     <div>
-                      <h3 className="text-base font-bold font-satoshi text-gray-900">
+                      <h3 
+                        onClick={handleProfileClick}
+                        className="text-base font-bold font-satoshi text-gray-900 cursor-pointer hover:text-primary transition-colors"
+                      >
                         {videoData.owner.fullName}
                       </h3>
                       <p className="text-xs text-gray-500">
