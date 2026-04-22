@@ -1,18 +1,24 @@
 import React from "react";
 import logo from "../assets/logo.png";
-import { Search } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { HoverBorderGradient } from "../components/ui/hover-border-gradient";
 import { useSearch } from "../ContentApi/SearchContext";
 import { useGlobal } from "../ContentApi/GlobalContext";
 import { useAuth } from "../ContentApi/AuthContext";
+import { useMyChannel } from "../ContentApi/myChannelContext";
 import UserProfile from "./UserProfile";
+import PublishVideoModal from "./PublishVideoModal";
+import { AnimatedThemeToggler } from "../components/ui/animated-theme-toggler";
 
 const Header = () => {
   const navigate = useNavigate();
-const { searchQuery, setSearchQuery } = useSearch();
+  const { searchQuery, setSearchQuery } = useSearch();
   const { user } = useGlobal();
   const { logout } = useAuth();
+  const { myChannelAddvideoMutation } = useMyChannel();
+  const [isUploadModalOpen, setIsUploadModalOpen] = React.useState(false);
 
   const handleSearch = () => {
     if (!searchQuery.trim()) return;
@@ -57,7 +63,44 @@ const { searchQuery, setSearchQuery } = useSearch();
         <div>
           <div className="flex items-center gap-4">
             {user ? (
-              <UserProfile user={user} onLogout={handleLogout} />
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <AnimatedThemeToggler className="p-2.5 text-neutral-500 hover:text-black hover:bg-neutral-100 rounded-full transition-all duration-300 border border-transparent hover:border-neutral-200" />
+                  <motion.button
+                    onClick={() => setIsUploadModalOpen(true)}
+                    initial="initial"
+                    whileHover="hover"
+                    layout
+                    className="flex items-center gap-0 px-2.5 py-2.5 bg-white text-gray-900 border border-gray-100 rounded-full text-black transition-colors duration-300 group overflow-hidden shadow-sm"
+                  >
+                    <motion.div
+                      variants={{
+                        initial: { rotate: 0 },
+                        hover: { rotate: 360 },
+                      }}
+                      transition={{ duration: 0.6, ease: "easeInOut" }}
+                      className="shrink-0 flex items-center justify-center"
+                    >
+                      <Plus size={18} strokeWidth={2.5} />
+                    </motion.div>
+                    <motion.span
+                      variants={{
+                        initial: { width: 0, opacity: 0, marginLeft: 0 },
+                        hover: {
+                          width: "auto",
+                          opacity: 1,
+                          marginLeft: 8,
+                          transition: { duration: 0.3, ease: "easeOut" },
+                        },
+                      }}
+                      className="overflow-hidden whitespace-nowrap text-sm font-satoshi font-medium  tracking-widest leading-none pointer-events-none"
+                    >
+                      Add Video
+                    </motion.span>
+                  </motion.button>
+                </div>
+                <UserProfile user={user} onLogout={handleLogout} />
+              </div>
             ) : (
               <>
                 <HoverBorderGradient
@@ -79,6 +122,15 @@ const { searchQuery, setSearchQuery } = useSearch();
           </div>
         </div>
       </div>
+
+      <PublishVideoModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onSubmit={async (formData) => {
+          await myChannelAddvideoMutation.mutateAsync(formData);
+        }}
+        mutation={myChannelAddvideoMutation}
+      />
     </div>
   );
 };

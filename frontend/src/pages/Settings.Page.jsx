@@ -42,9 +42,6 @@ const SettingsPage = () => {
           <button className="px-4 py-2 font-medium border-b-2 border-transparent text-muted-foreground hover:text-foreground transition-colors">
             Notifications
           </button>
-          <button className="px-4 py-2 font-medium border-b-2 border-transparent text-muted-foreground hover:text-foreground transition-colors">
-            Appearance
-          </button>
         </div>
       </div>
 

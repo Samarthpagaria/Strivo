@@ -1,17 +1,26 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useProfile } from "../ContentApi/ProfileContext";
 import { CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { VideoProvider } from "../ContentApi/VideoContext";
+import { useGlobal } from "../ContentApi/GlobalContext";
 import VideosTab from "./VideosTab";
 import SubscribeButton from "../project_components/SubscribeButton";
 import PlaylistsTab from "./PlaylistsTab";
 
 const ChannelProfile = () => {
   const { username } = useParams();
+  const navigate = useNavigate();
+  const { user } = useGlobal();
   const { userProfile, isLoading, isError } = useProfile();
   const [activeTab, setActiveTab] = useState("videos");
+
+  useEffect(() => {
+    if (user && username && user.username === username) {
+      navigate("/channel", { replace: true });
+    }
+  }, [user, username, navigate]);
 
   if (isLoading) {
     return (

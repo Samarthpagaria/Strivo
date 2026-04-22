@@ -15,7 +15,7 @@ const router = Router();
 
 // Public routes
 router.route("/related/:videoId").get(getRelatedVideos);
-router.route("/").get(getAllVideos);
+router.route("/").get(softVerifyJWT, getAllVideos);
 router.route("/home-feed").get(verifyJWT, getHomeFeedVideos);
 router.route("/:videoId").get(softVerifyJWT, getVideo);
 

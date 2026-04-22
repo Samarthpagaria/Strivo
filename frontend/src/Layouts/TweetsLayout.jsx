@@ -107,7 +107,7 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
         <div className="absolute left-[-3px] top-0 bottom-0 w-2 bg-transparent" />
       </div>
 
-      <div className="sticky top-0 z-50 flex justify-center -mb-24">
+      <div className="sticky top-0 z-30 flex justify-center -mb-24">
         <TweetNavbar scrollContainerRef={tweetsContainerRef} />
       </div>
       <div className="pt-28">

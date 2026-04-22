@@ -1,6 +1,14 @@
-import React, { useState } from "react";
-import { CheckCircle2, Upload, X, ImagePlus } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { CheckCircle2, Upload, X, ImagePlus, Video, Info } from "lucide-react";
 import { BackgroundBeams } from "@/components/ui/background-beams";
+import { motion, AnimatePresence } from "framer-motion";
+
+const MemoizedBeams = React.memo(() => (
+  <BackgroundBeams
+    className="absolute inset-0 z-0"
+    beamColors={["#1e3a8a", "#581c87"]}
+  />
+));
 
 const PublishVideoModal = ({ isOpen, onClose, onSubmit, mutation }) => {
   const [videoForm, setVideoForm] = useState({
@@ -9,6 +17,18 @@ const PublishVideoModal = ({ isOpen, onClose, onSubmit, mutation }) => {
     videoFile: null,
     thumbnail: null,
   });
+
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
+
+  useEffect(() => {
+    if (!videoForm.thumbnail) {
+      setThumbnailPreview(null);
+      return;
+    }
+    const objectUrl = URL.createObjectURL(videoForm.thumbnail);
+    setThumbnailPreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [videoForm.thumbnail]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -44,163 +64,245 @@ const PublishVideoModal = ({ isOpen, onClose, onSubmit, mutation }) => {
       });
       mutation.reset();
       onClose();
-    }, 2000);
+    }, 2500);
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-150 flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 relative animate-in fade-in zoom-in duration-200 overflow-hidden">
-        {/* Background Beams Effect */}
-        <BackgroundBeams
-          className="absolute inset-0 z-0"
-          beamColors={["#1e3a8a", "#581c87"]}
-        />
+    <div className="fixed inset-0 bg-black/80 z-[9999] flex items-center justify-center p-4 backdrop-blur-lg">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        className="bg-white border border-neutral-200 rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] w-full max-w-2xl p-8 md:p-12 relative overflow-hidden"
+      >
+        {/* Background Beams Effect - Memoized to prevent re-renders on typing */}
+        <MemoizedBeams />
 
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition-colors z-20"
+          className="absolute top-8 right-8 text-neutral-400 hover:text-neutral-900 transition-colors z-20 p-2 hover:bg-neutral-100 rounded-full"
         >
-          <X className="w-6 h-6" />
+          <X className="w-5 h-5" />
         </button>
 
-        <h2 className="text-2xl font-bold mb-6 text-gray-900 relative z-10">
-          Upload Video
-        </h2>
+        <div className="relative z-10 mb-10">
+          <h2 className="text-3xl font-black text-neutral-900 font-satoshi tracking-tight mb-2">
+            Publish new content
+          </h2>
+          <p className="text-neutral-500 text-sm font-medium font-inter">
+            Broadcast your vision to the Strivo community.
+          </p>
+        </div>
 
-        {mutation.isPending ? (
-          <div className="flex flex-col items-center justify-center py-12 space-y-4 relative z-10">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-100 border-t-blue-600"></div>
-            <p className="text-lg font-medium text-blue-600">
-              Uploading Video...
-            </p>
-            <p className="text-sm text-gray-500">
-              Please wait, do not close this window.
-            </p>
-          </div>
-        ) : mutation.isSuccess ? (
-          <div className="flex flex-col items-center justify-center py-12 space-y-4 relative z-10">
-            <div className="rounded-full bg-green-100 p-3">
-              <CheckCircle2 className="w-12 h-12 text-green-600" />
-            </div>
-            <p className="text-xl font-bold text-gray-900">
-              Uploaded Successfully!
-            </p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
-            {mutation.isError && (
-              <div className="p-4 bg-red-50/90 backdrop-blur-sm text-red-700 rounded-xl text-sm border border-red-100 flex items-center gap-2 relative z-10">
-                <X className="w-4 h-4" />
-                Error uploading video. Please try again.
+        <AnimatePresence mode="wait">
+          {mutation.isPending ? (
+            <motion.div
+              key="pending"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex flex-col items-center justify-center py-20 space-y-6 relative z-10"
+            >
+              <div className="relative">
+                <div className="w-20 h-20 border-4 border-neutral-100 rounded-full" />
+                <div className="w-20 h-20 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin absolute top-0" />
               </div>
-            )}
+              <div className="text-center space-y-1">
+                <p className="text-xl font-bold text-neutral-900 font-satoshi">
+                  Uploading your asset
+                </p>
+              </div>
+            </motion.div>
+          ) : mutation.isSuccess ? (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex flex-col items-center justify-center py-20 space-y-6 relative z-10"
+            >
+              <div className="rounded-full bg-emerald-50 p-6 border border-emerald-100 shadow-sm">
+                <CheckCircle2 className="w-16 h-16 text-emerald-600" />
+              </div>
+              <div className="text-center space-y-1">
+                <p className="text-2xl font-black text-neutral-900 font-satoshi">
+                  Upload complete
+                </p>
+                <p className="text-sm text-neutral-500 font-medium">
+                  Your content is now being processed.
+                </p>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.form
+              key="form"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              onSubmit={handleSubmit}
+              className="space-y-8 relative z-10"
+            >
+              {mutation.isError && (
+                <div className="p-4 bg-rose-50 border border-rose-100 text-rose-700 rounded-2xl text-sm font-medium flex items-center gap-3">
+                  <div className="w-6 h-6 bg-rose-200 rounded-full flex items-center justify-center shrink-0">
+                    <X className="w-3.5 h-3.5" />
+                  </div>
+                  System error: Could not process upload. Please verify files
+                  and try again.
+                </div>
+              )}
 
-            {/* Thumbnail Input */}
-            <div className="relative z-10">
-              <label className="block text-sm font-semibold text-gray-900 mb-1.5">
-                Thumbnail
-              </label>
-              <div className="border-2 border-dashed border-gray-400/40 bg-white/10 backdrop-blur-xl rounded-xl p-6 text-center cursor-pointer hover:border-blue-500 hover:bg-white/20 transition-all relative group shadow-sm">
-                <input
-                  type="file"
-                  name="thumbnail"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                  required
-                />
-                {videoForm.thumbnail ? (
-                  <div className="flex flex-col items-center text-green-600">
-                    <CheckCircle2 className="w-8 h-8 mb-2" />
-                    <p className="text-sm font-medium truncate w-full px-4">
-                      {videoForm.thumbnail.name}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Left Side: File Uploads */}
+                <div className="space-y-6">
+                  {/* Video Upload */}
+                  <div className="space-y-3">
+                    <label className="text-xs font-bold text-neutral-400 font-satoshi tracking-tight">
+                      Video asset
+                    </label>
+                    <div
+                      className={`relative h-40 border-2 border-dashed rounded-3xl transition-all duration-300 group flex flex-col items-center justify-center overflow-hidden ${videoForm.videoFile ? "border-emerald-500 bg-emerald-50/10" : "border-neutral-200 bg-neutral-50/50 hover:border-indigo-400 hover:bg-neutral-50"}`}
+                    >
+                      <input
+                        type="file"
+                        name="videoFile"
+                        onChange={handleFileChange}
+                        accept="video/*"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        required
+                      />
+                      {videoForm.videoFile ? (
+                        <div className="flex flex-col items-center text-emerald-600 px-4 text-center">
+                          <div className="p-3 bg-emerald-100 rounded-full mb-3">
+                            <Video size={24} />
+                          </div>
+                          <p className="text-[11px] font-bold truncate w-full">
+                            {videoForm.videoFile.name}
+                          </p>
+                          <span className="text-[9px] font-medium opacity-60">
+                            File ready for sync
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center text-neutral-400 group-hover:text-indigo-500 transition-colors">
+                          <div className="p-4 bg-white border border-neutral-100 rounded-2xl shadow-sm mb-3 group-hover:scale-110 transition-transform duration-500">
+                            <Upload size={20} />
+                          </div>
+                          <span className="text-[11px] font-bold">
+                            Select video file
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Thumbnail Upload */}
+                  <div className="space-y-3">
+                    <label className="text-xs font-bold text-neutral-400 font-satoshi tracking-tight">
+                      Visual key (thumbnail)
+                    </label>
+                    <div
+                      className={`relative h-40 border-2 border-dashed rounded-3xl transition-all duration-300 group flex flex-col items-center justify-center overflow-hidden ${videoForm.thumbnail ? "border-indigo-500" : "border-neutral-200 bg-neutral-50/50 hover:border-indigo-400 hover:bg-neutral-50"}`}
+                    >
+                      <input
+                        type="file"
+                        name="thumbnail"
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        required
+                      />
+                      {thumbnailPreview ? (
+                        <img
+                          src={thumbnailPreview}
+                          alt="Preview"
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center text-neutral-400 group-hover:text-indigo-500 transition-colors relative z-10">
+                          <div className="p-4 bg-white border border-neutral-100 rounded-2xl shadow-sm mb-3 group-hover:scale-110 transition-transform duration-500">
+                            <ImagePlus size={20} />
+                          </div>
+                          <span className="text-[11px] font-bold">
+                            Upload thumbnail
+                          </span>
+                        </div>
+                      )}
+                      {thumbnailPreview && (
+                        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <p className="text-white text-[10px] font-bold">
+                            Change Thumbnail
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Side: Metadata */}
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-neutral-400 font-satoshi tracking-tight">
+                      Heading
+                    </label>
+                    <input
+                      type="text"
+                      name="title"
+                      value={videoForm.title}
+                      onChange={handleInputChange}
+                      className="w-full h-14 px-5 bg-white/40 backdrop-blur-xl border border-neutral-200 rounded-2xl focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-satoshi font-bold text-base placeholder:text-neutral-300"
+                      placeholder="A concise, catchy title"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-neutral-400 font-satoshi tracking-tight">
+                      Briefing (description)
+                    </label>
+                    <textarea
+                      name="description"
+                      value={videoForm.description}
+                      onChange={handleInputChange}
+                      rows="7"
+                      className="w-full px-5 py-4 bg-white/40 backdrop-blur-xl border border-neutral-200 rounded-2xl focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none transition-all text-sm leading-relaxed text-neutral-600 placeholder:text-neutral-300"
+                      placeholder="Detail your content's mission and context..."
+                    ></textarea>
+                  </div>
+
+                  <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-2xl flex gap-3">
+                    <Info
+                      size={16}
+                      className="text-indigo-600 shrink-0 mt-0.5"
+                    />
+                    <p className="text-[10px] text-indigo-600 font-medium leading-relaxed">
+                      By publishing, you agree to our creator guidelines and
+                      content standards.
                     </p>
                   </div>
-                ) : (
-                  <div className="flex flex-col items-center text-gray-700 group-hover:text-blue-600 transition-colors">
-                    <ImagePlus className="w-8 h-8 mb-2" />
-                    <span className="text-sm font-medium">
-                      Click to upload thumbnail
-                    </span>
-                  </div>
-                )}
+                </div>
               </div>
-            </div>
 
-            {/* Video Input */}
-            <div className="relative z-10">
-              <label className="block text-sm font-semibold text-gray-900 mb-1.5">
-                Video File
-              </label>
-              <div className="border-2 border-dashed border-gray-400/40 bg-white/10 backdrop-blur-xl rounded-xl p-6 text-center cursor-pointer hover:border-blue-500 hover:bg-white/20 transition-all relative group shadow-sm">
-                <input
-                  type="file"
-                  name="videoFile"
-                  onChange={handleFileChange}
-                  accept="video/*"
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                  required
-                />
-                {videoForm.videoFile ? (
-                  <div className="flex flex-col items-center text-green-600">
-                    <CheckCircle2 className="w-8 h-8 mb-2" />
-                    <p className="text-sm font-medium truncate w-full px-4">
-                      {videoForm.videoFile.name}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center text-gray-700 group-hover:text-blue-600 transition-colors">
-                    <Upload className="w-8 h-8 mb-2" />
-                    <span className="text-sm font-medium">
-                      Click to upload video
-                    </span>
-                  </div>
-                )}
+              <div className="pt-6 border-t border-neutral-100 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="text-sm font-bold text-neutral-400 hover:text-neutral-900 transition-colors"
+                >
+                  Cancel upload
+                </button>
+                <button
+                  type="submit"
+                  disabled={!videoForm.videoFile || !videoForm.thumbnail}
+                  className="px-10 py-4 bg-indigo-600 text-white font-bold rounded-full hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-600/20 active:scale-95 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+                >
+                  Publish content
+                </button>
               </div>
-            </div>
-
-            <div className="relative z-10">
-              <label className="block text-sm font-semibold text-gray-900 mb-1.5">
-                Title
-              </label>
-              <input
-                type="text"
-                name="title"
-                value={videoForm.title}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2.5 border border-gray-400/40 bg-white/10 backdrop-blur-xl rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm text-gray-900 placeholder:text-gray-600"
-                placeholder="Video title"
-                required
-              />
-            </div>
-
-            <div className="relative z-10">
-              <label className="block text-sm font-semibold text-gray-900 mb-1.5">
-                Description
-              </label>
-              <textarea
-                name="description"
-                value={videoForm.description}
-                onChange={handleInputChange}
-                rows="3"
-                className="w-full px-4 py-2.5 border border-gray-400/40 bg-white/10 backdrop-blur-xl rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none transition-all shadow-sm text-gray-900 placeholder:text-gray-600"
-                placeholder="What's this video about?"
-              ></textarea>
-            </div>
-
-            <div className="pt-2 relative z-10">
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20 relative z-10"
-              >
-                Upload Video
-              </button>
-            </div>
-          </form>
-        )}
-      </div>
+            </motion.form>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 };
