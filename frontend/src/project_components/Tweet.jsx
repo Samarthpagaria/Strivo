@@ -108,22 +108,30 @@ const Tweet = ({
       
       <div className="flex gap-3">
         {/* Avatar */}
-        <div className="shrink-0">
+        <Link 
+          to={`/c/${ownerDetails?.username}`}
+          className="shrink-0"
+          onClick={(e) => e.stopPropagation()}
+        >
           <img
             src={ownerDetails?.avatar || "https://via.placeholder.com/150"}
             alt={ownerDetails?.username}
-            className="w-12 h-12 rounded-full object-cover"
+            className="w-12 h-12 rounded-full object-cover hover:opacity-80 transition-opacity"
           />
-        </div>
+        </Link>
 
         {/* Tweet Content */}
         <div className="flex-1 min-w-0">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1 flex-wrap">
-              <span className="font-bold font-satoshi text-gray-900 hover:underline">
+              <Link 
+                to={`/c/${ownerDetails?.username}`}
+                className="font-bold font-satoshi text-gray-900 hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {ownerDetails?.username}
-              </span>
+              </Link>
               <span className="text-gray-500 font-satoshi font-medium text-sm">
                 @{ownerDetails?.fullName} · {timestamp}
               </span>
