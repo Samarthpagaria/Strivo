@@ -93,16 +93,16 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
   return (
     <div
       onClick={handleCardClick}
-      className="w-full hover:opacity-75 hover:bg-gray-200 rounded-3xl transition-all duration-300 p-2 cursor-pointer group"
+      className="w-full transition-all duration-300 cursor-pointer group"
     >
-      <div className="bg-gray-200 w-full aspect-video rounded-xl overflow-hidden ">
+      <div className="w-full aspect-video rounded-xl overflow-hidden bg-muted">
         <img
           src={videoThumbnail}
           alt={title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
       </div>
-      <div className="flex gap-3 mt-3">
+      <div className="flex gap-3 mt-4">
         <img
           onClick={handleProfileClick}
           src={channelAvatar}
@@ -110,30 +110,38 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
           className="w-10 h-10 rounded-full object-cover hover:opacity-80 transition-opacity"
           title={channelName}
         />
-        <div className="flex flex-col flex-1">
-          <h3 className="text-sm font-bold font-satoshi line-clamp-2">{title}</h3>
+        <div className="flex flex-col flex-1 min-w-0">
+          <h3 className="text-[15px] font-bold font-satoshi line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+            {title}
+          </h3>
           <p
-            className="text-xs font-medium font-satoshi text-gray-500 hover:text-gray-800 transition-colors"
+            className="text-xs font-medium font-satoshi text-muted-foreground hover:text-foreground transition-colors mt-1"
             onClick={handleProfileClick}
           >
             {channelName}
           </p>
-          <p className="text-xs font-inter text-gray-500">
-            {viewCount} views · {uploadedTime}
-          </p>
+          <div className="flex items-center gap-1.5 mt-1">
+             <p className="text-[11px] font-medium font-inter text-muted-foreground/60">
+              {viewCount} views
+            </p>
+            <span className="text-muted-foreground/30 text-[10px]">·</span>
+            <p className="text-[11px] font-medium font-inter text-muted-foreground/60">
+              {uploadedTime}
+            </p>
+          </div>
         </div>
         <div
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 self-start"
           onClick={(e) => e.stopPropagation()}
         >
           <button
             onClick={handleLikeClick}
             disabled={toggleLikeMutation.isPending}
-            className={`p-1.5 rounded-full hover:bg-gray-300 transition-colors ${
-              isLiked ? "text-red-500" : "text-gray-400 hover:text-gray-600"
+            className={`p-2 rounded-full transition-all ${
+              isLiked ? "text-rose-600 bg-rose-50" : "text-muted-foreground/40 hover:text-foreground hover:bg-muted"
             }`}
           >
-            <Heart size={18} fill={isLiked ? "currentColor" : "none"} />
+            <Heart size={16} fill={isLiked ? "currentColor" : "none"} />
           </button>
           <VideoCardMenu videoId={_id} />
         </div>
