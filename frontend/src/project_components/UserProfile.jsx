@@ -37,31 +37,31 @@ export default function UserProfile({ user, onLogout }) {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-72 p-0 bg-background/95 dark:bg-black/95 backdrop-blur-xl border border-border dark:border-white/10 shadow-2xl rounded-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-        <PopoverHeader className="bg-muted/30 dark:bg-white/5 border-b border-border dark:border-white/5 p-4">
-          <div className="flex items-center space-x-4">
-            <Avatar className="h-12 w-12 border-2 border-background dark:border-black shadow-md">
+        <PopoverHeader className="bg-muted/30 dark:bg-white/5 border-b border-border dark:border-white/5 p-2.5">
+          <div className="flex items-center space-x-3">
+            <Avatar className="h-10 w-10 border-2 border-background dark:border-black shadow-md">
               <AvatarImage
                 src={user.avatar || "https://avatar.vercel.sh/128"}
               />
-              <AvatarFallback className="bg-primary text-primary-foreground font-black font-satoshi">
+              <AvatarFallback className="bg-primary text-primary-foreground font-medium font-satoshi">
                 {initials}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col items-start min-w-0">
-              <PopoverTitle className="text-sm font-black font-satoshi uppercase tracking-tight text-foreground truncate w-full">
+              <PopoverTitle className="text-sm font-medium font-satoshi tracking-tight text-foreground truncate w-full">
                 {user.fullName}
               </PopoverTitle>
-              <PopoverDescription className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 font-satoshi truncate w-full">
+              <PopoverDescription className="text-[10px] font-medium text-muted-foreground/60 font-satoshi truncate w-full">
                 {user.email}
               </PopoverDescription>
             </div>
           </div>
         </PopoverHeader>
-        <PopoverBody className="p-2 space-y-1">
+        <PopoverBody className="p-1 space-y-0.5">
           <Link to="/channel" className="block outline-none">
             <Button
               variant="ghost"
-              className="w-full justify-start cursor-pointer font-black font-satoshi uppercase text-[10px] tracking-widest hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-xl px-3 h-10"
+              className="w-full justify-start cursor-pointer font-medium font-satoshi text-[10px] hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-xl px-2.5 h-8.5"
               size="sm"
             >
               <User className="mr-3 h-3.5 w-3.5" />
@@ -71,7 +71,7 @@ export default function UserProfile({ user, onLogout }) {
           <Link to="/settings" className="block outline-none">
             <Button
               variant="ghost"
-              className="w-full justify-start cursor-pointer font-black font-satoshi uppercase text-[10px] tracking-widest hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-xl px-3 h-10"
+              className="w-full justify-start cursor-pointer font-medium font-satoshi text-[10px] hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-xl px-2.5 h-8.5"
               size="sm"
             >
               <Settings className="mr-3 h-3.5 w-3.5" />
@@ -82,12 +82,12 @@ export default function UserProfile({ user, onLogout }) {
         <PopoverFooter className="p-2 pt-0 bg-muted/10 dark:bg-transparent border-t border-border/50 dark:border-white/5 mt-1">
           <Button
             variant="ghost"
-            className="w-full justify-start cursor-pointer font-black font-satoshi uppercase text-[10px] tracking-widest text-destructive hover:bg-destructive/10 hover:text-destructive transition-all duration-200 rounded-xl px-3 h-10"
+            className="w-full justify-start cursor-pointer font-medium font-satoshi text-[10px] text-destructive hover:bg-destructive/10 hover:text-destructive transition-all duration-200 rounded-xl px-2.5 h-8.5"
             size="sm"
             onClick={onLogout}
           >
             <LogOut className="mr-3 h-3.5 w-3.5" />
-            Terminate
+            Login
           </Button>
         </PopoverFooter>
       </PopoverContent>

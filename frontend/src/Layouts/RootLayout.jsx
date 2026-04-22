@@ -7,6 +7,7 @@ import TweetsLayout from "./TweetsLayout";
 import ScrollToTop from "../project_components/ScrollToTop";
 import { TweetProvider } from "../ContentApi/TweetContext";
 import { ProfileProvider } from "../ContentApi/ProfileContext";
+import { useGlobal } from "../ContentApi/GlobalContext";
 
 const RootLayout = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
@@ -15,8 +16,10 @@ const RootLayout = () => {
   const mainContentRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useGlobal();
   const path = location.pathname;
-  const isAuth = path === "/login" || path === "/register";
+  const isAuthPage = path === "/login" || path === "/register";
+  const isHomePage = path === "/";
 
   // Check if we are on a profile route and get the username
   const match = useMatch("/c/:username");
@@ -66,8 +69,18 @@ const RootLayout = () => {
     };
   }, [isResizing, tweetPanelWidth]);
 
-  if (isAuth) {
+  // If on Auth pages (Login/Register), show just the page
+  if (isAuthPage) {
     return <Outlet />;
+  }
+
+  // If NOT logged in and on HOME page, show ONLY the Home page (which renders LandingPage)
+  if (!user && isHomePage) {
+    return (
+      <main className="w-full h-screen overflow-hidden">
+        <Outlet context={{ scrollRef: mainContentRef }} />
+      </main>
+    );
   }
 
   return (

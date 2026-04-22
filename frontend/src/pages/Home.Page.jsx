@@ -2,10 +2,18 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import VideoCard from "../project_components/VideoCard.jsx";
 import { useVideo } from "../ContentApi/VideoContext";
+import { useGlobal } from "../ContentApi/GlobalContext";
+import LandingPage from "./LandingPage";
 
 function Home() {
   const navigate = useNavigate();
+  const { user } = useGlobal();
   const { homeFeedQuery } = useVideo();
+
+  // If user is not logged in, show the Landing Page
+  if (!user) {
+    return <LandingPage />;
+  }
 
   // Loading state
   if (homeFeedQuery.isLoading) {
