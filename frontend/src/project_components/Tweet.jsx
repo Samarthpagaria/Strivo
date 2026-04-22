@@ -100,10 +100,10 @@ const Tweet = ({
   };
 
   return (
-    <div className="relative p-2 hover:bg-gray-50 transition-colors cursor-pointer group/card">
+    <div className="relative p-2 hover:bg-muted/10 dark:hover:bg-white/5 transition-colors cursor-pointer group/card rounded-xl">
       {/* Disappearing Border (Bottom) */}
       {!isGridView && (
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-linear-to-r from-transparent via-gray-200 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-linear-to-r from-transparent via-gray-200 dark:via-white/5 to-transparent" />
       )}
       
       <div className="flex gap-3">
@@ -116,7 +116,7 @@ const Tweet = ({
           <img
             src={ownerDetails?.avatar || "https://via.placeholder.com/150"}
             alt={ownerDetails?.username}
-            className="w-12 h-12 rounded-full object-cover hover:opacity-80 transition-opacity"
+            className="w-12 h-12 rounded-full object-cover hover:opacity-80 transition-opacity border border-gray-100 dark:border-white/10"
           />
         </Link>
 
@@ -127,12 +127,12 @@ const Tweet = ({
             <div className="flex items-center gap-1 flex-wrap">
               <Link 
                 to={`/c/${ownerDetails?.username}`}
-                className="font-bold font-satoshi text-gray-900 hover:underline"
+                className="font-bold font-satoshi text-neutral-900 dark:text-neutral-100 hover:underline"
                 onClick={(e) => e.stopPropagation()}
               >
                 {ownerDetails?.username}
               </Link>
-              <span className="text-gray-500 font-satoshi font-medium text-sm">
+              <span className="text-muted-foreground dark:text-muted-foreground/60 font-satoshi font-medium text-sm">
                 @{ownerDetails?.fullName} · {timestamp}
               </span>
             </div>
@@ -145,13 +145,13 @@ const Tweet = ({
                       e.stopPropagation();
                       setIsEditing(true);
                     }}
-                    className="p-1.5 rounded-full hover:bg-blue-100 text-gray-400 hover:text-blue-500 transition-colors"
+                    className="p-1.5 rounded-full hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={handleDelete}
-                    className="p-1.5 rounded-full hover:bg-red-100 text-gray-400 hover:text-red-500 transition-colors"
+                    className="p-1.5 rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -164,12 +164,12 @@ const Tweet = ({
                   onClick={handleToggleComments}
                   className="flex items-center gap-1 group shrink-0"
                 >
-                  <div className="p-1.5 rounded-full transition-colors group-hover:bg-blue-100">
+                  <div className="p-1.5 rounded-full transition-colors group-hover:bg-primary/10">
                     <MessageSquare
-                      className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors"
+                      className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-colors"
                     />
                   </div>
-                  <span className="text-xs text-gray-400 group-hover:text-blue-500 transition-colors">
+                  <span className="text-xs text-muted-foreground/40 group-hover:text-primary transition-colors">
                     {commentsCount > 0 ? commentsCount : ""}
                   </span>
                 </button>
@@ -180,12 +180,12 @@ const Tweet = ({
                 onClick={handleLike}
                 className="flex items-center gap-1 group shrink-0"
               >
-                <div className="p-1.5 rounded-full transition-colors group-hover:bg-pink-100">
+                <div className="p-1.5 rounded-full transition-colors group-hover:bg-pink-100 dark:group-hover:bg-pink-500/10">
                   <Heart
                     className={`w-4 h-4 transition-colors ${
                       isLiked
                         ? "text-pink-500 fill-pink-500"
-                        : "text-gray-400 group-hover:text-pink-500"
+                        : "text-muted-foreground/40 dark:text-muted-foreground/40 group-hover:text-pink-500"
                     }`}
                   />
                 </div>
@@ -193,7 +193,7 @@ const Tweet = ({
                   className={`text-xs transition-colors ${
                     isLiked
                       ? "text-pink-500"
-                      : "text-gray-400 group-hover:text-pink-500"
+                      : "text-muted-foreground/40 group-hover:text-pink-500"
                   }`}
                 >
                   {likeCount}
@@ -209,36 +209,36 @@ const Tweet = ({
               onClick={(e) => e.stopPropagation()}
             >
               <textarea
-                className="w-full p-2 text-sm border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-100 outline-none resize-none bg-white"
+                className="w-full p-3 text-sm border border-primary/20 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-primary/10 outline-none resize-none bg-background text-foreground"
                 value={editedContent}
                 onChange={(e) => setEditedContent(e.target.value)}
                 autoFocus
                 rows={3}
               />
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 text-foreground font-satoshi font-black tracking-tight mb-2">
                 <button
                   onClick={() => {
                     setIsEditing(false);
                     setEditedContent(content);
                   }}
-                  className="p-1.5 rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
+                  className="p-1.5 rounded-full hover:bg-muted text-muted-foreground transition-colors"
                   title="Cancel"
                 >
-                  <X className="w-4 h-4" />
+                  <X size={14} className="w-4 h-4" />
                 </button>
                 <button
                   onClick={handleUpdate}
                   disabled={updateTweet.isPending}
-                  className="p-1.5 rounded-full hover:bg-green-100 text-green-600 transition-colors disabled:opacity-50"
+                  className="p-1.5 rounded-full hover:bg-emerald-500/10 text-emerald-600 transition-colors disabled:opacity-50"
                   title="Save"
                 >
-                  <Check className="w-4 h-4" />
+                   <Check size={14} className="w-4 h-4" />
                 </button>
               </div>
             </div>
           ) : (
             <>
-              <div className="mt-1 flex-1 font-inter text-slate-800 whitespace-pre-wrap wrap-break-word leading-relaxed text-[15px]">
+              <div className="mt-1 flex-1 font-inter text-neutral-800 dark:text-neutral-200 whitespace-pre-wrap wrap-break-word font-medium leading-relaxed text-[15px] tracking-tight">
                 {content}
               </div>
 
@@ -246,19 +246,19 @@ const Tweet = ({
               {videoMentionDetails && (
                 <Link
                   to={`/watch/${videoMentionDetails._id}`}
-                  className="mt-3 block group/mention filter drop-shadow-sm hover:drop-shadow-md transition-all"
+                  className="mt-3 block group/mention transition-all"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 flex flex-col sm:flex-row max-w-lg">
-                    <div className="relative w-full sm:w-40 aspect-video shrink-0 overflow-hidden bg-slate-200">
+                  <div className="border border-neutral-200 dark:border-white/5 rounded-2xl overflow-hidden bg-neutral-50 dark:bg-white/5 flex flex-col sm:flex-row max-w-lg transition-colors">
+                    <div className="relative w-full sm:w-40 aspect-video shrink-0 overflow-hidden bg-muted dark:bg-black/40">
                       <img 
                         src={videoMentionDetails.thumbnail} 
                         alt={videoMentionDetails.title}
                         className="w-full h-full object-cover group-hover/mention:scale-105 transition-transform duration-500"
                       />
                     </div>
-                    <div className="p-3 flex items-center flex-1 min-w-0">
-                      <h4 className="text-sm font-bold text-slate-800 line-clamp-2 leading-tight group-hover/mention:text-blue-600 transition-colors">
+                    <div className="p-4 flex items-center flex-1 min-w-0">
+                      <h4 className="text-sm font-bold text-neutral-800 dark:text-neutral-200 line-clamp-2 leading-tight group-hover/mention:text-primary transition-colors">
                         {videoMentionDetails.title}
                       </h4>
                     </div>
@@ -274,7 +274,7 @@ const Tweet = ({
                       key={i} 
                       src={imgUrl} 
                       alt="Tweet attachment" 
-                      className="rounded-2xl border border-gray-200 object-cover w-full max-h-80"
+                      className="rounded-2xl border border-gray-200 dark:border-white/5 object-cover w-full max-h-80 shadow-sm"
                     />
                   ))}
                 </div>
@@ -288,7 +288,7 @@ const Tweet = ({
                       key={i} 
                       src={vidUrl} 
                       controls 
-                      className="rounded-2xl border border-gray-200 w-full max-h-80 bg-black"
+                      className="rounded-2xl border border-gray-200 dark:border-white/5 w-full max-h-80 bg-black shadow-sm"
                     />
                   ))}
                 </div>
@@ -300,8 +300,8 @@ const Tweet = ({
 
       {/* Comments Section */}
       {showComments && (
-        <div className="mt-2 ml-10 space-y-0" onClick={(e) => e.stopPropagation()}>
-          <div className="relative">
+        <div className="mt-2 ml-8 space-y-0" onClick={(e) => e.stopPropagation()}>
+          <div className="relative mb-2">
              <TweetPost 
                 isReply={true} 
                 parentTweetId={_id} 
@@ -311,15 +311,16 @@ const Tweet = ({
           
           {isLoadingComments ? (
             <div className="py-4 flex justify-center">
-              <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : (
             <div className="space-y-0">
               {comments.map((comment, idx) => (
                 <div key={comment._id} className="relative pl-4">
-                  {/* The Curved Branch Connector */}
-                  <div className={`absolute left-0 top-0 w-[1px] bg-black opacity-30 shadow-[0.5px_0_3px_rgba(0,0,0,0.05)] ${idx === comments.length - 1 ? 'h-6' : 'bottom-0'}`} />
-                  <div className="absolute left-0 top-6 w-4 h-4 border-l-[1px] border-b-[1px] border-black rounded-bl-xl opacity-30" />
+                  {/* The Curved Branch Connector with Junction Dot */}
+                  <div className={`absolute left-0 top-0 w-[1px] bg-neutral-300 dark:bg-white/20 shadow-[0_0_12px_rgba(255,255,255,0.05)] ${idx === comments.length - 1 ? 'h-[22px]' : 'bottom-0'}`} />
+                  <div className="absolute left-0 top-4 w-5 h-5 border-l-[1.5px] border-b-[1.5px] border-neutral-300 dark:border-white/20  rounded-bl-xl shadow-[-2px_2px_10px_rgba(255,255,255,0.05)]" />
+                  <div className="absolute left-[-2.25px] top-[18px] w-[6px] h-[6px] rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.5)] z-20" />
                   
                   <Tweet 
                     {...comment} 

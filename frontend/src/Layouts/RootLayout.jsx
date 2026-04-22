@@ -84,9 +84,9 @@ const RootLayout = () => {
           <TweetProvider>
             {/* Main Content Area - Videos Section */}
             <div
-              className={`flex-1 flex flex-col overflow-hidden   transition-all duration-300 ${
-                isSidebarExpanded ? "ml-50" : "ml-16"
-              }`}
+              className={`flex-1 flex flex-col overflow-hidden ${
+                isResizing ? "" : "transition-all duration-300"
+              } ${isSidebarExpanded ? "ml-50" : "ml-16"}`}
             >
               <main
                 ref={mainContentRef}

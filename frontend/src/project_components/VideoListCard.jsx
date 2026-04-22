@@ -73,52 +73,56 @@ const VideoListCard = ({
   return (
     <div
       onClick={onClick}
-      className="flex flex-col sm:flex-row gap-4 p-2 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors w-full group"
+      className="flex flex-col sm:flex-row gap-5 p-3 rounded-2xl cursor-pointer hover:bg-muted/50 dark:hover:bg-white/5 transition-all duration-300 w-full group border border-transparent hover:border-border dark:hover:border-white/5"
     >
       {/* Thumbnail Section */}
-      <div className="relative shrink-0 w-full sm:w-[360px] aspect-video rounded-xl overflow-hidden bg-gray-200">
+      <div className="relative shrink-0 w-full sm:w-[320px] aspect-video rounded-xl overflow-hidden bg-muted/50 dark:bg-black/40 border border-border dark:border-white/5 shadow-sm">
         <img
           src={thumbnail}
           alt={title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
         />
-        <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-semibold px-1.5 py-0.5 rounded">
+        <div className="absolute bottom-2 right-2 bg-black/80 backdrop-blur-md text-white text-[10px] font-black font-satoshi px-1.5 py-0.5 rounded-md shadow-lg border border-white/10 uppercase tracking-tight">
           {formattedDuration}
         </div>
       </div>
 
       {/* Content Section */}
-      <div className="flex-1 min-w-0 py-1">
-        <div className="flex justify-between items-start gap-2">
-          <h3 className="text-lg font-bold font-satoshi leading-snug text-gray-900 line-clamp-2 mb-1">
+      <div className="flex-1 min-w-0 py-1 flex flex-col">
+        <div className="flex justify-between items-start gap-4">
+          <h3 className="text-lg font-black font-satoshi leading-tight text-foreground line-clamp-2 mb-2 group-hover:text-primary transition-colors">
             {title}
           </h3>
-          <button className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-200 rounded-full transition-all">
-            <MoreVertical className="w-5 h-5 text-gray-700" />
+          <button className="opacity-0 group-hover:opacity-100 p-2 hover:bg-muted dark:hover:bg-white/10 rounded-full transition-all shrink-0">
+            <MoreVertical className="w-5 h-5 text-muted-foreground" />
           </button>
         </div>
 
-        <div className="flex items-center text-xs font-inter text-gray-600 mb-3">
-          <span>{viewCount} views</span>
-          <span className="mx-1">•</span>
+        <div className="flex items-center text-[11px] font-black uppercase tracking-widest font-satoshi text-muted-foreground/60 mb-4">
+          <span>{viewCount.toLocaleString()} Views</span>
+          <span className="mx-2 opacity-30">|</span>
           <span>{uploadedTime}</span>
         </div>
 
-        <div className="flex items-center gap-2 mb-3">
-          <img
-            src={channelAvatar}
-            alt={channelName}
-            className="w-6 h-6 rounded-full object-cover"
-          />
-          <span className="text-sm font-medium font-satoshi text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-1">
-            {channelName}
+        <div className="flex items-center gap-3 mb-4 group/channel w-fit">
+          <div className="relative">
+            <img
+              src={channelAvatar}
+              alt={channelName}
+              className="w-8 h-8 rounded-full object-cover border border-border dark:border-white/10"
+            />
             {isVerified && (
-              <CheckCircle2 className="w-3.5 h-3.5 text-gray-500 fill-current" />
+              <div className="absolute -bottom-0.5 -right-0.5 bg-background dark:bg-black rounded-full p-0.5">
+                <CheckCircle2 className="w-3 h-3 text-primary fill-primary/10" />
+              </div>
             )}
+          </div>
+          <span className="text-sm font-black font-satoshi text-muted-foreground group-hover/channel:text-foreground transition-colors uppercase tracking-tight">
+            {channelName}
           </span>
         </div>
 
-        <p className="text-sm font-inter text-gray-500 line-clamp-2 sm:line-clamp-1">
+        <p className="text-sm font-medium font-inter text-muted-foreground/70 line-clamp-2 leading-relaxed max-w-2xl">
           {description}
         </p>
       </div>

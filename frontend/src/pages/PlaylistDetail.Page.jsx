@@ -8,8 +8,8 @@ import { useToast } from "../ContentApi/ToastContext";
 
 const Crosshair = ({ className }) => (
   <div className={`absolute w-3 h-3 flex items-center justify-center pointer-events-none ${className}`}>
-    <div className="absolute w-full h-[1px] bg-border" />
-    <div className="absolute h-full w-[1px] bg-border" />
+    <div className="absolute w-full h-[1px] bg-border dark:bg-white/10" />
+    <div className="absolute h-full w-[1px] bg-border dark:bg-white/10" />
   </div>
 );
 

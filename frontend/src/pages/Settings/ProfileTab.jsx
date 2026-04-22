@@ -137,91 +137,95 @@ const ProfileTab = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 pb-10">
       {/* Profile Picture and Account Details - Side by Side */}
-      <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-8">
         {/* Update Avatar Card - Square on Left */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
+        <Card className="border-border dark:border-white/5 bg-background/50 backdrop-blur-sm shadow-sm overflow-hidden">
+          <CardHeader className="relative overflow-hidden border-b border-border dark:border-white/5 p-6">
+            <div className="absolute inset-0 bg-muted/20 dark:bg-neutral-900/40" />
+            <div className="absolute top-[-20%] left-[-10%] w-[40%] h-[140%] bg-primary/10 dark:bg-primary/5 blur-[40px] rotate-12 rounded-full" />
+            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" 
+                 style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '16px 16px' }} />
+            
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="p-2.5 rounded-2xl bg-background dark:bg-black border border-border dark:border-white/10 shadow-sm shadow-primary/5">
                 <Image className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <CardTitle>Profile Picture</CardTitle>
+                <CardTitle className="text-xl font-black font-satoshi uppercase tracking-tight text-foreground">Identity</CardTitle>
+                <div className="h-0.5 w-8 bg-primary mt-1 rounded-full opacity-50" />
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-center gap-4">
+          <CardContent className="pt-8">
+            <div className="flex flex-col items-center gap-6">
               {/* Avatar Preview */}
-              <div className="w-32 h-32 rounded-full bg-muted flex items-center justify-center overflow-hidden border-2 border-border shrink-0">
+              <div className="w-40 h-40 rounded-full bg-muted/50 dark:bg-white/5 flex items-center justify-center overflow-hidden border-2 border-border dark:border-white/10 shrink-0 shadow-inner group/avatar relative">
                 {avatarPreview ? (
                   <img
                     src={avatarPreview}
                     alt="Avatar preview"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/avatar:scale-110"
                   />
                 ) : (
-                  <User className="w-16 h-16 text-muted-foreground" />
+                  <User className="w-20 h-20 text-muted-foreground/30" />
                 )}
               </div>
 
               {!isEditingAvatar ? (
-                <div className="flex flex-col gap-2 w-full">
-                  <p className="text-xs text-muted-foreground text-center">
-                    Your profile picture is visible to everyone
+                <div className="flex flex-col gap-3 w-full">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 text-center">
+                    Public Avatar
                   </p>
                   <Button
                     onClick={() => setIsEditingAvatar(true)}
                     variant="outline"
-                    className="group relative overflow-hidden transition-all duration-300 w-full flex items-center justify-center gap-2 hover:gap-2 rounded-2xl"
+                    className="w-full flex items-center justify-center gap-2 rounded-full border-border dark:border-white/10 hover:bg-muted/50 dark:hover:bg-white/5 transition-all"
                   >
-                    <Pencil className="w-4 h-4" />
-                    <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-xs group-hover:opacity-100 transition-all duration-300">
-                      Edit
-                    </span>
+                    <Pencil className="w-3 h-3" />
+                    <span>Change Photo</span>
                   </Button>
                 </div>
               ) : (
-                <div className="w-full space-y-3">
-                  <div>
-                    <FieldLabel htmlFor="avatar">Choose Image</FieldLabel>
+                <div className="w-full space-y-4">
+                  <div className="space-y-2">
+                    <FieldLabel htmlFor="avatar" className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Source</FieldLabel>
                     <Input
                       id="avatar"
                       type="file"
                       accept="image/*"
                       onChange={handleAvatarChange}
-                      className="cursor-pointer"
+                      className="cursor-pointer file:bg-primary file:text-primary-foreground file:font-bold file:px-3 file:py-1 file:rounded file:mr-3 rounded-xl border-border dark:border-white/10 h-12"
                     />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Square image, 400x400px+
+                    <p className="text-[10px] text-muted-foreground/60 italic">
+                      Optimal: Square, 800x800px+
                     </p>
                     {avatarFileSizeError && (
-                      <p className="text-xs text-red-500 mt-1 font-medium">
-                        File size must be less than 8MB
+                      <p className="text-xs text-destructive mt-1 font-bold">
+                        Limit: 8MB exceeded
                       </p>
                     )}
                   </div>
                   <div className="flex gap-3">
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="ghost"
                       onClick={() => {
                         setIsEditingAvatar(false);
                         setAvatarFileSizeError(false);
                       }}
-                      className="flex-1"
+                      className="flex-1 rounded-full text-xs font-bold"
                     >
                       Cancel
                     </Button>
                     <Button
                       onClick={(e) => handleAvatarSubmit(e)}
                       disabled={!avatarFile || avatarFileSizeError}
-                      className="flex-1"
+                      className="flex-1 rounded-full text-xs font-black font-satoshi uppercase tracking-widest shadow-lg shadow-primary/20"
                     >
-                      <Upload className="w-4 h-4 mr-2" />
-                      Upload
+                      <Upload className="w-3 h-3 mr-2" />
+                      Save
                     </Button>
                   </div>
                 </div>
@@ -231,50 +235,59 @@ const ProfileTab = () => {
         </Card>
 
         {/* Update Account Details Card - Takes Remaining Width */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
+        <Card className="border-border dark:border-white/5 bg-background/50 backdrop-blur-sm shadow-sm overflow-hidden flex flex-col">
+          <CardHeader className="relative overflow-hidden border-b border-border dark:border-white/5 p-6">
+            <div className="absolute inset-0 bg-muted/20 dark:bg-neutral-900/40" />
+            <div className="absolute top-[-20%] right-[-10%] w-[40%] h-[140%] bg-primary/10 dark:bg-primary/5 blur-[40px] -rotate-12 rounded-full" />
+            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" 
+                 style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '16px 16px' }} />
+            
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="p-2.5 rounded-2xl bg-background dark:bg-black border border-border dark:border-white/10 shadow-sm shadow-primary/5">
                 <User className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <CardTitle>Account Details</CardTitle>
-                <CardDescription>
-                  Update your name and email address
+                <CardTitle className="text-xl font-black font-satoshi uppercase tracking-tight text-foreground">Account Parameters</CardTitle>
+                <CardDescription className="text-[10px] font-black font-satoshi uppercase tracking-[0.2em] text-muted-foreground/60 mt-1">
+                  Core identification architecture.
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleAccountDetailsSubmit} className="space-y-6">
-              {/* Full Name Field */}
-              <div className="space-y-3">
-                <FieldLabel htmlFor="fullName">Full Name</FieldLabel>
-                <Input
-                  id="fullName"
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Enter your full name"
-                />
-              </div>
+          <CardContent className="pt-8 flex-1">
+            <form onSubmit={handleAccountDetailsSubmit} className="space-y-8 h-full flex flex-col">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Full Name Field */}
+                <div className="space-y-3">
+                  <FieldLabel htmlFor="fullName" className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Real Name</FieldLabel>
+                  <Input
+                    id="fullName"
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Enter your full name"
+                    className="h-12 rounded-xl border-border dark:border-white/10 bg-muted/20 dark:bg-white/5 focus-visible:ring-primary focus-visible:bg-background font-inter font-medium"
+                  />
+                </div>
 
-              {/* Email Field */}
-              <div className="space-y-3">
-                <FieldLabel htmlFor="email">Email Address</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                />
+                {/* Email Field */}
+                <div className="space-y-3">
+                  <FieldLabel htmlFor="email" className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Contact Email</FieldLabel>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="h-12 rounded-xl border-border dark:border-white/10 bg-muted/20 dark:bg-white/5 focus-visible:ring-primary focus-visible:bg-background font-inter font-medium"
+                  />
+                </div>
               </div>
 
               {/* Common Save Button */}
-              <div className="flex justify-end">
-                <Button type="submit" className="rounded-full">
-                  Save Changes
+              <div className="mt-auto pt-8 flex justify-end">
+                <Button type="submit" className="rounded-full px-8 h-12 font-black uppercase text-[10px] tracking-widest shadow-lg shadow-primary/20">
+                  Update Registry
                 </Button>
               </div>
             </form>
@@ -283,84 +296,98 @@ const ProfileTab = () => {
       </div>
 
       {/* Update Cover Image Card */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
+      <Card className="border-border dark:border-white/5 bg-background/50 backdrop-blur-sm shadow-sm overflow-hidden">
+        <CardHeader className="relative overflow-hidden border-b border-border dark:border-white/5 p-6">
+          <div className="absolute inset-0 bg-muted/20 dark:bg-neutral-900/40" />
+          <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[140%] bg-primary/10 dark:bg-primary/5 blur-[40px] rotate-[30deg] rounded-full" />
+          <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" 
+               style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)', backgroundSize: '16px 16px' }} />
+          
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="p-2.5 rounded-2xl bg-background dark:bg-black border border-border dark:border-white/10 shadow-sm shadow-primary/5">
               <ImagePlus className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <CardTitle>Cover Image</CardTitle>
-              <CardDescription>
-                Upload a cover image for your channel
+              <CardTitle className="text-xl font-black font-satoshi uppercase tracking-tight text-foreground">Channel Canvas</CardTitle>
+              <CardDescription className="text-[10px] font-black font-satoshi uppercase tracking-[0.2em] text-muted-foreground/60 mt-1">
+                Global header visual architecture.
               </CardDescription>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
+        <CardContent className="pt-8">
+          <div className="space-y-6">
             {/* Cover Image Preview */}
-            <div className="w-full h-36 rounded-lg bg-muted flex items-center justify-center overflow-hidden border-2 border-border">
+            <div className="w-full h-48 rounded-2xl bg-muted/50 dark:bg-white/5 flex items-center justify-center overflow-hidden border-2 border-border dark:border-white/10 group/cover relative shadow-inner">
               {coverImagePreview ? (
                 <img
                   src={coverImagePreview}
                   alt="Cover preview"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover/cover:scale-105"
                 />
               ) : (
-                <div className="text-center">
-                  <ImagePlus className="w-10 h-10 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">
-                    No cover image
+                <div className="text-center p-10 border-2 border-dashed border-border dark:border-white/10 rounded-xl">
+                  <ImagePlus className="w-12 h-12 text-muted-foreground/20 mx-auto mb-3" />
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+                    Background Undefined
                   </p>
                 </div>
               )}
             </div>
 
             {!isEditingCover ? (
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">
-                  Recommended: 1920x1080px or 16:9 aspect ratio
-                </p>
+              <div className="flex items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Dimensions</p>
+                  <p className="text-xs font-medium text-muted-foreground/60 italic">
+                    Resolution: 1920x1080px (16:9)
+                  </p>
+                </div>
                 <Button
                   onClick={() => setIsEditingCover(true)}
                   variant="outline"
-                  className="group relative overflow-hidden transition-all duration-300 hover:pr-12 rounded-2xl"
+                  className="flex items-center gap-2 rounded-full border-border dark:border-white/10 px-6"
                 >
-                  <Pencil className="w-4 h-4" />
-                  <span className="absolute right-3 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                    Edit
-                  </span>
+                  <Pencil className="w-3 h-3" />
+                  <span className="text-xs font-black font-satoshi uppercase tracking-widest">Edit Banner</span>
                 </Button>
               </div>
             ) : (
-              <div className="space-y-3">
-                <div>
-                  <FieldLabel htmlFor="coverImage">Choose Image</FieldLabel>
-                  <Input
-                    id="coverImage"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleCoverImageChange}
-                    className="cursor-pointer"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Recommended: 1920x1080px or 16:9 aspect ratio
+              <div className="space-y-6 animate-in fade-in slide-in-from-top-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
+                  <div className="space-y-3">
+                    <FieldLabel htmlFor="coverImage" className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Source</FieldLabel>
+                    <Input
+                      id="coverImage"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleCoverImageChange}
+                      className="cursor-pointer h-12 rounded-xl border-border dark:border-white/10"
+                    />
+                  </div>
+                  <div className="flex justify-end gap-3 h-12">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => setIsEditingCover(false)}
+                      className="rounded-full px-6 text-xs font-bold"
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      onClick={(e) => handleCoverImageSubmit(e)}
+                      className="rounded-full px-8 text-xs font-bold shadow-lg shadow-primary/20"
+                    >
+                      <Upload className="w-3 h-3 mr-2" />
+                      Apply Banner
+                    </Button>
+                  </div>
+                </div>
+                {coverImageFileSizeError && (
+                  <p className="text-xs text-destructive font-bold text-right">
+                    Limit: 8MB exceeded
                   </p>
-                </div>
-                <div className="flex justify-end gap-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setIsEditingCover(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button onClick={(e) => handleCoverImageSubmit(e)}>
-                    <Upload className="w-4 h-4 mr-2" />
-                    Upload Cover
-                  </Button>
-                </div>
+                )}
               </div>
             )}
           </div>

@@ -106,11 +106,10 @@ const PlaylistCard = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 rounded-lg bg-white/10 px-2.5 py-1 text-[9px] font-black text-white backdrop-blur-md border border-white/10 shadow-lg group-hover:bg-orange-300/20 transition-all duration-500">
+          <div className="flex items-center gap-2 rounded-lg bg-white/10 px-2.5 py-1 text-[9px] font-black text-white backdrop-blur-md border border-white/10 shadow-lg group-hover:bg-primary/20 transition-all duration-500 font-satoshi">
             <ListVideo className="h-3 w-3" />
             <span className="tracking-widest uppercase">
-              {" "}
-              {videoCount} VIDEOS{" "}
+              {videoCount} VIDEOS
             </span>
           </div>
         </div>
@@ -118,12 +117,12 @@ const PlaylistCard = ({
         {/* Glassmorphic Footer (Description Box) */}
         <div className="absolute bottom-4 left-4 right-4 overflow-hidden rounded-xl border border-white/0 bg-black/10 p-4 backdrop-blur-sm transition-all duration-500 group-hover:bg-white/15 group-hover:border-white/30 group-hover:backdrop-blur-2xl">
           <div className="flex flex-col">
-            <h3 className="text-lg font-extrabold tracking-tight text-white line-clamp-1 drop-shadow-md transition-all duration-500">
+            <h3 className="text-lg font-black font-satoshi uppercase tracking-tight text-white line-clamp-1 drop-shadow-md transition-all duration-500">
               {title}
             </h3>
             <div className="grid grid-rows-[0fr] opacity-0 transition-all duration-500 group-hover:grid-rows-[1fr] group-hover:opacity-100 group-hover:mt-2">
-              <p className="overflow-hidden text-[12px] font-medium text-gray-200 line-clamp-1 leading-tight">
-                {description || "View collection"}
+              <p className="overflow-hidden text-[11px] font-medium font-inter text-gray-200 line-clamp-1 leading-tight tracking-wide">
+                {description || "View collection architecture"}
               </p>
             </div>
           </div>

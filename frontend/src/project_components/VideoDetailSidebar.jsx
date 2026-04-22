@@ -35,8 +35,8 @@ const Crosshair = ({ className }) => (
   <div
     className={`absolute w-3 h-3 flex items-center justify-center pointer-events-none ${className}`}
   >
-    <div className="absolute w-full h-[1px] bg-border" />
-    <div className="absolute h-full w-[1px] bg-border" />
+    <div className="absolute w-full h-[1px] bg-border dark:bg-white/10 shadow-[0_0_8px_rgba(255,255,255,0.1)]" />
+    <div className="absolute h-full w-[1px] bg-border dark:bg-white/10 shadow-[0_0_8px_rgba(255,255,255,0.1)]" />
   </div>
 );
 
@@ -258,7 +258,7 @@ const VideoDetailSidebar = ({
           height: isOpen ? "80vh" : "auto",
         }}
         transition={{ type: "spring", stiffness: 150, damping: 25 }}
-        className="bg-background/80 border border-border backdrop-blur-2xl flex flex-col overflow-hidden shadow-2xl rounded-2xl relative"
+        className="bg-background/80 dark:bg-black/40 border border-border dark:border-white/10 backdrop-blur-2xl flex flex-col overflow-hidden shadow-2xl rounded-2xl relative transition-colors duration-300"
       >
         {/* Navigation / Header */}
         <div
@@ -507,13 +507,13 @@ const VideoDetailSidebar = ({
                       </div>
                     ) : (
                       comments.filter(c => !c.parent).map((comment) => (
-                        <div key={comment._id} className="flex flex-col">
+                        <div key={comment._id} className="flex flex-col relative">
                         <motion.div
                           key={comment._id}
                           initial="hidden"
                           animate="show"
                           variants={itemVariants}
-                          className="flex gap-3 px-4 py-4 border-b border-border bg-background/10 group hover:bg-muted/40 transition-all duration-300"
+                          className="flex gap-3 px-4 py-3 bg-background/10 group hover:bg-muted/40 transition-all duration-300 relative z-10"
                         >
                           <div className="w-10 h-10 bg-muted text-muted-foreground flex items-center justify-center font-bold shrink-0 border border-border rounded-full overflow-hidden shadow-sm">
                             {comment.owner?.avatar ? (
@@ -747,76 +747,79 @@ const VideoDetailSidebar = ({
                                     animate={{ height: "auto", opacity: 1 }}
                                     exit={{ height: 0, opacity: 0 }}
                                     transition={{ duration: 0.3, ease: "circOut" }}
-                                    className="ml-10 space-y-0 mt-2 overflow-hidden relative"
+                                    className="ml-[40px] space-y-0 mt-1 overflow-visible relative"
                                 >
                                     {(() => {
-                                        const threadData = repliesMap[comment._id] || { docs: [], totalDocs: 0, hasNextPage: false };
-                                        const visibleArray = threadData.docs;
-                                        const remainingCount = (threadData.totalDocs || 0) - visibleArray.length;
+                                         const threadData = repliesMap[comment._id] || { docs: [], totalDocs: 0, hasNextPage: false };
+                                         const visibleArray = threadData.docs;
+                                         const remainingCount = (threadData.totalDocs || 0) - visibleArray.length;
 
-                                        return (
-                                            <>
-                                                {visibleArray.map((reply, idx) => (
-                                                    <motion.div
-                                                        key={reply._id}
-                                                        layout
-                                                        initial={{ opacity: 0, x: -10 }}
-                                                        animate={{ opacity: 1, x: 0 }}
-                                                        className="relative pl-4 flex gap-3 py-3 bg-background/0 hover:bg-muted/15 transition-all duration-300 group/reply-item"
-                                                    >
-                                                        {/* Exact Tweet-style Branch Connector */}
-                                                        <div className={`absolute left-0 top-0 w-[1px] bg-black/30 shadow-[0.5px_0_3px_rgba(0,0,0,0.05)] ${!threadData.hasNextPage && idx === visibleArray.length - 1 ? 'h-6' : 'bottom-0'}`} />
-                                                        <div className="absolute left-0 top-6 w-4 h-4 border-l-[1px] border-b-[1px] border-black/30 rounded-bl-xl shadow-[0.5px_0.5px_2px_rgba(0,0,0,0.02)]" />
-                                                        
-                                                        <div className="w-9 h-9 bg-muted text-muted-foreground flex items-center justify-center font-bold shrink-0 border border-border rounded-full overflow-hidden shadow-sm z-10 hover:opacity-80 transition-opacity">
-                                                            {reply.owner?.avatar ? (
-                                                            <img
-                                                                src={reply.owner.avatar}
-                                                                alt=""
-                                                                className="w-full h-full object-cover grayscale group-hover/reply-item:grayscale-0 transition-all duration-500"
-                                                            />
-                                                            ) : (
-                                                            <span className="text-[10px]">
-                                                                {reply.owner?.username?.charAt(0)}
-                                                            </span>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <div className="flex items-center justify-between mb-0.5">
-                                                                <div className="flex items-center gap-1.5 flex-wrap">
-                                                                    <span className="font-bold text-foreground text-xs truncate">
-                                                                    {reply.owner?.fullName || reply.owner?.username}
-                                                                    </span>
-                                                                    <span className="text-muted-foreground/30 text-[10px]">·</span>
-                                                                    <span className="text-[9px] text-muted-foreground/60 font-bold">
-                                                                        {reply.createdAt && formatDistanceToNow(new Date(reply.createdAt), {addSuffix: false})}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <p className="text-[11px] text-foreground/80 leading-relaxed font-inter pr-2">
-                                                                {reply.content}
-                                                            </p>
-                                                        </div>
-                                                    </motion.div>
-                                                ))}
+                                         return (
+                                             <>
+                                                 {visibleArray.map((reply, idx) => (
+                                                     <div key={reply._id} className="relative pl-4">
+                                                        {/* The Curved Branch Connector with Junction Dot (Synced with Tweet.jsx) */}
 
-                                                {threadData.hasNextPage && (
-                                                    <div className="relative pl-4">
-                                                        {/* Vertical line continuation for the button */}
-                                                        <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-black/30 shadow-[0.5px_0_3px_rgba(0,0,0,0.05)]" />
-                                                        
-                                                        <button 
-                                                            onClick={() => loadMoreReplies(comment._id)}
-                                                            className="flex items-center gap-2 py-3 px-4 text-[11px] font-bold text-primary hover:bg-muted/10 transition-all w-full text-left"
+                                                        <div className={`absolute left-0 top-0 w-[1.5px] bg-neutral-300 dark:bg-white/20 shadow-[0_0_12px_rgba(255,255,255,0.05)] ${!threadData.hasNextPage && idx === visibleArray.length - 1 ? 'h-[22px]' : 'bottom-0'}`} />
+                                                        <div className="absolute left-0 top-3 w-4 h-4 border-l-[1.5px] border-b-[1.5px] border-neutral-300 dark:border-white/20 rounded-bl-xl shadow-[-2px_2px_10px_rgba(255,255,255,0.05)]" />
+                                                        <div className="absolute left-[-2px] top-[12px] w-[6px] h-[6px] rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.5)] z-20" />
+
+                                                        <motion.div
+                                                            layout
+                                                            initial={{ opacity: 0, x: -10 }}
+                                                            animate={{ opacity: 1, x: 0 }}
+                                                            className="flex gap-2 py-1.5 bg-background/0 hover:bg-muted/15 transition-all duration-300 group/reply-item"
                                                         >
-                                                            <ChevronRight className="rotate-90 w-3 h-3" />
-                                                            Show {remainingCount} more {remainingCount === 1 ? 'reply' : 'replies'}
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </>
-                                        );
-                                    })()}
+                                                            <div className="w-9 h-9 bg-muted text-muted-foreground flex items-center justify-center font-bold shrink-0 border border-border rounded-full overflow-hidden shadow-sm z-10 hover:opacity-80 transition-opacity">
+                                                                {reply.owner?.avatar ? (
+                                                                <img
+                                                                    src={reply.owner.avatar}
+                                                                    alt=""
+                                                                    className="w-full h-full object-cover transition-opacity duration-500"
+                                                                />
+                                                                ) : (
+                                                                <span className="text-[10px]">
+                                                                    {reply.owner?.username?.charAt(0)}
+                                                                </span>
+                                                                )}
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className="flex items-center justify-between mb-0.5">
+                                                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                                                        <span className="font-bold text-foreground text-xs truncate">
+                                                                        {reply.owner?.fullName || reply.owner?.username}
+                                                                        </span>
+                                                                        <span className="text-muted-foreground/30 text-[10px]">·</span>
+                                                                        <span className="text-[9px] text-muted-foreground/60 font-bold">
+                                                                            {reply.createdAt && formatDistanceToNow(new Date(reply.createdAt), {addSuffix: false})}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                                <p className="text-[11px] text-foreground/80 leading-relaxed font-inter pr-2">
+                                                                    {reply.content}
+                                                                </p>
+                                                            </div>
+                                                        </motion.div>
+                                                     </div>
+                                                 ))}
+
+                                                 {threadData.hasNextPage && (
+                                                     <div className="relative pl-6">
+                                                         {/* Vertical line continuation for the button synced with Thread Style */}
+                                                         <div className="absolute left-0 top-0 bottom-0 w-[1.5px] bg-neutral-300 dark:bg-white/20 shadow-[0_0_12px_rgba(255,255,255,0.05)]" />
+                                                         
+                                                         <button 
+                                                             onClick={() => loadMoreReplies(comment._id)}
+                                                             className="flex items-center gap-2 py-3 px-4 text-[11px] font-bold text-primary hover:bg-muted/10 transition-all w-full text-left"
+                                                         >
+                                                             <ChevronRight className="rotate-90 w-3 h-3" />
+                                                             Show {remainingCount} more {remainingCount === 1 ? 'reply' : 'replies'}
+                                                         </button>
+                                                     </div>
+                                                 )}
+                                             </>
+                                         );
+                                     })()}
                                 </motion.div>
                             )}
                         </AnimatePresence>

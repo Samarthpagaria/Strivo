@@ -10,8 +10,8 @@ const Crosshair = ({ className }) => (
   <div
     className={`absolute w-3 h-3 flex items-center justify-center pointer-events-none ${className}`}
   >
-    <div className="absolute w-full h-[1px] bg-gray-300" />
-    <div className="absolute h-full w-[1px] bg-gray-300" />
+    <div className="absolute w-full h-[1px] bg-gray-300 dark:bg-white/10" />
+    <div className="absolute h-full w-[1px] bg-gray-300 dark:bg-white/10" />
   </div>
 );
 
@@ -41,8 +41,8 @@ const SubscribedChannelsList = () => {
       <div className="flex flex-col gap-2 p-2">
         {[1, 2, 3].map((i) => (
           <div key={i} className="flex items-center gap-3 animate-pulse">
-            <div className="w-8 h-8 rounded-full bg-muted" />
-            <div className="h-3 w-20 bg-muted rounded" />
+            <div className="w-8 h-8 rounded-full bg-muted dark:bg-white/5" />
+            <div className="h-3 w-20 bg-muted dark:bg-white/5 rounded" />
           </div>
         ))}
       </div>
@@ -62,7 +62,7 @@ const SubscribedChannelsList = () => {
   }
 
   return (
-    <div className="relative border-t border-l border-gray-200 bg-white mt-2 mx-1">
+    <div className="relative border-t border-l border-gray-200 dark:border-white/5 bg-white dark:bg-white/5 mt-2 mx-1 transition-colors">
       <Crosshair className="-top-1.5 -left-1.5" />
       <Crosshair className="-top-1.5 -right-1.5" />
       <Crosshair className="-bottom-1.5 -left-1.5" />
@@ -73,15 +73,15 @@ const SubscribedChannelsList = () => {
           <button
             key={channel._id}
             onClick={() => navigate(`/c/${channel.username}`)}
-            className="relative border-r border-b border-gray-200 w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-50 transition-all group overflow-hidden"
+            className="relative border-r border-b border-gray-200 dark:border-white/5 w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-white/5 transition-all group overflow-hidden"
           >
             <Crosshair className="-bottom-1.5 -right-1.5 z-10" />
             <img
               src={channel.avatar}
               alt=""
-              className="w-7 h-7 shrink-0 rounded-full object-cover grayscale group-hover:grayscale-0 transition-all border border-gray-200"
+              className="w-7 h-7 shrink-0 rounded-full object-cover grayscale dark:grayscale-0 group-hover:grayscale-0 transition-all border border-gray-200 dark:border-white/10"
             />
-            <span className="text-xs font-bold font-satoshi text-gray-700 group-hover:text-blue-600 truncate whitespace-nowrap overflow-hidden">
+            <span className="text-xs font-bold font-satoshi text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors truncate whitespace-nowrap overflow-hidden">
               {channel.fullName}
             </span>
           </button>
@@ -89,7 +89,7 @@ const SubscribedChannelsList = () => {
         {channels.length > 10 && (
           <button
             onClick={() => navigate("/subscriptions")}
-            className="w-full text-center py-2 text-[10px] font-black uppercase text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors border-r border-b border-gray-200 relative"
+            className="w-full text-center py-2 text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors border-r border-b border-gray-200 dark:border-white/5 relative"
           >
             <Crosshair className="-bottom-1.5 -right-1.5 z-10" />
             Show {channels.length - 10} more
@@ -106,16 +106,16 @@ const MenuItem = ({ children, label, onClick, isExpanded }) => (
       onClick={onClick}
       className="w-full flex items-center gap-3 px-3 py-2 
       rounded-full text-sm font-medium
-      text-foreground/80 
-      hover:text-primary hover:bg-muted/70 
-      focus:bg-muted  focus:text-primary 
-      transition-colors "
+      text-foreground/80 dark:text-foreground/60
+      hover:text-primary dark:hover:text-white hover:bg-muted/70  dark:hover:bg-white/10
+      focus:bg-muted dark:focus:bg-white/20 focus:text-primary dark:focus:text-white
+      transition-all duration-300 "
     >
-      <span className="w-6 h-6 flex items-center justify-center text-foreground/80 shrink-0">
+      <span className="w-6 h-6 flex items-center justify-center text-foreground/80 dark:text-foreground/60 shrink-0">
         {children}
       </span>
       {isExpanded && (
-        <span className="truncate font-satoshi font-medium">{label}</span>
+        <span className="truncate font-satoshi font-medium tracking-tight">{label}</span>
       )}
     </button>
   </div>
@@ -128,9 +128,9 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
   return (
     <div className=" h-full flex items-center">
       <aside
-        className={`fixed h-[80vh] overflow-hidden 
-  bg-background/5 border  border-border backdrop-blur-lg
-  shadow-lg rounded-2xl py-3 transition-all duration-300
+        className={`fixed h-[82vh] overflow-hidden 
+  bg-background/20 dark:bg-black/40 border border-border/60 dark:border-white/10 backdrop-blur-2xl
+  shadow-2xl rounded-3xl py-4 transition-all duration-500 ease-in-out
   ${isExpanded ? "w-50" : "w-16"}`}
         onMouseEnter={() => setIsExpanded(true)}
         onMouseLeave={() => setIsExpanded(false)}

@@ -86,7 +86,7 @@ const TweetPost = ({
   };
 
   return (
-    <div className={`w-full  ${!isReply ? "border-b border-gray-200" : ""}`}>
+    <div className={`w-full  ${!isReply ? "border-b border-gray-200 dark:border-white/5 transition-colors" : ""}`}>
       <div className={isReply ? "pt-2 pb-2" : "p-4"}>
         <div className="flex gap-3">
           {/* Avatar */}
@@ -95,7 +95,7 @@ const TweetPost = ({
               <img
                 src={user?.avatar}
                 alt="User avatar"
-                className="w-12 h-12 rounded-full"
+                className="w-12 h-12 rounded-full border border-gray-200 dark:border-white/10"
               />
             </div>
           )}
@@ -105,7 +105,7 @@ const TweetPost = ({
             <div
               className={
                 isReply
-                  ? "rounded-2xl border border-gray-100 p-3 focus-within:border-gray-900 transition-all duration-300"
+                  ? "rounded-2xl border border-gray-100 dark:border-white/10 p-3 focus-within:border-gray-900 dark:focus-within:border-white/30 transition-all duration-300"
                   : ""
               }
             >
@@ -114,7 +114,7 @@ const TweetPost = ({
                   <img
                     src={user?.avatar}
                     alt="User avatar"
-                    className="w-8 h-8 rounded-full shrink-0"
+                    className="w-8 h-8 rounded-full shrink-0 border border-gray-100 dark:border-white/10"
                   />
                 )}
                 <textarea
@@ -123,7 +123,7 @@ const TweetPost = ({
                   placeholder={
                     isReply ? "Post your reply" : "What's happening?"
                   }
-                  className={`w-full resize-none border-none outline-none placeholder:font-satoshi font-inter text-slate-800 placeholder-gray-400 bg-transparent py-1 ${isReply ? "text-[15px]" : "text-lg"}`}
+                  className={`w-full resize-none border-none outline-none placeholder:font-satoshi font-inter text-slate-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600 bg-transparent py-1 ${isReply ? "text-[15px]" : "text-lg font-medium"}`}
                   rows={isReply ? "1" : "3"}
                   style={{ minHeight: isReply ? "40px" : "auto" }}
                   maxLength={maxLength}
@@ -132,12 +132,12 @@ const TweetPost = ({
             </div>
 
             {videoMention && (
-              <div className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-semibold border border-blue-100">
+              <div className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg text-sm font-semibold border border-blue-100 dark:border-blue-500/20">
                 <PlaySquare className="w-4 h-4" />
                 <span>Video Attached</span>
                 <button
                   onClick={() => setVideoMention(null)}
-                  className="ml-2 hover:bg-blue-100 p-0.5 rounded-full"
+                  className="ml-2 hover:bg-blue-100 dark:hover:bg-blue-500/20 p-0.5 rounded-full"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -152,11 +152,11 @@ const TweetPost = ({
                     <img
                       src={URL.createObjectURL(img)}
                       alt="preview"
-                      className="w-20 h-20 object-cover rounded-lg border border-gray-200"
+                      className="w-20 h-20 object-cover rounded-lg border border-gray-200 dark:border-white/10"
                     />
                     <button
                       onClick={() => removeImage(i)}
-                      className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5"
+                      className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-lg"
                     >
                       <X size={14} />
                     </button>
@@ -166,11 +166,11 @@ const TweetPost = ({
                   <div key={i} className="relative">
                     <video
                       src={URL.createObjectURL(vid)}
-                      className="w-20 h-20 object-cover rounded-lg border border-gray-200"
+                      className="w-20 h-20 object-cover rounded-lg border border-gray-200 dark:border-white/10"
                     />
                     <button
                       onClick={() => removeVideo(i)}
-                      className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5"
+                      className="absolute -top-2 -right-2 bg-gray-800 text-white rounded-full p-0.5 shadow-lg"
                     >
                       <X size={14} />
                     </button>
@@ -180,9 +180,9 @@ const TweetPost = ({
             )}
 
             <div
-              className={`flex items-center justify-between mt-3 ${!isReply ? "pt-3 border-t border-gray-100" : ""}`}
+              className={`flex items-center justify-between mt-3 ${!isReply ? "pt-3 border-t border-gray-100 dark:border-white/5" : ""}`}
             >
-              {/* Left side spacer - can be used for emojis/mentions later */}
+              {/* Left side spacer */}
               <div />
 
               {/* Right side - Media, Character count and Post button */}
@@ -204,10 +204,10 @@ const TweetPost = ({
                   onChange={handleVideoSelect}
                 />
 
-                <div className="flex items-center gap-0 border border-border/50 rounded-lg overflow-hidden bg-background/50 font-inter">
+                <div className="flex items-center gap-0 border border-border/50 dark:border-white/10 rounded-lg overflow-hidden bg-background/50 dark:bg-white/5 font-inter">
                   <Button
                     asChild
-                    className="h-8 px-2 text-muted-foreground hover:text-foreground bg-transparent hover:bg-muted/50 border-r border-border/40 rounded-none font-inter"
+                    className="h-8 px-2 text-muted-foreground hover:text-foreground dark:hover:text-white bg-transparent hover:bg-muted/50 dark:hover:bg-white/10 border-r border-border/40 dark:border-white/5 rounded-none font-inter"
                     variant="ghost"
                   >
                     <label htmlFor={`image-upload-${parentTweetId || "new"}`} className="cursor-pointer flex items-center gap-1.5">
@@ -218,7 +218,7 @@ const TweetPost = ({
                   
                   <Button
                     asChild
-                    className="h-8 px-2 text-muted-foreground hover:text-foreground bg-transparent hover:bg-muted/50 rounded-none font-inter"
+                    className="h-8 px-2 text-muted-foreground hover:text-foreground dark:hover:text-white bg-transparent hover:bg-muted/50 dark:hover:bg-white/10 rounded-none font-inter"
                     variant="ghost"
                   >
                     <label htmlFor={`video-upload-${parentTweetId || "new"}`} className="cursor-pointer flex items-center gap-1.5">
@@ -229,7 +229,7 @@ const TweetPost = ({
                 </div>
 
                 {tweetText.length > 0 && (
-                  <span className="text-[10px] font-medium text-gray-400">
+                  <span className="text-[10px] font-medium text-gray-400 dark:text-gray-600">
                     {tweetText.length}/{maxLength}
                   </span>
                 )}
@@ -246,8 +246,8 @@ const TweetPost = ({
                     images.length > 0 ||
                     videos.length > 0 ||
                     videoMention
-                      ? "bg-black text-white hover:bg-gray-800 shadow-md transform hover:-translate-y-0.5 active:translate-y-0"
-                      : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                      ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 shadow-md transform hover:-translate-y-0.5 active:translate-y-0"
+                      : "bg-gray-200 dark:bg-white/5 text-gray-400 dark:text-gray-700 cursor-not-allowed"
                   }`}
                 >
                   {isReply ? "Reply" : "Post"}

@@ -111,11 +111,11 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
           title={channelName}
         />
         <div className="flex flex-col flex-1 min-w-0">
-          <h3 className="text-[15px] font-bold font-satoshi line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+          <h3 className="text-[15px] font-bold font-satoshi line-clamp-2 leading-tight group-hover:text-primary dark:text-neutral-100 transition-colors">
             {title}
           </h3>
           <p
-            className="text-xs font-medium font-satoshi text-muted-foreground hover:text-foreground transition-colors mt-1"
+            className="text-xs font-medium font-satoshi text-muted-foreground dark:text-muted-foreground/60 hover:text-foreground dark:hover:text-white transition-colors mt-1"
             onClick={handleProfileClick}
           >
             {channelName}
@@ -138,7 +138,7 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
             onClick={handleLikeClick}
             disabled={toggleLikeMutation.isPending}
             className={`p-2 rounded-full transition-all ${
-              isLiked ? "text-rose-600 bg-rose-50" : "text-muted-foreground/40 hover:text-foreground hover:bg-muted"
+              isLiked ? "text-rose-600 bg-rose-50 dark:bg-rose-500/10" : "text-muted-foreground/40 hover:text-foreground dark:hover:text-white hover:bg-muted dark:hover:bg-white/10"
             }`}
           >
             <Heart size={16} fill={isLiked ? "currentColor" : "none"} />

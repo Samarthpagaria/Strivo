@@ -56,27 +56,27 @@ const VideoCardMenu = ({ videoId }) => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="p-1 hover:bg-gray-300 rounded-full transition-colors h-fit">
-          <MoreVertical className="w-4 h-4 text-gray-600" />
+        <button className="p-2 hover:bg-muted dark:hover:bg-white/10 rounded-full transition-all duration-300 h-fit group/trigger">
+          <MoreVertical className="w-5 h-5 text-muted-foreground/60 group-hover/trigger:text-foreground transition-colors" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-48 p-0 border-none shadow-lg font-inter">
+      <PopoverContent className="w-56 p-0 bg-background/95 dark:bg-black/95 backdrop-blur-xl border border-border dark:border-white/10 shadow-2xl rounded-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 font-satoshi">
         <div className="py-1">
           {/* Nested Popover for Playlist Selection */}
           <Popover>
             <PopoverTrigger asChild>
-              <button className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left">
+              <button className="w-full flex items-center justify-between px-4 py-3 text-sm font-bold uppercase tracking-tight text-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200 text-left">
                 <div className="flex items-center gap-3">
                   <ListPlus className="w-4 h-4" />
                   <span>Add to Playlist</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <ChevronRight className="w-4 h-4 opacity-40" />
               </button>
             </PopoverTrigger>
-            <PopoverContent side="right" className="w-56 p-2">
+            <PopoverContent side="right" className="w-64 p-2 bg-background/95 dark:bg-black/95 backdrop-blur-xl border border-border dark:border-white/10 shadow-2xl rounded-xl">
               <div className="space-y-1">
-                <p className="text-xs font-semibold text-gray-500 px-2 py-1">
-                  Select Playlist
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 px-3 py-2">
+                  Destination Protocol
                 </p>
                 {allPlaylists && allPlaylists.length > 0 ? (
                   allPlaylists.map((playlist) => (
@@ -90,13 +90,12 @@ const VideoCardMenu = ({ videoId }) => {
                           : "hover:bg-gray-100 dark:hover:bg-gray-800"
                       }`}
                     >
-                      <span>{playlist?.name}</span>
-                      <input
-                        type="checkbox"
-                        className="w-4 h-4  pointer-events-none  "
-                        checked={isVideoInPlaylist(playlist)}
-                        readOnly
-                      />
+                      <div className="flex items-center gap-3">
+                        <div className={`w-4 h-4 rounded-full border border-border flex items-center justify-center transition-all ${isVideoInPlaylist(playlist) ? 'bg-primary border-primary scale-110 shadow-[0_0_10px_rgba(var(--primary),0.3)]' : 'bg-transparent'}`}>
+                          {isVideoInPlaylist(playlist) && <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />}
+                        </div>
+                        <span className="font-medium">{playlist?.name}</span>
+                      </div>
                     </button>
                   ))
                 ) : (

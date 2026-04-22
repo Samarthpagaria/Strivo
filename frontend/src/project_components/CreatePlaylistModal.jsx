@@ -32,74 +32,79 @@ const CreatePlaylistModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
       ></div>
 
       {/* Modal */}
-      <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 z-10">
+      <div className="relative bg-background/95 dark:bg-black/95 backdrop-blur-xl border border-border dark:border-white/10 rounded-3xl shadow-2xl w-full max-w-md mx-4 p-8 z-10 animate-in fade-in zoom-in-95 duration-300">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Create Playlist
-          </h2>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl font-black font-satoshi text-foreground uppercase tracking-tight">
+              Initiate Collection
+            </h2>
+            <p className="text-[10px] font-black font-satoshi uppercase tracking-widest text-muted-foreground/40 mt-1">
+              New Playlist Protocol
+            </p>
+          </div>
           <button
             onClick={handleClose}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+            className="p-2.5 bg-muted/50 dark:bg-white/5 hover:bg-muted dark:hover:bg-white/10 rounded-full transition-all duration-300 group"
           >
-            <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            <X className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Name Field */}
-          <div>
+          <div className="space-y-2">
             <label
               htmlFor="playlist-name"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="text-[10px] font-black font-satoshi uppercase tracking-widest text-muted-foreground ml-1"
             >
-              Playlist Name <span className="text-red-500">*</span>
+              Label <span className="text-primary">*</span>
             </label>
             <input
               id="playlist-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Enter playlist name"
+              placeholder="Enter collection name"
               required
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full px-5 py-4 rounded-2xl border border-border dark:border-white/10 bg-muted/20 dark:bg-white/5 text-foreground placeholder:text-muted-foreground/30 font-inter font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all"
             />
           </div>
 
           {/* Description Field */}
-          <div>
+          <div className="space-y-2">
             <label
               htmlFor="playlist-description"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="text-[10px] font-black font-satoshi uppercase tracking-widest text-muted-foreground ml-1"
             >
-              Description <span className="text-gray-400">(Optional)</span>
+              Intelligence <span className="text-muted-foreground/30">(Optional)</span>
             </label>
             <textarea
               id="playlist-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Add a description for your playlist"
-              rows={4}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+              placeholder="Define collection purpose..."
+              rows={3}
+              className="w-full px-5 py-4 rounded-2xl border border-border dark:border-white/10 bg-muted/20 dark:bg-white/5 text-foreground placeholder:text-muted-foreground/30 font-inter font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-background transition-all resize-none"
             />
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-4 pt-4">
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              className="flex-1 px-6 py-4 rounded-full border border-border dark:border-white/10 text-muted-foreground font-black font-satoshi uppercase text-[10px] tracking-widest hover:bg-muted dark:hover:bg-white/5 transition-all"
             >
-              Cancel
+              Discard
             </button>
             <button
               type="submit"
               disabled={!name.trim() || isLoading}
-              className="flex-1 px-4 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="flex-2 px-8 py-4 rounded-full bg-foreground text-background font-black font-satoshi uppercase text-[10px] tracking-widest hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-xl shadow-foreground/10"
             >
-              {isLoading ? "Creating..." : "Create"}
+              {isLoading ? "Synchronizing..." : "Archive Collection"}
             </button>
           </div>
         </form>

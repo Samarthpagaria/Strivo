@@ -46,30 +46,31 @@ function Results() {
     <div className="w-full max-w-6xl mx-auto px-4 py-4">
       <div className="flex flex-col gap-4">
         {query && (
-          <div className="mb-4">
-            <h1 className="text-2xl font-semibold text-gray-800">
-              Search results for "{query}"
+          <div className="mb-6">
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Results Segment</p>
+            <h1 className="text-3xl font-black font-satoshi text-foreground tracking-tight">
+              "{query}"
             </h1>
           </div>
         )}
 
         {isLoading && (
           <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
         )}
 
         {isError && (
-          <div className="text-center py-20 text-red-500">
-            <h2 className="text-xl font-semibold mb-2">Error loading videos</h2>
-            <p>{error?.message || "Something went wrong. Please try again."}</p>
+          <div className="text-center py-20 text-destructive">
+            <h2 className="text-xl font-black font-satoshi uppercase tracking-tight mb-2">Discovery Error</h2>
+            <p className="text-sm font-medium text-muted-foreground/60">{error?.message || "Something went wrong. Please try again."}</p>
           </div>
         )}
 
         {!query && !isLoading && (
-          <div className="text-center py-20 text-gray-500">
-            <h2 className="text-xl font-semibold mb-2">Start searching</h2>
-            <p>Enter a search term to find videos</p>
+          <div className="text-center py-20 text-muted-foreground">
+            <h2 className="text-xl font-black font-satoshi uppercase tracking-tight mb-2">Initiate Search</h2>
+            <p className="text-sm font-medium text-muted-foreground/60 font-inter">Enter a term to begin exploration.</p>
           </div>
         )}
 
@@ -86,9 +87,9 @@ function Results() {
         )}
 
         {!isLoading && query && allVideos.length === 0 && !isError && (
-          <div className="text-center py-20 text-gray-500">
-            <h2 className="text-xl font-semibold mb-2">No results found</h2>
-            <p>Try searching for something else</p>
+          <div className="text-center py-20 text-muted-foreground">
+            <h2 className="text-xl font-black font-satoshi uppercase tracking-tight mb-2">No results found</h2>
+            <p className="text-sm font-medium text-muted-foreground/60 font-inter">Try broadening your search criteria.</p>
           </div>
         )}
 

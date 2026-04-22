@@ -95,15 +95,15 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
       id="tweets-scroll-container"
       ref={tweetsContainerRef}
       style={{ width: `${width}px` }}
-      className="border-l border-gray-300 overflow-y-auto relative no-scrollbar"
+      className="border-l border-gray-300 dark:border-white/10 bg-white dark:bg-black overflow-y-auto relative no-scrollbar transition-colors duration-300"
     >
       {/* Resize Handle */}
       <div
         onMouseDown={onResizeStart}
-        className="absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-blue-500 transition-colors z-50 group"
+        className="absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-primary transition-colors z-50 group"
         style={{ touchAction: "none" }}
       >
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-transparent group-hover:bg-blue-500 transition-colors" />
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-transparent group-hover:bg-primary transition-colors" />
         <div className="absolute left-[-3px] top-0 bottom-0 w-2 bg-transparent" />
       </div>
 
@@ -115,7 +115,9 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
       </div>
       <div className="pt-2 pb-2">
         {homeFeedTweetsQuery.isLoading || followingTweetsQuery.isLoading || myTweetsQuery.isLoading ? (
-          <div className="text-center py-4 text-gray-400">Loading...</div>
+          <div className="text-center py-20 text-muted-foreground/40 font-satoshi font-bold tracking-widest animate-pulse">
+            LOADING STREAMS...
+          </div>
         ) : renderContent()}
       </div>
     </div>

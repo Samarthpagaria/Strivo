@@ -137,7 +137,7 @@ const MyChannelProfile = () => {
   };
 
   return (
-    <div className="   w-full relative min-h-screen bg-background font-inter">
+    <div className="w-full relative min-h-screen bg-background font-inter">
       {/* Cover Image */}
       <div className="w-full h-48 md:h-72 bg-muted relative rounded-b-[2rem] md:rounded-b-[3rem] overflow-hidden group">
         <img
@@ -152,7 +152,7 @@ const MyChannelProfile = () => {
       </div>
 
       {/* Channel Info Section */}
-      <div className="max-w-6xl mx-auto px-4 md:px-6">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
         <div className="flex flex-col md:flex-row items-start md:items-end gap-4 -mt-12 md:-mt-16 mb-10 relative z-10">
           <div className="relative group/avatar">
             <img
@@ -551,7 +551,7 @@ const MyChannelProfile = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-background border border-border rounded-[2.5rem] shadow-2xl w-full max-w-2xl p-10 relative overflow-hidden"
+              className="bg-background border border-border rounded-[2.5rem] shadow-2xl w-full max-w-2xl p-6 md:p-8 relative overflow-hidden"
             >
               <button
                 onClick={() => setEditingVideo(null)}
@@ -647,7 +647,7 @@ const MyChannelProfile = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-background border border-border rounded-[2.5rem] shadow-2xl w-full max-w-md p-10 relative"
+              className="bg-background border border-border rounded-[2.5rem] shadow-2xl w-full max-w-md p-8 relative"
             >
               <button
                 onClick={() => setIsPlaylistModalOpen(false)}

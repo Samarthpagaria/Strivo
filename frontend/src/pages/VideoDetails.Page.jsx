@@ -182,13 +182,13 @@ const VideoDetailsPage = () => {
 
   return (
     <CommentProvider videoId={videoId}>
-      <div className="w-full min-h-screen bg-white">
+      <div className="w-full min-h-screen bg-background text-foreground transition-colors duration-300">
         <div className="max-w-(--breakpoint-2xl) mx-auto px-4 md:px-8 py-4">
           <div className="flex flex-col lg:flex-row gap-6 items-start">
             {/* Main Content Column */}
             <div className="flex-1 min-w-0 w-full">
               {/* Sticky Animated Player */}
-              <div className="sticky top-4 z-40 bg-white/90 backdrop-blur-sm py-2 mb-2">
+              <div className="sticky top-4 z-40 bg-background/80 dark:bg-black/90 backdrop-blur-md py-2 mb-2 rounded-2xl transition-all duration-300">
                 <div className="flex justify-center origin-top">
                   <motion.div
                     ref={playerRef}
@@ -233,12 +233,12 @@ const VideoDetailsPage = () => {
                         }}
                       >
                         <div
-                          className="h-full bg-blue-500 rounded-full relative"
+                          className="h-full bg-primary rounded-full relative"
                           style={{
                             width: `${(currentTime / duration) * 100}%`,
                           }}
                         >
-                          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg opacity-0 group-hover/progress:opacity-100 transition-opacity" />
+                          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white dark:bg-white rounded-full shadow-lg opacity-0 group-hover/progress:opacity-100 transition-opacity" />
                         </div>
                       </div>
 
@@ -246,7 +246,7 @@ const VideoDetailsPage = () => {
                         <div className="flex items-center gap-6">
                           <button
                             onClick={togglePlay}
-                            className="hover:text-blue-400 transition-colors"
+                            className="hover:text-primary transition-colors"
                           >
                             {isPlaying ? (
                               <div className="flex gap-1.5">
@@ -266,7 +266,7 @@ const VideoDetailsPage = () => {
                           >
                             <button
                               onClick={toggleMute}
-                              className="hover:text-blue-400 transition-colors"
+                              className="hover:text-primary transition-colors"
                             >
                               {isMuted || volume === 0 ? (
                                 <VolumeX size={20} />
@@ -286,7 +286,7 @@ const VideoDetailsPage = () => {
                                 step="0.1"
                                 value={isMuted ? 0 : volume}
                                 onChange={handleVolumeChange}
-                                className="w-16 h-1 bg-white/30 rounded-full appearance-none cursor-pointer accent-blue-500 hover:bg-white/50 transition-all [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full"
+                                className="w-16 h-1 bg-white/30 rounded-full appearance-none cursor-pointer accent-primary hover:bg-white/50 transition-all [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full"
                               />
                             </div>
                           </div>
@@ -307,7 +307,7 @@ const VideoDetailsPage = () => {
                           <div className="relative">
                             <button
                               onClick={() => setShowSettings(!showSettings)}
-                              className="text-xs font-black uppercase tracking-widest hover:text-blue-400 transition-colors px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-md flex items-center gap-2"
+                              className="text-xs font-black uppercase tracking-widest hover:text-primary transition-colors px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-md flex items-center gap-2"
                             >
                               {playbackSpeed}x <MoreHorizontal size={14} />
                             </button>
@@ -323,7 +323,7 @@ const VideoDetailsPage = () => {
                                     onClick={() => handleSpeedChange(speed)}
                                     className={`w-full text-left px-3 py-2.5 text-xs font-bold transition-all ${
                                       playbackSpeed === speed
-                                        ? "text-blue-400 bg-blue-500/10"
+                                        ? "text-primary bg-primary/10"
                                         : "text-white/70 hover:bg-white/10 hover:text-white"
                                     }`}
                                   >
@@ -336,7 +336,7 @@ const VideoDetailsPage = () => {
 
                           <button
                             onClick={handleFullscreen}
-                            className="hover:text-blue-400 transition-colors p-1"
+                            className="hover:text-primary transition-colors p-1"
                           >
                             <Info size={20} />
                           </button>
@@ -351,10 +351,10 @@ const VideoDetailsPage = () => {
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                   <div className="flex-1">
-                    <h1 className="text-xl md:text-2xl font-bold font-satoshi text-gray-900 leading-tight mb-1">
+                    <h1 className="text-xl md:text-2xl font-bold font-satoshi text-foreground leading-tight mb-1">
                       {videoData.title}
                     </h1>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <span>{videoData.views} views</span>
                       <span>•</span>
                       <span>
@@ -365,22 +365,22 @@ const VideoDetailsPage = () => {
                 </div>
 
                 {/* Creator Profile */}
-                <div className="bg-gray-50/50 rounded-xl p-4 flex items-center justify-between border border-gray-100">
+                <div className="bg-muted/30 dark:bg-white/5 rounded-xl p-4 flex items-center justify-between border border-border/60">
                   <div className="flex items-center gap-3">
                     <img
                       src={videoData.owner.avatar}
                       alt=""
                       onClick={handleProfileClick}
-                      className="w-12 h-12 rounded-full border-2 border-white shadow-sm cursor-pointer hover:opacity-80 transition-opacity"
+                      className="w-12 h-12 rounded-full border-2 border-background shadow-sm cursor-pointer hover:opacity-80 transition-opacity"
                     />
                     <div>
                       <h3 
                         onClick={handleProfileClick}
-                        className="text-base font-bold font-satoshi text-gray-900 cursor-pointer hover:text-primary transition-colors"
+                        className="text-base font-bold font-satoshi text-foreground cursor-pointer hover:text-primary transition-colors"
                       >
                         {videoData.owner.fullName}
                       </h3>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted-foreground">
                         {videoData.owner.subscribersCount} Subscribers
                       </p>
                     </div>
@@ -407,6 +407,7 @@ const VideoDetailsPage = () => {
                             "#6366f1",
                             "#ec4899",
                             "#8b5cf6",
+                            "#ec4899",
                           ],
                           ticks: 200,
                           gravity: 1.2,
@@ -424,8 +425,8 @@ const VideoDetailsPage = () => {
                     disabled={toggleSubscriptionMutation.isPending}
                     className={`px-6 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 ${
                       isSubscribedLocal
-                        ? "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                        : "bg-black text-white hover:bg-slate-800"
+                        ? "bg-muted text-foreground hover:bg-muted/80"
+                        : "bg-primary text-primary-foreground hover:opacity-90"
                     } ${user?._id === videoData.owner._id ? "hidden" : ""}`}
                   >
                     {isSubscribedLocal ? (
@@ -440,7 +441,7 @@ const VideoDetailsPage = () => {
                 </div>
 
                 {/* Description Box */}
-                <div className="prose prose-sm max-w-none font-inter text-gray-600 leading-relaxed bg-gray-50/30 p-4 rounded-xl border border-gray-100/50">
+                <div className="prose prose-sm max-w-none font-inter text-muted-foreground leading-relaxed bg-muted/10 p-4 rounded-xl border border-border/40">
                   <p className="whitespace-pre-wrap">{videoData.description}</p>
                 </div>
               </div>
