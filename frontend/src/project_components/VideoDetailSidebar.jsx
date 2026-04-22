@@ -81,6 +81,10 @@ const VideoDetailSidebar = ({
   const [editContent, setEditContent] = useState("");
   const [likedComments, setLikedComments] = useState({});
   const [deletingCommentId, setDeletingCommentId] = useState(null);
+  const [replyingToId, setReplyingToId] = useState(null);
+  const [replyText, setReplyText] = useState("");
+  const [expandedThreads, setExpandedThreads] = useState(new Set());
+  const [repliesMap, setRepliesMap] = useState({}); // parentId -> { docs: [], page: 1, hasNextPage: true, totalDocs: 0 }
   const [isTweeting, setIsTweeting] = useState(false);
 
   const isLoadingPlaylist =
@@ -147,6 +151,79 @@ const VideoDetailSidebar = ({
     );
   };
 
+  const { fetchReplies } = useComment();
+
+  const handleReplySubmit = (parentId) => {
+    if (!replyText.trim()) return;
+    createCommentMutation.mutate(
+      { videoId, content: replyText, parent: parentId },
+      {
+        onSuccess: (newReply) => {
+          setReplyText("");
+          // Optimistically add to replies map if it exists
+          if (repliesMap[parentId]) {
+            setRepliesMap(prev => ({
+              ...prev,
+              [parentId]: {
+                ...prev[parentId],
+                docs: [newReply, ...prev[parentId].docs],
+                totalDocs: (prev[parentId].totalDocs || 0) + 1
+              }
+            }));
+          }
+        },
+      },
+    );
+  };
+
+  const toggleThread = async (commentId) => {
+    const isExpanding = !expandedThreads.has(commentId);
+    
+    setExpandedThreads((prev) => {
+      const next = new Set(prev);
+      if (next.has(commentId)) next.delete(commentId);
+      else next.add(commentId);
+      return next;
+    });
+
+    if (isExpanding && !repliesMap[commentId]) {
+        try {
+            const data = await fetchReplies(commentId, 1);
+            setRepliesMap(prev => ({
+                ...prev,
+                [commentId]: {
+                    docs: data.docs,
+                    page: data.page,
+                    hasNextPage: data.hasNextPage,
+                    totalDocs: data.totalDocs
+                }
+            }));
+        } catch (error) {
+            showToast("Failed to load replies");
+        }
+    }
+  };
+
+  const loadMoreReplies = async (parentId) => {
+    const currentData = repliesMap[parentId];
+    if (!currentData || !currentData.hasNextPage) return;
+
+    try {
+        const data = await fetchReplies(parentId, currentData.page + 1);
+        setRepliesMap(prev => ({
+            ...prev,
+            [parentId]: {
+                docs: [...prev[parentId].docs, ...data.docs],
+                page: data.page,
+                hasNextPage: data.hasNextPage,
+                totalDocs: data.totalDocs
+            }
+        }));
+    } catch (error) {
+        showToast("Failed to load more replies");
+    }
+  };
+
   const handleShareToTwitter = () => {
     if (!videoId) return;
 
@@ -181,11 +258,11 @@ const VideoDetailSidebar = ({
           height: isOpen ? "80vh" : "auto",
         }}
         transition={{ type: "spring", stiffness: 150, damping: 25 }}
-        className="bg-background/5 border border-border backdrop-blur-xl flex flex-col overflow-hidden shadow-lg rounded-2xl relative"
+        className="bg-background/80 border border-border backdrop-blur-2xl flex flex-col overflow-hidden shadow-2xl rounded-2xl relative"
       >
         {/* Navigation / Header */}
         <div
-          className={`flex ${isOpen ? "flex-col p-4 border-b border-border bg-muted/20" : "flex-col items-center py-6 gap-6"}`}
+          className={`flex ${isOpen ? "flex-col p-4 border-b border-border bg-muted/40" : "flex-col items-center py-6 gap-6"}`}
         >
           <div
             className={`flex ${isOpen ? "flex-row justify-between items-center" : "flex-col gap-6"}`}
@@ -368,12 +445,12 @@ const VideoDetailSidebar = ({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
-              className="flex-1 overflow-y-auto custom-scrollbar bg-transparent"
+              className="flex-1 overflow-y-auto scrollbar-none bg-transparent"
             >
               {activeTab === "discussion" && (
                 <div className="flex flex-col">
                   {/* Create Comment Form - Tweet Style */}
-                  <div className="border-b border-border bg-muted/10 p-4 transition-all">
+                  <div className="border-b border-border bg-muted/30 p-4 transition-all">
                     <div className="flex gap-3">
                       <div className="shrink-0">
                         {user?.avatar ? (
@@ -411,11 +488,11 @@ const VideoDetailSidebar = ({
                               createCommentMutation.isPending ||
                               !commentText.trim()
                             }
-                            className={`px-5 py-2 text-xs font-satoshi font-bold  rounded-full transition-all font-inter ${createCommentMutation.isPending ? "bg-muted text-muted-foreground" : !commentText.trim() ? "bg-muted/50 text-muted-foreground/30" : "bg-primary text-primary-foreground hover:opacity-90 active:scale-95"}`}
+                            className={`px-5 py-2 text-xs font-satoshi font-bold rounded-full transition-all font-inter shadow-sm ${createCommentMutation.isPending ? "bg-muted text-muted-foreground" : !commentText.trim() ? "bg-muted/50 text-muted-foreground/30" : "bg-primary text-primary-foreground hover:opacity-90 active:scale-95 animate-in fade-in zoom-in duration-300"}`}
                           >
                             {createCommentMutation.isPending
                               ? "Posting"
-                              : "Reply"}
+                              : "Post"}
                           </button>
                         </div>
                       </div>
@@ -429,13 +506,14 @@ const VideoDetailSidebar = ({
                         Be the first to share your thoughts.
                       </div>
                     ) : (
-                      comments.map((comment) => (
+                      comments.filter(c => !c.parent).map((comment) => (
+                        <div key={comment._id} className="flex flex-col">
                         <motion.div
                           key={comment._id}
                           initial="hidden"
                           animate="show"
                           variants={itemVariants}
-                          className="flex gap-3 px-4 py-4 border-b border-border bg-background/5 group hover:bg-muted/40 transition-all duration-300"
+                          className="flex gap-3 px-4 py-4 border-b border-border bg-background/10 group hover:bg-muted/40 transition-all duration-300"
                         >
                           <div className="w-10 h-10 bg-muted text-muted-foreground flex items-center justify-center font-bold shrink-0 border border-border rounded-full overflow-hidden shadow-sm">
                             {comment.owner?.avatar ? (
@@ -534,10 +612,9 @@ const VideoDetailSidebar = ({
                                   className="w-full bg-muted/30 border border-border p-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary rounded-lg min-h-[60px] text-foreground"
                                   autoFocus
                                 />
-                                <div className="flex justify-end gap-2">
-                                  <button
+                                <div className="flex justify-end gap-2">                                   <button
                                     onClick={() => setEditingCommentId(null)}
-                                    className="px-3 py-1.5 text-[10px] font-bold text-gray-500 hover:bg-gray-100 transition-colors uppercase tracking-widest"
+                                    className="px-3 py-1.5 text-[10px] font-bold text-muted-foreground hover:text-foreground transition-all"
                                   >
                                     Cancel
                                   </button>
@@ -547,12 +624,12 @@ const VideoDetailSidebar = ({
                                       updateCommentMutation.isPending ||
                                       !editContent.trim()
                                     }
-                                    className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-primary hover:opacity-90 text-primary-foreground transition-all rounded-lg disabled:opacity-50"
+                                    className={`px-5 py-1.5 text-[10px] font-satoshi font-bold rounded-full transition-all font-inter ${updateCommentMutation.isPending ? "bg-muted text-muted-foreground" : !editContent.trim() ? "bg-muted/50 text-muted-foreground/30" : "bg-primary text-primary-foreground hover:opacity-90 active:scale-95"}`}
                                   >
                                     {updateCommentMutation.isPending
                                       ? "Saving..."
                                       : "Save"}
-                                  </button>
+                                  </button>>
                                 </div>
                               </div>
                             ) : (
@@ -600,16 +677,150 @@ const VideoDetailSidebar = ({
                                             : 0)}
                                     </span>
                                   </button>
-                                  <button className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary group/reply transition-all">
-                                    <div className="p-1.5 rounded-full group-hover/reply:bg-primary/10 transition-colors text-foreground/50 group-hover/reply:text-primary">
-                                      <MessageSquare size={14} />
+                                  <button 
+                                    onClick={() => {
+                                        const isFormOpen = replyingToId === comment._id;
+                                        setReplyingToId(isFormOpen ? null : comment._id);
+                                        setReplyText("");
+                                        // Toggle thread visibility as well
+                                        toggleThread(comment._id);
+                                    }}
+                                    className={`flex items-center gap-1.5 text-xs font-semibold group/reply transition-all ${ (replyingToId === comment._id || expandedThreads.has(comment._id)) ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
+                                 >
+                                    <div className={`p-1.5 rounded-full transition-colors ${ (replyingToId === comment._id || expandedThreads.has(comment._id)) ? "bg-primary/10" : "group-hover/reply:bg-primary/10"}`}>
+                                        <MessageSquare size={14} />
                                     </div>
-                                  </button>
+                                    <span className="tabular-nums mt-0.5">
+                                        {(comment.repliesCount || 0) > 0 ? (comment.repliesCount || 0) : ""}
+                                    </span>
+                                 </button>
                                 </div>
                               </>
                             )}
                           </div>
                         </motion.div>
+
+                        {/* Inline Reply Form & Threaded Replies */}
+                        <AnimatePresence>
+                            {replyingToId === comment._id && (
+                                <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.3, ease: "circOut" }}
+                                    className="overflow-hidden"
+                                >
+                                    <div className="ml-10 sm:ml-14 mr-4 mb-4 mt-2 p-3 bg-muted/40 border border-border/50 rounded-xl space-y-2 relative">
+                                        <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-4 h-[1px] bg-border/40" />
+                                        <textarea
+                                            value={replyText}
+                                            onChange={(e) => setReplyText(e.target.value)}
+                                            placeholder={`Reply to @${comment.owner?.username}...`}
+                                            className="w-full bg-transparent border-none text-sm focus:outline-none resize-none min-h-[60px] text-foreground font-medium"
+                                            autoFocus
+                                        />
+                                        <div className="flex items-center justify-end gap-2">
+                                            <button
+                                                onClick={() => setReplyingToId(null)}
+                                                className="px-3 py-1.5 text-[10px] font-bold text-gray-500 hover:text-foreground transition-all"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                onClick={() => handleReplySubmit(comment._id)}
+                                                disabled={createCommentMutation.isPending || !replyText.trim()}
+                                                className={`px-5 py-2 text-xs font-satoshi font-bold rounded-full transition-all font-inter ${createCommentMutation.isPending ? "bg-muted text-muted-foreground" : !replyText.trim() ? "bg-muted/50 text-muted-foreground/30" : "bg-primary text-primary-foreground hover:opacity-90 active:scale-95"}`}
+                                            >
+                                                {createCommentMutation.isPending ? "Posting" : "Reply"}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* Threaded Replies */}
+                        <AnimatePresence>
+                            {expandedThreads.has(comment._id) && (
+                                <motion.div 
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.3, ease: "circOut" }}
+                                    className="ml-10 space-y-0 mt-2 overflow-hidden relative"
+                                >
+                                    {(() => {
+                                        const threadData = repliesMap[comment._id] || { docs: [], totalDocs: 0, hasNextPage: false };
+                                        const visibleArray = threadData.docs;
+                                        const remainingCount = (threadData.totalDocs || 0) - visibleArray.length;
+
+                                        return (
+                                            <>
+                                                {visibleArray.map((reply, idx) => (
+                                                    <motion.div
+                                                        key={reply._id}
+                                                        layout
+                                                        initial={{ opacity: 0, x: -10 }}
+                                                        animate={{ opacity: 1, x: 0 }}
+                                                        className="relative pl-4 flex gap-3 py-3 bg-background/0 hover:bg-muted/15 transition-all duration-300 group/reply-item"
+                                                    >
+                                                        {/* Exact Tweet-style Branch Connector */}
+                                                        <div className={`absolute left-0 top-0 w-[1px] bg-black/30 shadow-[0.5px_0_3px_rgba(0,0,0,0.05)] ${!threadData.hasNextPage && idx === visibleArray.length - 1 ? 'h-6' : 'bottom-0'}`} />
+                                                        <div className="absolute left-0 top-6 w-4 h-4 border-l-[1px] border-b-[1px] border-black/30 rounded-bl-xl shadow-[0.5px_0.5px_2px_rgba(0,0,0,0.02)]" />
+                                                        
+                                                        <div className="w-9 h-9 bg-muted text-muted-foreground flex items-center justify-center font-bold shrink-0 border border-border rounded-full overflow-hidden shadow-sm z-10 hover:opacity-80 transition-opacity">
+                                                            {reply.owner?.avatar ? (
+                                                            <img
+                                                                src={reply.owner.avatar}
+                                                                alt=""
+                                                                className="w-full h-full object-cover grayscale group-hover/reply-item:grayscale-0 transition-all duration-500"
+                                                            />
+                                                            ) : (
+                                                            <span className="text-[10px]">
+                                                                {reply.owner?.username?.charAt(0)}
+                                                            </span>
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="flex items-center justify-between mb-0.5">
+                                                                <div className="flex items-center gap-1.5 flex-wrap">
+                                                                    <span className="font-bold text-foreground text-xs truncate">
+                                                                    {reply.owner?.fullName || reply.owner?.username}
+                                                                    </span>
+                                                                    <span className="text-muted-foreground/30 text-[10px]">·</span>
+                                                                    <span className="text-[9px] text-muted-foreground/60 font-bold">
+                                                                        {reply.createdAt && formatDistanceToNow(new Date(reply.createdAt), {addSuffix: false})}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <p className="text-[11px] text-foreground/80 leading-relaxed font-inter pr-2">
+                                                                {reply.content}
+                                                            </p>
+                                                        </div>
+                                                    </motion.div>
+                                                ))}
+
+                                                {threadData.hasNextPage && (
+                                                    <div className="relative pl-4">
+                                                        {/* Vertical line continuation for the button */}
+                                                        <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-black/30 shadow-[0.5px_0_3px_rgba(0,0,0,0.05)]" />
+                                                        
+                                                        <button 
+                                                            onClick={() => loadMoreReplies(comment._id)}
+                                                            className="flex items-center gap-2 py-3 px-4 text-[11px] font-bold text-primary hover:bg-muted/10 transition-all w-full text-left"
+                                                        >
+                                                            <ChevronRight className="rotate-90 w-3 h-3" />
+                                                            Show {remainingCount} more {remainingCount === 1 ? 'reply' : 'replies'}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </>
+                                        );
+                                    })()}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                        </div>
                       ))
                     )}
                   </div>

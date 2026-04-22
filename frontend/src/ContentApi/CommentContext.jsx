@@ -20,7 +20,7 @@ export const CommentProvider = ({ children, videoId }) => {
     queryKey: ["comments", videoId],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/comments/${videoId}`,
+        `http://localhost:8000/api/v1/comments/${videoId}?limit=10`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -35,11 +35,12 @@ export const CommentProvider = ({ children, videoId }) => {
 
   // create comment
   const createCommentMutation = useMutation({
-    mutationFn: async ({ videoId, content }) => {
+    mutationFn: async ({ videoId, content, parent }) => {
       const res = await axios.post(
         `http://localhost:8000/api/v1/comments/${videoId}`,
         {
           content,
+          parent,
         },
         {
           headers: {
@@ -49,7 +50,7 @@ export const CommentProvider = ({ children, videoId }) => {
       );
       return res.data.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Refresh the comments list after adding a new one
       queryClient.invalidateQueries(["comments", videoId]);
       showToast(data?.message || "Comment added successfully!");
@@ -72,7 +73,7 @@ export const CommentProvider = ({ children, videoId }) => {
       );
       return res.data.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Refresh the comments list after deleting a comment
       queryClient.invalidateQueries(["comments", videoId]);
       showToast(data?.message || "Comment deleted successfully!");
@@ -98,7 +99,7 @@ export const CommentProvider = ({ children, videoId }) => {
       );
       return res.data.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Refresh the comments list after updating
       queryClient.invalidateQueries(["comments", videoId]);
       showToast(data?.message || "Comment updated successfully!");
@@ -122,7 +123,7 @@ export const CommentProvider = ({ children, videoId }) => {
       );
       return res.data.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Refresh the comments list after liking a comment
       queryClient.invalidateQueries(["comments", videoId]);
       showToast(data?.message || "Operation successful!");
@@ -131,6 +132,18 @@ export const CommentProvider = ({ children, videoId }) => {
       showToast(error?.response?.data?.message || "Failed to toggle like");
     },
   });
+
+  const fetchReplies = async (parentId, page = 1) => {
+    const res = await axios.get(
+      `http://localhost:8000/api/v1/comments/${videoId}?parent=${parentId}&page=${page}&limit=10`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return res.data.data;
+  };
 
   return (
     <CommentContext.Provider
@@ -144,6 +157,7 @@ export const CommentProvider = ({ children, videoId }) => {
         removeCommentMutation,
         updateCommentMutation,
         likeCommentMutation,
+        fetchReplies,
       }}
     >
       {children}

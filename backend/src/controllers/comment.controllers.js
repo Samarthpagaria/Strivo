@@ -7,18 +7,28 @@ import { Video } from "../models/video.models.js";
 
 const getvideoComments = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1, limit = 10, parent } = req.query;
   const userId = req.user?._id;
 
   if (!videoId || !isValidObjectId(videoId)) {
     throw new ApiError(400, "Invalid video ID");
   }
 
+  const matchStage = {
+    video: new mongoose.Types.ObjectId(videoId),
+  };
+
+  // If parent is provided, fetch replies for that comment
+  // If parent is NOT provided, fetch only root comments (parent: null)
+  if (parent && isValidObjectId(parent)) {
+    matchStage.parent = new mongoose.Types.ObjectId(parent);
+  } else {
+    matchStage.parent = null;
+  }
+
   const commentAggregate = Comment.aggregate([
     {
-      $match: {
-        video: new mongoose.Types.ObjectId(videoId),
-      },
+      $match: matchStage,
     },
     {
       $lookup: {
@@ -38,7 +48,16 @@ const getvideoComments = asyncHandler(async (req, res) => {
       },
     },
     {
+      $lookup: {
+        from: "comments",
+        localField: "_id",
+        foreignField: "parent",
+        as: "replies",
+      },
+    },
+    {
       $addFields: {
+        repliesCount: { $size: "$replies" },
         owner: { $first: "$owner" },
       },
     },
@@ -65,6 +84,7 @@ const getvideoComments = asyncHandler(async (req, res) => {
     {
       $project: {
         likes: 0,
+        replies: 0,
       },
     },
     {
@@ -98,7 +118,7 @@ const addCommentToVideo = asyncHandler(async (req, res) => {
   if (!videoExists) {
     throw new ApiError(404, "Video not found");
   }
-  const { content } = req.body;
+  const { content, parent } = req.body;
   const owner = req.user?._id;
   if (!content || content.trim().length <= 0) {
     throw new ApiError(400, "Comment content is required");
@@ -110,6 +130,7 @@ const addCommentToVideo = asyncHandler(async (req, res) => {
     content: content.trim(),
     video: videoId,
     owner: owner,
+    parent: parent || null,
   });
   return res
     .status(201)

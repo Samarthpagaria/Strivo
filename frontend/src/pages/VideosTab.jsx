@@ -8,16 +8,26 @@ const VideosTab = () => {
 
   if (isLoading) {
     return (
-      <div className="text-center py-12 text-gray-500">
-        <p className="text-lg">Loading videos...</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-10 py-10 px-4 md:px-0">
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className="space-y-3 animate-pulse">
+            <div className="aspect-video bg-muted/40 rounded-xl border border-border/50" />
+            <div className="h-4 bg-muted/40 rounded-full w-3/4" />
+            <div className="h-3 bg-muted/40 rounded-full w-1/2" />
+          </div>
+        ))}
       </div>
     );
   }
 
   if (!videos || videos.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-500">
-        <p className="text-lg">No videos found</p>
+      <div className="flex flex-col items-center justify-center py-24 text-center">
+        <div className="w-16 h-16 bg-muted/10 flex items-center justify-center rounded-full mb-4 border border-border/50">
+           <PlaySquare className="text-muted-foreground/30 w-8 h-8" />
+        </div>
+        <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground">No Content Available</h3>
+        <p className="text-xs text-muted-foreground/50 font-medium mt-1">This channel hasn't uploaded any videos yet.</p>
       </div>
     );
   }
@@ -27,9 +37,9 @@ const VideosTab = () => {
   const hasPrevPage = page > 1;
 
   return (
-    <>
+    <div className="py-10 px-4 md:px-0">
       {/* Videos Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-10 transition-all duration-500">
         {videos.map((video) => (
           <VideoCard
             key={video._id}
@@ -46,42 +56,56 @@ const VideosTab = () => {
 
       {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-4 mt-8">
-          <button
-            onClick={() => setPage(page - 1)}
-            disabled={!hasPrevPage}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-              hasPrevPage
-                ? "bg-gray-200 hover:bg-gray-300 text-gray-800"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            }`}
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Previous
-          </button>
+        <div className="flex items-center justify-between border-t border-border/50 mt-16 pt-8">
+           <div className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">
+              Navigation Entry {page} / {totalPages}
+           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">
-              Page <strong className="text-gray-900">{page}</strong> of{" "}
-              <strong className="text-gray-900">{totalPages}</strong>
-            </span>
-          </div>
+            <button
+                onClick={() => setPage(page - 1)}
+                disabled={!hasPrevPage}
+                className={`p-2 rounded-md border transition-all ${
+                hasPrevPage
+                    ? "border-border bg-muted/20 text-foreground hover:bg-primary/10 hover:border-primary/30 active:scale-95"
+                    : "border-border/20 text-muted-foreground/20 cursor-not-allowed"
+                }`}
+            >
+                <ChevronLeft className="w-4 h-4" />
+            </button>
 
-          <button
-            onClick={() => setPage(page + 1)}
-            disabled={!hasNextPage}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-              hasNextPage
-                ? "bg-gray-200 hover:bg-gray-300 text-gray-800"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            }`}
-          >
-            Next
-            <ChevronRight className="w-4 h-4" />
-          </button>
+            <div className="flex items-center gap-1">
+                {[...Array(totalPages)].map((_, i) => (
+                    <button
+                        key={i}
+                        onClick={() => setPage(i + 1)}
+                        className={`w-8 h-8 text-[10px] font-black rounded-md transition-all flex items-center justify-center ${
+                            page === i + 1 
+                            ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
+                            : "text-muted-foreground hover:bg-muted/30"
+                        }`}
+                    >
+                        {i + 1}
+                    </button>
+                ))}
+            </div>
+
+            <button
+                onClick={() => setPage(page + 1)}
+                disabled={!hasNextPage}
+                className={`p-2 rounded-md border transition-all ${
+                hasNextPage
+                    ? "border-border bg-muted/20 text-foreground hover:bg-primary/10 hover:border-primary/30 active:scale-95"
+                    : "border-border/20 text-muted-foreground/20 cursor-not-allowed"
+                }`}
+            >
+                <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
-    </>
+    </div>
+  );
   );
 };
 
