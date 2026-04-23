@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Github } from "lucide-react";
+import { Github, ArrowUp, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/strivo_black_logo.png";
 
@@ -9,8 +9,21 @@ const LandingPage = () => {
 
   const [upvotes, setUpvotes] = React.useState(0);
 
+  const headlines = [
+    "Your Audience Shouldn’t Live on Different Platforms",
+    "Stop Posting Everywhere. Start Growing Here.",
+  ];
+  const [headlineIndex, setHeadlineIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setHeadlineIndex((prev) => (prev + 1) % headlines.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <div className="h-screen w-full bg-neutral-50 relative flex flex-col items-center antialiased selection:bg-indigo-100">
+    <div className="h-screen w-full bg-neutral-50 relative flex flex-col items-center antialiased selection:bg-indigo-100 overflow-hidden">
       {/* Autonomous Navigation Nodes */}
       {/* node 1: Scaled Identity (Left Corner) */}
       <div
@@ -29,8 +42,12 @@ const LandingPage = () => {
           <div className="flex items-center overflow-hidden border border-neutral-200 rounded-full bg-neutral-50/50 hover:border-neutral-300 transition-all group/upvote shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]">
             <button
               onClick={() => setUpvotes((prev) => prev + 1)}
-              className="px-3 py-2 text-lg font-bold text-neutral-500 hover:text-neutral-900 transition-colors font-satoshi border-r border-neutral-200 hover:bg-neutral-100 active:bg-neutral-200"
+              className="group/btn px-3 py-2 text-lg font-bold text-neutral-500 hover:text-neutral-900 transition-colors font-satoshi border-r border-neutral-200 hover:bg-neutral-100 active:bg-neutral-200 flex items-center gap-1.5"
             >
+              <ArrowUp
+                size={20}
+                className="group-hover/btn:-translate-y-1 transition-transform duration-300"
+              />
               Upvote
             </button>
             <div className="px-1 py-1.5 min-w-[3rem] text-center flex items-center justify-center bg-white">
@@ -68,12 +85,60 @@ const LandingPage = () => {
           </button>
           <button
             onClick={() => navigate("/register")}
-            className="bg-[#1d88fe] text-[#f2f3f4] text-xl font-bold  px-4 py-2.5 rounded-full hover:bg-blue-500/90 transition-all active:scale-95 shadow-lg shadow-blue-500/10"
+            className="group/signup bg-[#1d88fe] text-[#f2f3f4] text-xl font-bold px-5 py-2.5 rounded-full hover:bg-blue-500/90 transition-all active:scale-95 shadow-lg shadow-blue-500/10 flex items-center gap-2"
           >
             Sign up
+            <ArrowRight
+              size={20}
+              className="group-hover/signup:translate-x-1 transition-transform duration-300"
+            />
           </button>
         </div>
       </nav>
+
+      {/* Hero Section */}
+      <main className="flex-1 flex flex-col items-center pt-[22vh] text-center px-6">
+        <div className="flex flex-col items-center gap-4">
+          <AnimatePresence mode="wait">
+            <motion.h1
+              key={headlineIndex}
+              exit={{ y: -50, opacity: 0 }}
+              transition={{ duration: 0.4, ease: "easeIn" }}
+              className="text-6xl md:text-7xl font-bold text-neutral-900 tracking-tight leading-[1.05] font-satoshi max-w-5xl flex flex-wrap justify-center"
+            >
+              {headlines[headlineIndex].split(" ").map((word, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ y: 50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: i * 0.06,
+                    ease: [0.215, 0.61, 0.355, 1],
+                  }}
+                  className="inline-block mr-[0.25em] last:mr-0"
+                >
+                  {word}
+                </motion.span>
+              ))}
+            </motion.h1>
+          </AnimatePresence>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 1,
+              delay: 0.8,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="text-2xl md:text-3xl text-neutral-500 font-medium font-inter max-w-2xl leading-snug mt-4"
+          >
+            Turn content into conversations, and followers into a strong
+            community.
+          </motion.p>
+        </div>
+      </main>
     </div>
   );
 };
