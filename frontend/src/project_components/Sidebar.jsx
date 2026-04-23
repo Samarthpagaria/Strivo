@@ -130,7 +130,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
       <aside
         className={`fixed h-[82vh] overflow-hidden 
   bg-background/20 dark:bg-black/40 border border-border/60 dark:border-white/10 backdrop-blur-2xl
-  shadow-2xl rounded-3xl py-4 transition-all duration-500 ease-in-out
+  rounded-3xl py-4 transition-all duration-500 ease-in-out
   ${isExpanded ? "w-50" : "w-16"}`}
         onMouseEnter={() => setIsExpanded(true)}
         onMouseLeave={() => setIsExpanded(false)}
