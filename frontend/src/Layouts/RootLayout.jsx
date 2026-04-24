@@ -77,7 +77,7 @@ const RootLayout = () => {
   // If NOT logged in and on HOME page, show ONLY the Home page (which renders LandingPage)
   if (!user && isHomePage) {
     return (
-      <main className="w-full h-screen overflow-hidden">
+      <main className="w-full">
         <Outlet context={{ scrollRef: mainContentRef }} />
       </main>
     );
