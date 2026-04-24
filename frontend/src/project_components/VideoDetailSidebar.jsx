@@ -629,7 +629,7 @@ const VideoDetailSidebar = ({
                                     {updateCommentMutation.isPending
                                       ? "Saving..."
                                       : "Save"}
-                                  </button>>
+                                  </button>
                                 </div>
                               </div>
                             ) : (
