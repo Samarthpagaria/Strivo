@@ -61,7 +61,7 @@ const ConvergenceSection = () => (
       </h2>
     </motion.div>
 
-    <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-0 border border-dashed border-neutral-400/60 relative bg-white">
+    <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-0 border border-dashed border-neutral-400/60 relative">
       {/* Left Hero Column: Heading */}
       <div className="col-span-12 md:col-span-6 p-8 md:p-16 lg:p-20 border-r border-dashed border-neutral-400/60 flex flex-col justify-center gap-8 relative group">
         <div className="flex flex-col gap-4">
@@ -75,10 +75,10 @@ const ConvergenceSection = () => (
             </span>
           </h2>
         </div>
-        
+
         {/* Subtle Decorative Element */}
         <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 w-12 h-12 border border-dashed border-neutral-300 rounded-full flex items-center justify-center opacity-40">
-           <div className="w-6 h-6 border border-neutral-200 rounded-full" />
+          <div className="w-6 h-6 border border-neutral-200 rounded-full" />
         </div>
       </div>
 
@@ -87,8 +87,8 @@ const ConvergenceSection = () => (
         {/* Top Feature: Wide */}
         <div className="p-8 md:p-12 border-b border-dashed border-neutral-400/60 flex flex-col gap-4 hover:bg-neutral-50/50 transition-colors group">
           <div className="flex items-center gap-3">
-            <div className="w-2 h-2 bg-[#fe4524]" />
-            <h3 className="text-xs font-bold text-neutral-900 font-satoshi uppercase tracking-widest">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#fe4524] shadow-[0_0_8px_rgba(254,69,36,0.6)]" />
+            <h3 className="text-[11px] font-bold text-neutral-900 font-satoshi uppercase tracking-[0.2em]">
               Unified Ecosystem
             </h3>
           </div>
@@ -102,19 +102,25 @@ const ConvergenceSection = () => (
         {/* Bottom Features: Split */}
         <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
           <div className="p-8 md:p-10 border-r border-dashed border-neutral-400/60 flex flex-col gap-4 hover:bg-neutral-50/50 transition-colors group">
-            <h3 className="text-[11px] font-bold text-neutral-900 font-satoshi uppercase tracking-widest">
-              Creative Momentum
-            </h3>
-            <p className="text-xs text-neutral-400 font-medium font-inter leading-relaxed">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#fe4524] shadow-[0_0_8px_rgba(254,69,36,0.6)]" />
+              <h3 className="text-[11px] font-bold text-neutral-900 font-satoshi uppercase tracking-[0.2em]">
+                Creative Momentum
+              </h3>
+            </div>
+            <p className="text-sm text-neutral-500 font-medium font-inter leading-relaxed">
               From posting videos to starting discussions, sharing instant
               dispatches—everything happens in one place.
             </p>
           </div>
           <div className="p-8 md:p-10 flex flex-col gap-4 bg-neutral-50/30 hover:bg-neutral-100/50 transition-colors group">
-            <h3 className="text-[11px] font-bold text-neutral-900 font-satoshi uppercase tracking-widest text-[#fe4524]">
-              The Paradigm
-            </h3>
-            <p className="text-xs text-neutral-400 font-medium font-inter leading-relaxed">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#fe4524] shadow-[0_0_8px_rgba(254,69,36,0.6)]" />
+              <h3 className="text-[11px] font-bold text-neutral-900 font-satoshi uppercase tracking-[0.2em] text-[#fe4524]">
+                The Paradigm
+              </h3>
+            </div>
+            <p className="text-sm text-neutral-500 font-medium font-inter leading-relaxed">
               Real creators don’t need more platforms. They need one platform
               that does more.
             </p>
