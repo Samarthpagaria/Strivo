@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Github, ArrowUp, ArrowRight } from "lucide-react";
+import { Github, ArrowUp, ArrowRight, Play, MessageSquare, Share2, Target, Layers } from "lucide-react";
 import {
   motion,
   AnimatePresence,
@@ -46,6 +46,109 @@ const FeatureCard = ({ title, desc, col, index, showAllCorners }) => (
       </p>
     </div>
   </motion.div>
+);
+
+const ConvergenceSection = () => (
+  <section className="w-full max-w-7xl px-6 py-20 flex flex-col items-center gap-12 relative">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="flex flex-col items-center gap-6 z-10"
+    >
+      <h2 className="text-4xl md:text-6xl font-medium text-neutral-900 tracking-tighter font-satoshi">
+        Why Strivo?
+      </h2>
+    </motion.div>
+
+    <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-0 border border-dashed border-neutral-400/60 relative bg-white">
+      {/* Left Hero Column: Heading */}
+      <div className="col-span-12 md:col-span-6 p-8 md:p-16 lg:p-20 border-r border-dashed border-neutral-400/60 flex flex-col justify-center gap-8 relative group">
+        <div className="flex flex-col gap-4">
+          <span className="text-[10px] font-bold text-[#fe4524] tracking-[0.4em] uppercase font-satoshi">
+            The Why
+          </span>
+          <h2 className="text-3xl md:text-5xl font-bold text-neutral-900 tracking-tighter font-satoshi leading-[1.1]">
+            Why switch between platforms… <br />
+            <span className="text-neutral-400">
+              when your content belongs together?
+            </span>
+          </h2>
+        </div>
+        
+        {/* Subtle Decorative Element */}
+        <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 w-12 h-12 border border-dashed border-neutral-300 rounded-full flex items-center justify-center opacity-40">
+           <div className="w-6 h-6 border border-neutral-200 rounded-full" />
+        </div>
+      </div>
+
+      {/* Right Column: Stacked Features */}
+      <div className="col-span-12 md:col-span-6 flex flex-col">
+        {/* Top Feature: Wide */}
+        <div className="p-8 md:p-12 border-b border-dashed border-neutral-400/60 flex flex-col gap-4 hover:bg-neutral-50/50 transition-colors group">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 bg-[#fe4524]" />
+            <h3 className="text-xs font-bold text-neutral-900 font-satoshi uppercase tracking-widest">
+              Unified Ecosystem
+            </h3>
+          </div>
+          <p className="text-sm md:text-base text-neutral-500 font-medium font-inter leading-relaxed max-w-md">
+            Creators shouldn’t need one platform for videos and another for
+            conversations. Strivo brings content, community, and audience growth
+            into one seamless experience.
+          </p>
+        </div>
+
+        {/* Bottom Features: Split */}
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
+          <div className="p-8 md:p-10 border-r border-dashed border-neutral-400/60 flex flex-col gap-4 hover:bg-neutral-50/50 transition-colors group">
+            <h3 className="text-[11px] font-bold text-neutral-900 font-satoshi uppercase tracking-widest">
+              Creative Momentum
+            </h3>
+            <p className="text-xs text-neutral-400 font-medium font-inter leading-relaxed">
+              From posting videos to starting discussions, sharing instant
+              dispatches—everything happens in one place.
+            </p>
+          </div>
+          <div className="p-8 md:p-10 flex flex-col gap-4 bg-neutral-50/30 hover:bg-neutral-100/50 transition-colors group">
+            <h3 className="text-[11px] font-bold text-neutral-900 font-satoshi uppercase tracking-widest text-[#fe4524]">
+              The Paradigm
+            </h3>
+            <p className="text-xs text-neutral-400 font-medium font-inter leading-relaxed">
+              Real creators don’t need more platforms. They need one platform
+              that does more.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Crosshair Markers at every intersection */}
+      {/* Outer Corners */}
+      <div className="absolute -left-[6.5px] -top-[6.5px] w-3 h-3 flex items-center justify-center z-10 pointer-events-none opacity-60">
+        <div className="absolute w-full h-[1px] bg-neutral-500" />
+        <div className="absolute h-full w-[1px] bg-neutral-500" />
+      </div>
+      <div className="absolute -right-[6.5px] -top-[6.5px] w-3 h-3 flex items-center justify-center z-10 pointer-events-none opacity-60">
+        <div className="absolute w-full h-[1px] bg-neutral-500" />
+        <div className="absolute h-full w-[1px] bg-neutral-500" />
+      </div>
+      <div className="absolute -left-[6.5px] -bottom-[6.5px] w-3 h-3 flex items-center justify-center z-10 pointer-events-none opacity-60">
+        <div className="absolute w-full h-[1px] bg-neutral-500" />
+        <div className="absolute h-full w-[1px] bg-neutral-500" />
+      </div>
+      <div className="absolute -right-[6.5px] -bottom-[6.5px] w-3 h-3 flex items-center justify-center z-10 pointer-events-none opacity-60">
+        <div className="absolute w-full h-[1px] bg-neutral-500" />
+        <div className="absolute h-full w-[1px] bg-neutral-500" />
+      </div>
+
+      {/* Internal Intersections */}
+      <div className="absolute left-1/2 top-0 h-full w-px border-l border-dashed border-neutral-400/60 hidden md:block" />
+      <div className="absolute left-1/2 top-1/2 w-3 h-3 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10 pointer-events-none opacity-40 hidden md:block">
+        <div className="absolute w-full h-[1px] bg-neutral-500" />
+        <div className="absolute h-full w-[1px] bg-neutral-500" />
+      </div>
+    </div>
+  </section>
 );
 
 const LandingPage = () => {
@@ -359,68 +462,10 @@ const LandingPage = () => {
             </div>
           </div>
         </section>
-        {/* How it Works Section */}
-        <section className="w-full max-w-7xl px-6 py-40 flex flex-col items-center gap-24 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex flex-col items-center gap-6 z-10"
-          >
-            <h2 className="text-4xl md:text-7xl font-medium text-neutral-900 tracking-tighter font-satoshi">
-              How it Works
-            </h2>
-            <p className="text-lg md:text-xl text-neutral-500 font-medium max-w-2xl text-center leading-relaxed font-inter">
-              Master the Strivo ecosystem in three simple steps.
-            </p>
-          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16 w-full relative">
-            {/* Horizontal Connector Line for Desktop */}
-            <div className="hidden md:block absolute top-12 left-0 right-0 h-[1px] bg-neutral-200/60 z-0" />
-
-            {[
-              {
-                step: "01",
-                title: "Register & Sync",
-                desc: "Establish your digital identity and prepare your broadcast protocols. One account for everything.",
-              },
-              {
-                step: "02",
-                title: "Broadcast Vision",
-                desc: "Upload high-fidelity videos and engage in deep threaded community discussions instantly.",
-              },
-              {
-                step: "03",
-                title: "Scale Audience",
-                desc: "Use one-click social clipping to cross-post and grow your unified community effortlessly.",
-              },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.2, duration: 0.8 }}
-                className="flex flex-col items-start gap-8 relative z-10 group"
-              >
-                {/* Step Number Circle */}
-                <div className="w-24 h-24 rounded-full bg-neutral-50 border border-neutral-200 flex items-center justify-center text-3xl font-black font-satoshi text-neutral-900 shadow-sm group-hover:bg-white group-hover:border-blue-600 group-hover:text-blue-600 transition-all duration-500">
-                  {item.step}
-                </div>
-
-                <div className="flex flex-col gap-4">
-                  <h3 className="text-2xl md:text-3xl font-bold text-neutral-900 tracking-tight font-satoshi">
-                    {item.title}
-                  </h3>
-                  <p className="text-neutral-500 font-medium leading-relaxed font-inter text-base max-w-xs">
-                    {item.desc}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
+        <ConvergenceSection />
+        
+        
       </main>
     </div>
   );
