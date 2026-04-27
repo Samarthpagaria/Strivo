@@ -1,6 +1,25 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Github, ArrowUp, ArrowRight, Play, MessageSquare, Share2, Target, Layers } from "lucide-react";
+import {
+  Github,
+  ArrowUp,
+  ArrowRight,
+  Play,
+  MessageSquare,
+  Share2,
+  Target,
+  Layers,
+  Database,
+  Wind,
+  Zap,
+  Server,
+  Cpu,
+  Globe,
+  Shield,
+  Code,
+  Twitter,
+  Linkedin,
+} from "lucide-react";
 import {
   motion,
   AnimatePresence,
@@ -157,6 +176,195 @@ const ConvergenceSection = () => (
   </section>
 );
 
+const TechCard = ({ name, icon, color }) => (
+  <motion.div
+    whileHover={{ scale: 1.05, y: -5 }}
+    className="flex flex-col items-center justify-center gap-3 w-22 h-22 rounded-2xl border border-neutral-200 bg-white/80 backdrop-blur-md shadow-sm hover:border-neutral-300 transition-all cursor-default flex-shrink-0"
+  >
+    <div
+      style={{ color: color }}
+      className="transition-transform duration-300 group-hover:scale-110"
+    >
+      {icon}
+    </div>
+    <span className="text-[10px] font-bold text-neutral-500 font-satoshi uppercase tracking-widest text-center px-1">
+      {name}
+    </span>
+  </motion.div>
+);
+
+const InfiniteTechRow = ({ items, speed = 40, reverse = false }) => {
+  return (
+    <div className="flex gap-6 overflow-hidden w-full relative py-4 mask-fade-horizontal isolate">
+      <motion.div
+        animate={{
+          x: reverse ? ["-50%", "0%"] : ["0%", "-50%"],
+        }}
+        transition={{
+          duration: speed,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        className="flex gap-6 flex-nowrap w-max transform-gpu will-change-transform"
+      >
+        {[...items, ...items].map((item, i) => (
+          <TechCard key={i} {...item} />
+        ))}
+      </motion.div>
+    </div>
+  );
+};
+
+const BuiltOnSection = () => {
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const techStack = [
+    { name: "React", icon: <Layers size={24} />, color: "#61DAFB" },
+    { name: "Node.js", icon: <Server size={24} />, color: "#339933" },
+    { name: "MongoDB", icon: <Database size={24} />, color: "#47A248" },
+    { name: "Tailwind", icon: <Wind size={24} />, color: "#06B6D4" },
+    { name: "Framer", icon: <Zap size={24} />, color: "#0055FF" },
+    { name: "Express", icon: <Cpu size={24} />, color: "#555" },
+    { name: "Vite", icon: <Code size={24} />, color: "#646CFF" },
+    { name: "Lucide", icon: <Globe size={24} />, color: "#F7B93E" },
+    { name: "Redux", icon: <Shield size={24} />, color: "#764ABC" },
+    { name: "Socket.io", icon: <MessageSquare size={24} />, color: "#010101" },
+  ];
+
+  const row1 = [...techStack].sort(() => Math.random() - 0.5);
+  const row2 = [...techStack].sort(() => Math.random() - 0.5);
+  const row3 = [...techStack].sort(() => Math.random() - 0.5);
+
+  return (
+    <section className="w-full py-40 flex flex-col items-center gap-16 relative">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="flex flex-col items-center gap-4 z-10 text-center px-6"
+      >
+        <span className="text-[10px] font-bold text-[#fe4524] tracking-[0.4em] uppercase font-satoshi">
+          The Stack
+        </span>
+        <h2 className="text-4xl md:text-6xl font-medium text-neutral-900 tracking-tighter font-satoshi">
+          Built on Top of
+        </h2>
+      </motion.div>
+
+      {/* Static Wrapper for Hover Detection - Prevents Flicker */}
+      <div
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        style={{ perspective: "2000px" }}
+        className="w-full flex justify-center px-6"
+      >
+        <motion.div
+          animate={{
+            rotateX: isHovered ? 0 : 20,
+            scale: isHovered ? 1 : 0.95,
+            y: isHovered ? 0 : 20,
+          }}
+          transition={{
+            duration: 1,
+            ease: [0.16, 1, 0.3, 1], // Smooth cubic-bezier
+          }}
+          className="w-full max-w-5xl relative h-[600px] flex items-center justify-center overflow-hidden rounded-[4rem] transform-gpu backface-hidden will-change-transform"
+          style={{ transformStyle: "preserve-3d" }}
+        >
+          {/* Background Wrapper to handle oversizing and soft edges */}
+          <div className="absolute inset-0 z-0 [mask-image:radial-gradient(circle_at_center,black_30%,transparent_90%)] -webkit-mask-image:radial-gradient(circle_at_center,black_30%,transparent_90%)]">
+            {/* Oversized Background to prevent edges showing during spotlight movement */}
+            <div
+              className="absolute -inset-[20%] z-0"
+              style={{
+                backgroundImage: `
+                  linear-gradient(90deg, rgba(254,69,36,0.15) 1px, transparent 0),
+                  linear-gradient(180deg, rgba(254,69,36,0.15) 1px, transparent 0),
+                  repeating-linear-gradient(45deg, rgba(254,69,36,0.1) 0 2px, transparent 2px 6px)
+                `,
+                backgroundSize: "24px 24px, 24px 24px, 24px 24px",
+                WebkitMask:
+                  "radial-gradient(circle at var(--x, 50%) var(--y, 50%), black 0, transparent 40%)",
+                mask: "radial-gradient(circle at var(--x, 50%) var(--y, 50%), black 0, transparent 40%)",
+                animation: "spotlight 8s ease-in-out infinite",
+              }}
+            />
+          </div>
+
+          {/* Layer 2: Scrolling Tech Rows */}
+          <div className="relative z-20 flex flex-col gap-6 w-full max-w-4xl px-6">
+            <InfiniteTechRow items={row1} speed={50} />
+            <InfiniteTechRow items={row2} speed={40} reverse={true} />
+            <InfiniteTechRow items={row3} speed={60} />
+          </div>
+
+          {/* Layer 3: Liquid Glass Central Logo Card */}
+          <div className="absolute z-30 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="relative p-4 md:p-10 rounded-4xl bg-white/5 backdrop-blur-[2px] saturate-[1.8] border border-white/60 shadow-[0_8px_32px_rgba(31,38,135,0.1),inset_0_4px_20px_rgba(255,255,255,0.1)] transition-all duration-500 overflow-hidden"
+            >
+              {/* Liquid Refraction Layer (Ultra-Transparent) */}
+              <div className="absolute inset-0 z-0 pointer-events-none rounded-[2.5rem] bg-transparent backdrop-blur-[1px] shadow-[inset_-10px_-8px_20px_-15px_rgba(255,255,255,0.6),inset_0px_-9px_20px_-10px_rgba(255,255,255,0.6)] opacity-40" />
+
+              <div className="relative z-10">
+                <img
+                  src={logo}
+                  alt="Strivo"
+                  className="w-16 h-16 md:w-24 md:h-24 object-contain relative transition-transform duration-500 group-hover:scale-110"
+                />
+              </div>
+
+              {/* Ambient Shine / Specular Highlight */}
+              <motion.div
+                animate={{ x: ["-150%", "250%"] }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  repeatDelay: 1.5,
+                }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-25 pointer-events-none"
+              />
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+const Footer = () => (
+  <footer className="w-full max-w-7xl px-6 py-6 flex items-center justify-between border-t border-neutral-200 mt-20 mb-8">
+    <div className="flex items-center gap-4">
+      <img src={logo} alt="Strivo" className="h-5 w-auto object-contain" />
+      <div className="h-4 w-px bg-neutral-300" />
+      <p className="text-[13px] text-neutral-500 font-inter">
+        Developed by <span className="text-neutral-900 font-bold">Samarth Pagaria</span>
+      </p>
+    </div>
+
+    <div className="flex items-center gap-6">
+      <a href="https://x.com/SamarthPagaria" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline">
+        <Twitter size={18} />
+        <span className="text-xs font-bold font-satoshi">Twitter</span>
+      </a>
+      <a href="https://www.linkedin.com/in/samarth-pagaria-81a93b281/" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline">
+        <Linkedin size={18} />
+        <span className="text-xs font-bold font-satoshi">LinkedIn</span>
+      </a>
+      <a href="https://github.com/Samarthpagaria" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline">
+        <Github size={18} />
+        <span className="text-xs font-bold font-satoshi">GitHub</span>
+      </a>
+    </div>
+
+    <p className="hidden md:block text-xs font-medium text-neutral-400 font-satoshi">
+      © 2026 strivo. all rights reserved.
+    </p>
+  </footer>
+);
+
 const LandingPage = () => {
   const navigate = useNavigate();
   const containerRef = React.useRef(null);
@@ -286,7 +494,7 @@ const LandingPage = () => {
       </motion.nav>
 
       {/* Hero Section */}
-      <main className="flex-1 flex flex-col items-center pt-[20vh] text-center px-6">
+      <main className="flex-1 flex flex-col items-center pt-[20vh] text-center px-6 overflow-x-hidden">
         <div className="flex flex-col items-center gap-4">
           <AnimatePresence mode="wait">
             <motion.h1
@@ -470,8 +678,8 @@ const LandingPage = () => {
         </section>
 
         <ConvergenceSection />
-        
-        
+        <BuiltOnSection />
+        <Footer />
       </main>
     </div>
   );
