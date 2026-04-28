@@ -29,6 +29,8 @@ import {
 import logo from "../assets/strivo_black_logo.png";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import axios from "axios";
+import gsap from "gsap";
+import Lenis from "lenis";
 
 const FeatureCard = ({ title, desc, col, index, showAllCorners }) => (
   <motion.div
@@ -181,7 +183,7 @@ const ConvergenceSection = () => (
 const TechCard = ({ name, icon, color }) => (
   <motion.div
     whileHover={{ scale: 1.05, y: -5 }}
-    className="flex flex-col items-center justify-center gap-3 w-22 h-22 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md shadow-sm hover:border-neutral-300 dark:hover:border-neutral-700 transition-all cursor-default flex-shrink-0"
+    className="flex flex-col items-center justify-center gap-3 w-22 h-22 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm hover:border-neutral-300 dark:hover:border-neutral-700 transition-all cursor-default flex-shrink-0"
   >
     <div
       style={{ color: color }}
@@ -286,9 +288,8 @@ const BuiltOnSection = () => {
                 `,
                 backgroundSize: "24px 24px, 24px 24px, 24px 24px",
                 WebkitMask:
-                  "radial-gradient(circle at var(--x, 50%) var(--y, 50%), black 0, transparent 40%)",
-                mask: "radial-gradient(circle at var(--x, 50%) var(--y, 50%), black 0, transparent 40%)",
-                animation: "spotlight 8s ease-in-out infinite",
+                  "radial-gradient(circle at 50% 50%, black 0, transparent 40%)",
+                mask: "radial-gradient(circle at 50% 50%, black 0, transparent 40%)",
               }}
             />
           </div>
@@ -304,10 +305,10 @@ const BuiltOnSection = () => {
           <div className="absolute z-30 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="relative p-4 md:p-10 rounded-4xl bg-white/5 dark:bg-black/20 backdrop-blur-[2px] saturate-[1.8] border border-white/60 dark:border-white/10 shadow-[0_8px_32px_rgba(31,38,135,0.1),inset_0_4px_20px_rgba(255,255,255,0.1)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_4px_20px_rgba(255,255,255,0.05)] transition-all duration-500 overflow-hidden"
+              className="relative p-4 md:p-10 rounded-4xl bg-white/5 dark:bg-black/20 saturate-[1.8] border border-white/60 dark:border-white/10 shadow-[0_8px_32px_rgba(31,38,135,0.1),inset_0_4px_20px_rgba(255,255,255,0.1)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_4px_20px_rgba(255,255,255,0.05)] transition-all duration-500 overflow-hidden"
             >
               {/* Liquid Refraction Layer (Ultra-Transparent) */}
-              <div className="absolute inset-0 z-0 pointer-events-none rounded-[2.5rem] bg-transparent backdrop-blur-[1px] shadow-[inset_-10px_-8px_20px_-15px_rgba(255,255,255,0.6),inset_0px_-9px_20px_-10px_rgba(255,255,255,0.6)] dark:shadow-[inset_-10px_-8px_20px_-15px_rgba(255,255,255,0.1),inset_0px_-9px_20px_-10px_rgba(255,255,255,0.1)] opacity-40" />
+              <div className="absolute inset-0 z-0 pointer-events-none rounded-[2.5rem] bg-transparent shadow-[inset_-10px_-8px_20px_-15px_rgba(255,255,255,0.6),inset_0px_-9px_20px_-10px_rgba(255,255,255,0.6)] dark:shadow-[inset_-10px_-8px_20px_-15px_rgba(255,255,255,0.1),inset_0px_-9px_20px_-10px_rgba(255,255,255,0.1)] opacity-40" />
 
               <div className="relative z-10">
                 <img
@@ -427,6 +428,26 @@ const LandingPage = () => {
     return () => clearInterval(timer);
   }, []);
 
+  React.useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    const raf = (time) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(raf);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(raf);
+      lenis.destroy();
+    };
+  }, []);
+
   return (
     <div className="w-full bg-neutral-50 dark:bg-neutral-950 relative flex flex-col items-center antialiased selection:bg-indigo-100 dark:selection:bg-indigo-900 ">
       {/* Autonomous Navigation Nodes */}
@@ -528,7 +549,7 @@ const LandingPage = () => {
               key={headlineIndex}
               exit={{ y: -50, opacity: 0 }}
               transition={{ duration: 0.4, ease: "easeIn" }}
-              className=" text-5xl md:text-5xl lg:text-[4rem] font-bold text-neutral-900 dark:text-white tracking-tight leading-[1.05] font-satoshi max-w-5xl flex flex-wrap justify-center"
+              className=" text-5xl md:text-5xl lg:text-[4rem] font-bold text-neutral-900 dark:text-white tracking-tight leading-[1.05] font-satoshi max-w-5xl flex flex-wrap justify-center min-h-[120px]"
             >
               {headlines[headlineIndex].split(" ").map((word, i) => (
                 <motion.span
@@ -540,7 +561,7 @@ const LandingPage = () => {
                     delay: i * 0.06,
                     ease: [0.215, 0.61, 0.355, 1],
                   }}
-                  className="inline-block mr-[0.25em] last:mr-0"
+                  className="inline-block mr-[0.25em] last:mr-0 transform-gpu will-change-transform"
                 >
                   {word}
                 </motion.span>
@@ -578,7 +599,7 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="w-full max-w-6xl px-6 mt-20 relative group"
+            className="w-full max-w-6xl px-6 mt-20 relative group transform-gpu will-change-transform"
           >
             <div className="relative rounded-[2.5rem] border border-neutral-200 dark:border-neutral-800 p-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.5)] bg-white/50 dark:bg-neutral-900/50 backdrop-blur-sm overflow-hidden">
               {/* Slant Gray Lines Pattern */}

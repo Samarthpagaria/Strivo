@@ -43,7 +43,7 @@ const Toast = ({ message, onClose }) => {
         alt="Strivo Logo"
         className="w-10 h-10 object-contain shrink-0 relative z-10"
       />
-      <p className="text-sm font-bold text-slate-800 flex-1 leading-tight relative z-10">
+      <p className="text-sm font-bold font-satoshi text-slate-800 flex-1 leading-tight relative z-10">
         {message}
       </p>
       <motion.button
