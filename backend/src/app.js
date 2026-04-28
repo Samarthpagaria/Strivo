@@ -31,6 +31,9 @@ import dashboardRouter from "./routes/dashboard.routes.js";
 import likesRouter from "./routes/likes.routes.js";
 import videoRouter from "./routes/videos.routes.js";
 //routes declaration
+import siteStatRouter from "./routes/sitestats.routes.js";
+
+app.use("/api/v1/sitestats", siteStatRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/healthcheck", healthcheckRouter);
 app.use("/api/v1/tweets", tweetRouter);

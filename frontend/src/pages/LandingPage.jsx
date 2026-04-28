@@ -27,6 +27,8 @@ import {
   useTransform,
 } from "framer-motion";
 import logo from "../assets/strivo_black_logo.png";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import axios from "axios";
 
 const FeatureCard = ({ title, desc, col, index, showAllCorners }) => (
   <motion.div
@@ -34,7 +36,7 @@ const FeatureCard = ({ title, desc, col, index, showAllCorners }) => (
     whileInView={{ opacity: 1 }}
     viewport={{ once: true }}
     transition={{ delay: index * 0.1, duration: 0.8 }}
-    className={`${col} group relative border-r border-b border-dashed border-neutral-400/60 p-8 md:p-12 hover:bg-white transition-all duration-500 cursor-pointer`}
+    className={`${col} group relative border-r border-b border-dashed border-neutral-400/60 dark:border-neutral-700/60 p-8 md:p-12 hover:bg-white dark:hover:bg-neutral-900 transition-all duration-500 cursor-pointer`}
   >
     {/* Dynamic Crosshair Markers */}
     {[
@@ -51,16 +53,16 @@ const FeatureCard = ({ title, desc, col, index, showAllCorners }) => (
         key={i}
         className={`${pos} w-3 h-3 flex items-center justify-center z-10 pointer-events-none opacity-40 group-hover:opacity-100 transition-opacity`}
       >
-        <div className="absolute w-full h-[1px] bg-neutral-500" />
-        <div className="absolute h-full w-[1px] bg-neutral-500" />
+        <div className="absolute w-full h-[1px] bg-neutral-500 dark:bg-neutral-600" />
+        <div className="absolute h-full w-[1px] bg-neutral-500 dark:bg-neutral-600" />
       </div>
     ))}
 
     <div className="flex flex-col gap-4 relative">
-      <h3 className="text-2xl md:text-3xl font-bold text-neutral-900 tracking-tight font-satoshi group-hover:text-[#ff9d6c] transition-colors duration-500">
+      <h3 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white tracking-tight font-satoshi group-hover:text-[#ff9d6c] transition-colors duration-500">
         {title}
       </h3>
-      <p className="text-neutral-500 font-medium leading-relaxed font-inter text-sm md:text-base max-w-md transition-colors duration-500 group-hover:text-neutral-700">
+      <p className="text-neutral-500 dark:text-neutral-400 font-medium leading-relaxed font-inter text-sm md:text-base max-w-md transition-colors duration-500 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
         {desc}
       </p>
     </div>
@@ -75,43 +77,43 @@ const ConvergenceSection = () => (
       viewport={{ once: true }}
       className="flex flex-col items-center gap-6 z-10"
     >
-      <h2 className="text-4xl md:text-6xl font-medium text-neutral-900 tracking-tighter font-satoshi">
+      <h2 className="text-4xl md:text-6xl font-medium text-neutral-900 dark:text-white tracking-tighter font-satoshi">
         Why Strivo?
       </h2>
     </motion.div>
 
-    <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-0 border border-dashed border-neutral-400/60 relative">
+    <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-0 border border-dashed border-neutral-400/60 dark:border-neutral-700/60 relative">
       {/* Left Hero Column: Heading */}
-      <div className="col-span-12 md:col-span-6 p-8 md:p-16 lg:p-20 border-r border-dashed border-neutral-400/60 flex flex-col justify-center gap-8 relative group">
+      <div className="col-span-12 md:col-span-6 p-8 md:p-16 lg:p-20 border-r border-dashed border-neutral-400/60 dark:border-neutral-700/60 flex flex-col justify-center gap-8 relative group">
         <div className="flex flex-col gap-4">
           <span className="text-[10px] font-bold text-[#fe4524] tracking-[0.4em] uppercase font-satoshi">
             The Why
           </span>
-          <h2 className="text-3xl md:text-5xl font-bold text-neutral-900 tracking-tighter font-satoshi leading-[1.1]">
+          <h2 className="text-3xl md:text-5xl font-bold text-neutral-900 dark:text-white tracking-tighter font-satoshi leading-[1.1]">
             Why switch between platforms… <br />
-            <span className="text-neutral-400">
+            <span className="text-neutral-400 dark:text-neutral-500">
               when your content belongs together?
             </span>
           </h2>
         </div>
 
         {/* Subtle Decorative Element */}
-        <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 w-12 h-12 border border-dashed border-neutral-300 rounded-full flex items-center justify-center opacity-40">
-          <div className="w-6 h-6 border border-neutral-200 rounded-full" />
+        <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 w-12 h-12 border border-dashed border-neutral-300 dark:border-neutral-700 rounded-full flex items-center justify-center opacity-40">
+          <div className="w-6 h-6 border border-neutral-200 dark:border-neutral-700 rounded-full" />
         </div>
       </div>
 
       {/* Right Column: Stacked Features */}
       <div className="col-span-12 md:col-span-6 flex flex-col">
         {/* Top Feature: Wide */}
-        <div className="p-8 md:p-12 border-b border-dashed border-neutral-400/60 flex flex-col gap-4 hover:bg-neutral-50/50 transition-colors group">
+        <div className="p-8 md:p-12 border-b border-dashed border-neutral-400/60 dark:border-neutral-700/60 flex flex-col gap-4 hover:bg-neutral-50/50 dark:hover:bg-neutral-800/50 transition-colors group">
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-1.5 rounded-full bg-[#fe4524] shadow-[0_0_8px_rgba(254,69,36,0.6)]" />
-            <h3 className="text-[11px] font-bold text-neutral-900 font-satoshi uppercase tracking-[0.2em]">
+            <h3 className="text-[11px] font-bold text-neutral-900 dark:text-white font-satoshi uppercase tracking-[0.2em]">
               Unified Ecosystem
             </h3>
           </div>
-          <p className="text-sm md:text-base text-neutral-500 font-medium font-inter leading-relaxed max-w-md">
+          <p className="text-sm md:text-base text-neutral-500 dark:text-neutral-400 font-medium font-inter leading-relaxed max-w-md">
             Creators shouldn’t need one platform for videos and another for
             conversations. Strivo brings content, community, and audience growth
             into one seamless experience.
@@ -120,26 +122,26 @@ const ConvergenceSection = () => (
 
         {/* Bottom Features: Split */}
         <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
-          <div className="p-8 md:p-10 border-r border-dashed border-neutral-400/60 flex flex-col gap-4 hover:bg-neutral-50/50 transition-colors group">
+          <div className="p-8 md:p-10 border-r border-dashed border-neutral-400/60 dark:border-neutral-700/60 flex flex-col gap-4 hover:bg-neutral-50/50 dark:hover:bg-neutral-800/50 transition-colors group">
             <div className="flex items-center gap-3">
               <div className="w-1.5 h-1.5 rounded-full bg-[#fe4524] shadow-[0_0_8px_rgba(254,69,36,0.6)]" />
-              <h3 className="text-[11px] font-bold text-neutral-900 font-satoshi uppercase tracking-[0.2em]">
+              <h3 className="text-[11px] font-bold text-neutral-900 dark:text-white font-satoshi uppercase tracking-[0.2em]">
                 Creative Momentum
               </h3>
             </div>
-            <p className="text-sm text-neutral-500 font-medium font-inter leading-relaxed">
+            <p className="text-sm text-neutral-500 dark:text-neutral-400 font-medium font-inter leading-relaxed">
               From posting videos to starting discussions, sharing instant
               dispatches—everything happens in one place.
             </p>
           </div>
-          <div className="p-8 md:p-10 flex flex-col gap-4 bg-neutral-50/30 hover:bg-neutral-100/50 transition-colors group">
+          <div className="p-8 md:p-10 flex flex-col gap-4 bg-neutral-50/30 dark:bg-neutral-800/30 hover:bg-neutral-100/50 dark:hover:bg-neutral-800/80 transition-colors group">
             <div className="flex items-center gap-3">
               <div className="w-1.5 h-1.5 rounded-full bg-[#fe4524] shadow-[0_0_8px_rgba(254,69,36,0.6)]" />
-              <h3 className="text-[11px] font-bold text-neutral-900 font-satoshi uppercase tracking-[0.2em] text-[#fe4524]">
+              <h3 className="text-[11px] font-bold text-neutral-900 dark:text-white font-satoshi uppercase tracking-[0.2em] text-[#fe4524]">
                 The Paradigm
               </h3>
             </div>
-            <p className="text-sm text-neutral-500 font-medium font-inter leading-relaxed">
+            <p className="text-sm text-neutral-500 dark:text-neutral-400 font-medium font-inter leading-relaxed">
               Real creators don’t need more platforms. They need one platform
               that does more.
             </p>
@@ -150,27 +152,27 @@ const ConvergenceSection = () => (
       {/* Crosshair Markers at every intersection */}
       {/* Outer Corners */}
       <div className="absolute -left-[6.5px] -top-[6.5px] w-3 h-3 flex items-center justify-center z-10 pointer-events-none opacity-60">
-        <div className="absolute w-full h-[1px] bg-neutral-500" />
-        <div className="absolute h-full w-[1px] bg-neutral-500" />
+        <div className="absolute w-full h-[1px] bg-neutral-500 dark:bg-neutral-600" />
+        <div className="absolute h-full w-[1px] bg-neutral-500 dark:bg-neutral-600" />
       </div>
       <div className="absolute -right-[6.5px] -top-[6.5px] w-3 h-3 flex items-center justify-center z-10 pointer-events-none opacity-60">
-        <div className="absolute w-full h-[1px] bg-neutral-500" />
-        <div className="absolute h-full w-[1px] bg-neutral-500" />
+        <div className="absolute w-full h-[1px] bg-neutral-500 dark:bg-neutral-600" />
+        <div className="absolute h-full w-[1px] bg-neutral-500 dark:bg-neutral-600" />
       </div>
       <div className="absolute -left-[6.5px] -bottom-[6.5px] w-3 h-3 flex items-center justify-center z-10 pointer-events-none opacity-60">
-        <div className="absolute w-full h-[1px] bg-neutral-500" />
-        <div className="absolute h-full w-[1px] bg-neutral-500" />
+        <div className="absolute w-full h-[1px] bg-neutral-500 dark:bg-neutral-600" />
+        <div className="absolute h-full w-[1px] bg-neutral-500 dark:bg-neutral-600" />
       </div>
       <div className="absolute -right-[6.5px] -bottom-[6.5px] w-3 h-3 flex items-center justify-center z-10 pointer-events-none opacity-60">
-        <div className="absolute w-full h-[1px] bg-neutral-500" />
-        <div className="absolute h-full w-[1px] bg-neutral-500" />
+        <div className="absolute w-full h-[1px] bg-neutral-500 dark:bg-neutral-600" />
+        <div className="absolute h-full w-[1px] bg-neutral-500 dark:bg-neutral-600" />
       </div>
 
       {/* Internal Intersections */}
-      <div className="absolute left-1/2 top-0 h-full w-px border-l border-dashed border-neutral-400/60 hidden md:block" />
+      <div className="absolute left-1/2 top-0 h-full w-px border-l border-dashed border-neutral-400/60 dark:border-neutral-700/60 hidden md:block" />
       <div className="absolute left-1/2 top-1/2 w-3 h-3 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10 pointer-events-none opacity-40 hidden md:block">
-        <div className="absolute w-full h-[1px] bg-neutral-500" />
-        <div className="absolute h-full w-[1px] bg-neutral-500" />
+        <div className="absolute w-full h-[1px] bg-neutral-500 dark:bg-neutral-600" />
+        <div className="absolute h-full w-[1px] bg-neutral-500 dark:bg-neutral-600" />
       </div>
     </div>
   </section>
@@ -179,7 +181,7 @@ const ConvergenceSection = () => (
 const TechCard = ({ name, icon, color }) => (
   <motion.div
     whileHover={{ scale: 1.05, y: -5 }}
-    className="flex flex-col items-center justify-center gap-3 w-22 h-22 rounded-2xl border border-neutral-200 bg-white/80 backdrop-blur-md shadow-sm hover:border-neutral-300 transition-all cursor-default flex-shrink-0"
+    className="flex flex-col items-center justify-center gap-3 w-22 h-22 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md shadow-sm hover:border-neutral-300 dark:hover:border-neutral-700 transition-all cursor-default flex-shrink-0"
   >
     <div
       style={{ color: color }}
@@ -187,7 +189,7 @@ const TechCard = ({ name, icon, color }) => (
     >
       {icon}
     </div>
-    <span className="text-[10px] font-bold text-neutral-500 font-satoshi uppercase tracking-widest text-center px-1">
+    <span className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 font-satoshi uppercase tracking-widest text-center px-1">
       {name}
     </span>
   </motion.div>
@@ -246,7 +248,7 @@ const BuiltOnSection = () => {
         <span className="text-[10px] font-bold text-[#fe4524] tracking-[0.4em] uppercase font-satoshi">
           The Stack
         </span>
-        <h2 className="text-4xl md:text-6xl font-medium text-neutral-900 tracking-tighter font-satoshi">
+        <h2 className="text-4xl md:text-6xl font-medium text-neutral-900 dark:text-white tracking-tighter font-satoshi">
           Built on Top of
         </h2>
       </motion.div>
@@ -302,16 +304,16 @@ const BuiltOnSection = () => {
           <div className="absolute z-30 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="relative p-4 md:p-10 rounded-4xl bg-white/5 backdrop-blur-[2px] saturate-[1.8] border border-white/60 shadow-[0_8px_32px_rgba(31,38,135,0.1),inset_0_4px_20px_rgba(255,255,255,0.1)] transition-all duration-500 overflow-hidden"
+              className="relative p-4 md:p-10 rounded-4xl bg-white/5 dark:bg-black/20 backdrop-blur-[2px] saturate-[1.8] border border-white/60 dark:border-white/10 shadow-[0_8px_32px_rgba(31,38,135,0.1),inset_0_4px_20px_rgba(255,255,255,0.1)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_4px_20px_rgba(255,255,255,0.05)] transition-all duration-500 overflow-hidden"
             >
               {/* Liquid Refraction Layer (Ultra-Transparent) */}
-              <div className="absolute inset-0 z-0 pointer-events-none rounded-[2.5rem] bg-transparent backdrop-blur-[1px] shadow-[inset_-10px_-8px_20px_-15px_rgba(255,255,255,0.6),inset_0px_-9px_20px_-10px_rgba(255,255,255,0.6)] opacity-40" />
+              <div className="absolute inset-0 z-0 pointer-events-none rounded-[2.5rem] bg-transparent backdrop-blur-[1px] shadow-[inset_-10px_-8px_20px_-15px_rgba(255,255,255,0.6),inset_0px_-9px_20px_-10px_rgba(255,255,255,0.6)] dark:shadow-[inset_-10px_-8px_20px_-15px_rgba(255,255,255,0.1),inset_0px_-9px_20px_-10px_rgba(255,255,255,0.1)] opacity-40" />
 
               <div className="relative z-10">
                 <img
                   src={logo}
                   alt="Strivo"
-                  className="w-16 h-16 md:w-24 md:h-24 object-contain relative transition-transform duration-500 group-hover:scale-110"
+                  className="w-16 h-16 md:w-24 md:h-24 object-contain relative transition-transform duration-500 group-hover:scale-110 dark:invert"
                 />
               </div>
 
@@ -335,31 +337,31 @@ const BuiltOnSection = () => {
 };
 
 const Footer = () => (
-  <footer className="w-full max-w-7xl px-6 py-6 flex items-center justify-between border-t border-neutral-200 mt-20 mb-8">
+  <footer className="w-full max-w-7xl px-6 py-6 flex items-center justify-between border-t border-neutral-200 dark:border-neutral-800 mt-20 mb-8">
     <div className="flex items-center gap-4">
-      <img src={logo} alt="Strivo" className="h-5 w-auto object-contain" />
-      <div className="h-4 w-px bg-neutral-300" />
-      <p className="text-[13px] text-neutral-500 font-inter">
-        Developed by <span className="text-neutral-900 font-bold">Samarth Pagaria</span>
+      <img src={logo} alt="Strivo" className="h-5 w-auto object-contain dark:invert" />
+      <div className="h-4 w-px bg-neutral-300 dark:bg-neutral-700" />
+      <p className="text-[13px] text-neutral-500 dark:text-neutral-400 font-inter">
+        Developed by <span className="text-neutral-900 dark:text-white font-bold">Samarth Pagaria</span>
       </p>
     </div>
 
     <div className="flex items-center gap-6">
-      <a href="https://x.com/SamarthPagaria" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline">
+      <a href="https://x.com/SamarthPagaria" target="_blank" rel="noopener noreferrer" className="text-neutral-400 dark:text-neutral-500 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline">
         <Twitter size={18} />
         <span className="text-xs font-bold font-satoshi">Twitter</span>
       </a>
-      <a href="https://www.linkedin.com/in/samarth-pagaria-81a93b281/" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline">
+      <a href="https://www.linkedin.com/in/samarth-pagaria-81a93b281/" target="_blank" rel="noopener noreferrer" className="text-neutral-400 dark:text-neutral-500 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline">
         <Linkedin size={18} />
         <span className="text-xs font-bold font-satoshi">LinkedIn</span>
       </a>
-      <a href="https://github.com/Samarthpagaria" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline">
+      <a href="https://github.com/Samarthpagaria" target="_blank" rel="noopener noreferrer" className="text-neutral-400 dark:text-neutral-500 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline">
         <Github size={18} />
         <span className="text-xs font-bold font-satoshi">GitHub</span>
       </a>
     </div>
 
-    <p className="hidden md:block text-xs font-medium text-neutral-400 font-satoshi">
+    <p className="hidden md:block text-xs font-medium text-neutral-400 dark:text-neutral-500 font-satoshi">
       © 2026 strivo. all rights reserved.
     </p>
   </footer>
@@ -370,6 +372,30 @@ const LandingPage = () => {
   const containerRef = React.useRef(null);
 
   const [upvotes, setUpvotes] = React.useState(0);
+
+  React.useEffect(() => {
+    const fetchUpvotes = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/v1/sitestats/");
+        if (res.data.success) {
+          setUpvotes(res.data.data.upvotes);
+        }
+      } catch (error) {
+        console.error("Failed to fetch upvotes:", error);
+      }
+    };
+    fetchUpvotes();
+  }, []);
+
+  const handleUpvote = async () => {
+    setUpvotes((prev) => prev + 1);
+    try {
+      await axios.post("http://localhost:8000/api/v1/sitestats/increment");
+    } catch (error) {
+      console.error("Failed to increment upvote:", error);
+      setUpvotes((prev) => prev - 1); // rollback on error
+    }
+  };
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -402,7 +428,7 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="w-full bg-neutral-50 relative flex flex-col items-center antialiased selection:bg-indigo-100 ">
+    <div className="w-full bg-neutral-50 dark:bg-neutral-950 relative flex flex-col items-center antialiased selection:bg-indigo-100 dark:selection:bg-indigo-900 ">
       {/* Autonomous Navigation Nodes */}
       {/* node 1: Scaled Identity */}
       <motion.div
@@ -417,8 +443,8 @@ const LandingPage = () => {
         transition={{ type: "spring", stiffness: 200, damping: 30 }}
         className="fixed z-50 flex items-center justify-center cursor-pointer group -mt-[4px] whitespace-nowrap"
       >
-        <img src={logo} alt="Strivo" className="w-20 h-20 object-contain" />
-        <span className="text-neutral-900 font-bold font-satoshi text-5xl tracking-tight pb-2 ">
+        <img src={logo} alt="Strivo" className="w-20 h-20 object-contain dark:invert" />
+        <span className="text-neutral-900 dark:text-white font-bold font-satoshi text-5xl tracking-tight pb-2 ">
           Strivo
         </span>
       </motion.div>
@@ -433,13 +459,13 @@ const LandingPage = () => {
           scale: scrolled ? 0.95 : 1,
         }}
         transition={{ type: "spring", stiffness: 200, damping: 30 }}
-        className="fixed z-50 flex items-center gap-4 px-1 py-1 bg-white border border-neutral-200 rounded-full shadow-sm min-w-max"
+        className="fixed z-50 flex items-center gap-4 px-1 py-1 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-full shadow-sm min-w-max"
       >
         <div className="flex items-center gap-2">
-          <div className="flex items-center overflow-hidden border border-neutral-200 rounded-full bg-neutral-50/50 hover:border-neutral-300 transition-all group/upvote shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)]">
+          <div className="flex items-center overflow-hidden border border-neutral-200 dark:border-neutral-800 rounded-full bg-neutral-50/50 dark:bg-neutral-800/50 hover:border-neutral-300 dark:hover:border-neutral-700 transition-all group/upvote shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)] dark:shadow-[0_2px_10px_-3px_rgba(0,0,0,0.5)]">
             <button
-              onClick={() => setUpvotes((prev) => prev + 1)}
-              className="group/btn px-3 py-1.5 text-lg font-bold text-neutral-500 hover:text-neutral-900 transition-colors font-satoshi border-r border-neutral-200 hover:bg-neutral-100 active:bg-neutral-200 rounded-l-full flex items-center gap-1.5 pl-3"
+              onClick={handleUpvote}
+              className="group/btn px-3 py-1.5 text-lg font-bold text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors font-satoshi border-r border-neutral-200 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700 rounded-l-full flex items-center gap-1.5 pl-3"
             >
               <ArrowUp
                 size={22}
@@ -447,7 +473,7 @@ const LandingPage = () => {
               />
               Upvote
             </button>
-            <div className="px-3 py-1.5 min-w-[3.5rem] text-center flex items-center justify-center bg-white">
+            <div className="px-3 py-1.5 min-w-[3.5rem] text-center flex items-center justify-center bg-white dark:bg-neutral-900">
               <AnimatePresence mode="wait">
                 <motion.span
                   key={upvotes}
@@ -455,7 +481,7 @@ const LandingPage = () => {
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -10, opacity: 0 }}
                   transition={{ duration: 0.15, ease: "easeOut" }}
-                  className="text-lg font-bold text-neutral-900 font-satoshi tabular-nums block"
+                  className="text-lg font-bold text-neutral-900 dark:text-white font-satoshi tabular-nums block"
                 >
                   {upvotes}
                 </motion.span>
@@ -464,19 +490,20 @@ const LandingPage = () => {
           </div>
           <a
             href="#"
-            className="text-neutral-500 hover:text-neutral-900 transition-colors p-2"
+            className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors p-2"
           >
             <Github size={24} />
           </a>
+          <AnimatedThemeToggler className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors p-2 flex items-center justify-center rounded-full" />
         </div>
 
-        <div className="h-6 w-px bg-neutral-300" />
+        <div className="h-6 w-px bg-neutral-300 dark:bg-neutral-700" />
 
         {/* Auth Actions */}
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/login")}
-            className="text-lg font-bold  text-neutral-500 hover:text-neutral-900 font-satoshi px-1 transition-colors"
+            className="text-lg font-bold  text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white font-satoshi px-1 transition-colors"
           >
             Login
           </button>
@@ -501,7 +528,7 @@ const LandingPage = () => {
               key={headlineIndex}
               exit={{ y: -50, opacity: 0 }}
               transition={{ duration: 0.4, ease: "easeIn" }}
-              className=" text-5xl md:text-5xl lg:text-[4rem] font-bold text-neutral-900 tracking-tight leading-[1.05] font-satoshi max-w-5xl flex flex-wrap justify-center"
+              className=" text-5xl md:text-5xl lg:text-[4rem] font-bold text-neutral-900 dark:text-white tracking-tight leading-[1.05] font-satoshi max-w-5xl flex flex-wrap justify-center"
             >
               {headlines[headlineIndex].split(" ").map((word, i) => (
                 <motion.span
@@ -529,7 +556,7 @@ const LandingPage = () => {
               delay: 0.8,
               ease: [0.16, 1, 0.3, 1],
             }}
-            className="text-lg md:text-3xl text-neutral-500 font-medium tracking-tight font-inter max-w-2xl leading-snug mt-4"
+            className="text-lg md:text-3xl text-neutral-500 dark:text-neutral-400 font-medium tracking-tight font-inter max-w-2xl leading-snug mt-4"
           >
             Turn content into conversations,
             <br /> and followers into a strong community.
@@ -553,7 +580,7 @@ const LandingPage = () => {
             viewport={{ once: true }}
             className="w-full max-w-6xl px-6 mt-20 relative group"
           >
-            <div className="relative rounded-[2.5rem] border border-neutral-200 p-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.1)] bg-white/50 backdrop-blur-sm overflow-hidden">
+            <div className="relative rounded-[2.5rem] border border-neutral-200 dark:border-neutral-800 p-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.5)] bg-white/50 dark:bg-neutral-900/50 backdrop-blur-sm overflow-hidden">
               {/* Slant Gray Lines Pattern */}
               <div
                 className="absolute inset-0 opacity-[0.4] pointer-events-none"
@@ -561,7 +588,7 @@ const LandingPage = () => {
                   backgroundImage: `repeating-linear-gradient(45deg, #6b7280, #6b7280 1px, transparent 1px, transparent 5px)`,
                 }}
               />
-              <div className="rounded-[2rem] overflow-hidden aspect-video bg-neutral-900 flex items-center justify-center relative border border-neutral-200/50 z-10">
+              <div className="rounded-[2rem] overflow-hidden aspect-video bg-neutral-900 flex items-center justify-center relative border border-neutral-200/50 dark:border-neutral-800/50 z-10">
                 <div className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-900" />
                 <div className="relative flex flex-col items-center gap-4 text-neutral-400">
                   <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md">
@@ -584,10 +611,10 @@ const LandingPage = () => {
             viewport={{ once: true }}
             className="flex flex-col items-center gap-6 z-10"
           >
-            <h2 className="text-4xl md:text-6xl font-medium text-neutral-900 tracking-tighter font-satoshi">
+            <h2 className="text-4xl md:text-6xl font-medium text-neutral-900 dark:text-white tracking-tighter font-satoshi">
               Features
             </h2>
-            <p className="text-lg md:text-xl text-neutral-500 font-medium max-w-2xl text-center leading-relaxed  font-inter">
+            <p className="text-lg md:text-xl text-neutral-500 dark:text-neutral-400 font-medium max-w-2xl text-center leading-relaxed  font-inter">
               Upload videos, tweet instantly from content, manage playlists, and
               stay connected with your audience through one seamless experience.
             </p>
@@ -598,24 +625,24 @@ const LandingPage = () => {
             {/* Perimeter Masking (Reduced Size) */}
             <div className="absolute inset-0 pointer-events-none z-20">
               {/* Left Column Buffer Mask */}
-              <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-neutral-50 to-transparent" />
+              <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-neutral-50 dark:from-neutral-950 to-transparent" />
               {/* Right Column Buffer Mask */}
-              <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-neutral-50 to-transparent" />
+              <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-neutral-50 dark:from-neutral-950 to-transparent" />
               {/* Top Row Buffer Mask */}
-              <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-neutral-50 to-transparent" />
+              <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-neutral-50 dark:from-neutral-950 to-transparent" />
               {/* Bottom Row Buffer Mask */}
-              <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-neutral-50 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-neutral-50 dark:from-neutral-950 to-transparent" />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-0 border-l border-t border-dashed border-neutral-400/60 relative">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-0 border-l border-t border-dashed border-neutral-400/60 dark:border-neutral-700/60 relative">
               {/* Extra Top Row with Side Buffers */}
-              <div className="hidden md:block col-span-1 h-16 border-r border-b border-dashed border-neutral-400/30" />
-              <div className="hidden md:block col-span-7 h-16 border-r border-b border-dashed border-neutral-400/30" />
-              <div className="hidden md:block col-span-3 h-16 border-r border-b border-dashed border-neutral-400/30" />
-              <div className="hidden md:block col-span-1 h-16 border-r border-b border-dashed border-neutral-400/30" />
+              <div className="hidden md:block col-span-1 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-7 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-3 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-1 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
 
               {/* Row 1 Content with Buffer Columns */}
-              <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 h-full" />
+              <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30 h-full" />
               <FeatureCard
                 title="One-Click Social Clipping"
                 desc="Turn any video into a community post instantly. Share videos directly to your feed with rich media mentions."
@@ -630,10 +657,10 @@ const LandingPage = () => {
                 index={1}
                 showAllCorners={true}
               />
-              <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 h-full" />
+              <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30 h-full" />
 
               {/* Row 2 Content with Buffer Columns */}
-              <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 h-full" />
+              <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30 h-full" />
               <FeatureCard
                 title="Unified Video + Social"
                 desc="Watch videos, join discussions and discover new content all without leaving the player."
@@ -648,10 +675,10 @@ const LandingPage = () => {
                 index={3}
                 showAllCorners={true}
               />
-              <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 h-full" />
+              <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30 h-full" />
 
               {/* Row 3 Content with Buffer Columns */}
-              <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 h-full" />
+              <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30 h-full" />
               <FeatureCard
                 title="Creator Publishing Studio"
                 desc="Upload videos with live previews, metadata control, and smooth publishing workflows."
@@ -666,13 +693,13 @@ const LandingPage = () => {
                 index={5}
                 showAllCorners={true}
               />
-              <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 h-full" />
+              <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30 h-full" />
 
               {/* Extra Bottom Row with Side Buffers */}
-              <div className="hidden md:block col-span-1 h-16 border-r border-b border-dashed border-neutral-400/30" />
-              <div className="hidden md:block col-span-5 h-16 border-r border-b border-dashed border-neutral-400/30" />
-              <div className="hidden md:block col-span-5 h-16 border-r border-b border-dashed border-neutral-400/30" />
-              <div className="hidden md:block col-span-1 h-16 border-r border-b border-dashed border-neutral-400/30" />
+              <div className="hidden md:block col-span-1 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-5 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-5 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-1 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
             </div>
           </div>
         </section>
