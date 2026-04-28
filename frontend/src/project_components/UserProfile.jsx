@@ -36,7 +36,7 @@ export default function UserProfile({ user, onLogout }) {
           </Avatar>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-72 p-0 bg-background/95 dark:bg-black/95 backdrop-blur-xl border border-border dark:border-white/10 shadow-2xl rounded-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <PopoverContent className="w-72 p-0 bg-gradient-to-br from-background/95 to-muted/80 dark:from-neutral-900/95 dark:to-black/80 backdrop-blur-xl border border-border dark:border-white/10 shadow-2xl rounded-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         <PopoverHeader className="bg-muted/30 dark:bg-white/5 border-b border-border dark:border-white/5 p-2.5">
           <div className="flex items-center space-x-3">
             <Avatar className="h-10 w-10 border-2 border-background dark:border-black shadow-md">
@@ -61,33 +61,33 @@ export default function UserProfile({ user, onLogout }) {
           <Link to="/channel" className="block outline-none">
             <Button
               variant="ghost"
-              className="w-full justify-start cursor-pointer font-medium font-satoshi text-[10px] hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-xl px-2.5 h-8.5"
+              className="w-full justify-start cursor-pointer font-medium font-satoshi text-[13px] hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-xl px-2.5 h-8.5"
               size="sm"
             >
               <User className="mr-3 h-3.5 w-3.5" />
-              Infrastructure
+              Profile
             </Button>
           </Link>
           <Link to="/settings" className="block outline-none">
             <Button
               variant="ghost"
-              className="w-full justify-start cursor-pointer font-medium font-satoshi text-[10px] hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-xl px-2.5 h-8.5"
+              className="w-full justify-start cursor-pointer font-medium font-satoshi text-[13px] hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-xl px-2.5 h-8.5"
               size="sm"
             >
               <Settings className="mr-3 h-3.5 w-3.5" />
-              Parameters
+              Settings
             </Button>
           </Link>
         </PopoverBody>
         <PopoverFooter className="p-2 pt-0 bg-muted/10 dark:bg-transparent border-t border-border/50 dark:border-white/5 mt-1">
           <Button
             variant="ghost"
-            className="w-full justify-start cursor-pointer font-medium font-satoshi text-[10px] text-destructive hover:bg-destructive/10 hover:text-destructive transition-all duration-200 rounded-xl px-2.5 h-8.5"
+            className="w-full justify-start cursor-pointer font-medium font-satoshi text-[13px] text-destructive hover:bg-destructive/10 hover:text-destructive transition-all duration-200 rounded-xl px-2.5 h-8.5"
             size="sm"
             onClick={onLogout}
           >
             <LogOut className="mr-3 h-3.5 w-3.5" />
-            Login
+            Log Out
           </Button>
         </PopoverFooter>
       </PopoverContent>

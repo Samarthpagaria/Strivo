@@ -23,7 +23,7 @@ const Toast = ({ message, onClose }) => {
         damping: 25,
         mass: 0.8,
       }}
-      className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-4 bg-white/95 backdrop-blur-md border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-4xl p-2 min-w-[320px] max-w-[450px] overflow-hidden"
+      className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-4 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md border border-white/20 dark:border-neutral-800 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-4xl p-2 min-w-[320px] max-w-[450px] overflow-hidden"
     >
       {/* Internal Shimmer Layer */}
       <motion.div
@@ -41,16 +41,16 @@ const Toast = ({ message, onClose }) => {
       <img
         src={strivoLogo}
         alt="Strivo Logo"
-        className="w-10 h-10 object-contain shrink-0 relative z-10"
+        className="w-10 h-10 object-contain shrink-0 relative z-10 dark:invert"
       />
-      <p className="text-sm font-bold font-satoshi text-slate-800 flex-1 leading-tight relative z-10">
+      <p className="text-sm font-bold font-satoshi text-slate-800 dark:text-neutral-100 flex-1 leading-tight relative z-10">
         {message}
       </p>
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         onClick={onClose}
-        className="text-slate-400 hover:text-slate-600 transition-colors p-1 relative z-10"
+        className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors p-1 relative z-10"
       >
         <X className="w-5 h-5" />
       </motion.button>

@@ -47,7 +47,7 @@ const isDark = document.documentElement.classList.contains("dark");
           />
         </div>
         <div className="flex-1 max-w-2xl px-4">
-          <div className="flex items-center max-w-xl mx-auto bg-gray-100 dark:bg-white/5 rounded-full px-4 py-2 transition-colors">
+          <div className="flex items-center max-w-xl mx-auto bg-gray-100 dark:bg-neutral-800/80 border border-transparent dark:border-neutral-700 rounded-full px-4 py-2 transition-colors shadow-sm dark:shadow-none">
             <Search className="text-gray-500 dark:text-gray-400 mr-2 h-5 w-5 shrink-0" />
             <input
               type="text"
@@ -57,7 +57,7 @@ const isDark = document.documentElement.classList.contains("dark");
               }}
               onKeyDown={(e) => (e.key === "Enter" ? handleSearch() : null)}
               placeholder="Search..."
-              className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 dark:text-gray-100 placeholder:font-satoshi font-inter placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 dark:text-gray-100 placeholder:font-satoshi font-inter placeholder-gray-500 dark:placeholder-gray-500"
             />
           </div>
         </div>
