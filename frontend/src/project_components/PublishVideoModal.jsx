@@ -13,6 +13,7 @@ const PublishVideoModal = ({ isOpen, onClose, onSubmit, mutation }) => {
   });
 
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     if (!videoForm.thumbnail) {
@@ -33,12 +34,32 @@ const PublishVideoModal = ({ isOpen, onClose, onSubmit, mutation }) => {
     const { name, files } = e.target;
     if (files && files[0]) {
       setVideoForm((prev) => ({ ...prev, [name]: files[0] }));
+      setErrorMsg(""); // Clear error when user selects a new file
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!videoForm.videoFile || !videoForm.thumbnail) return;
+    setErrorMsg("");
+
+    if (!videoForm.videoFile || !videoForm.thumbnail) {
+      setErrorMsg("Please select both a video and a thumbnail.");
+      return;
+    }
+
+    // Validation
+    const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB
+    const MAX_THUMBNAIL_SIZE = 100 * 1024 * 1024; // 100MB
+
+    if (videoForm.videoFile.size > MAX_VIDEO_SIZE) {
+      setErrorMsg("Video file size cannot exceed 100 MB.");
+      return;
+    }
+
+    if (videoForm.thumbnail.size > MAX_THUMBNAIL_SIZE) {
+      setErrorMsg("Thumbnail file size cannot exceed 100 MB.");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("title", videoForm.title);
@@ -141,13 +162,22 @@ const PublishVideoModal = ({ isOpen, onClose, onSubmit, mutation }) => {
                 onSubmit={handleSubmit}
                 className="space-y-8 relative z-10 pb-4"
               >
-                {mutation.isError && (
+                {mutation.isError && !errorMsg && (
                   <div className="p-4 bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-800 text-rose-700 dark:text-rose-400 rounded-2xl text-sm font-medium flex items-center gap-3">
                     <div className="w-6 h-6 bg-rose-200 dark:bg-rose-800 rounded-full flex items-center justify-center shrink-0">
                       <X className="w-3.5 h-3.5" />
                     </div>
                     System error: Could not process upload. Please verify files
                     and try again.
+                  </div>
+                )}
+
+                {errorMsg && (
+                  <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/30 text-amber-700 dark:text-amber-400 rounded-2xl text-sm font-medium flex items-center gap-3">
+                    <div className="w-6 h-6 bg-amber-200 dark:bg-amber-800/50 rounded-full flex items-center justify-center shrink-0">
+                      <Info className="w-3.5 h-3.5" />
+                    </div>
+                    {errorMsg}
                   </div>
                 )}
 
@@ -193,6 +223,10 @@ const PublishVideoModal = ({ isOpen, onClose, onSubmit, mutation }) => {
                           </div>
                         )}
                       </div>
+                      <p className="text-[10px] text-amber-600 dark:text-amber-500 font-medium mt-1 ml-1 flex items-center gap-1">
+                        <Info size={12} />
+                        Note: Video upload limit is 100 MB
+                      </p>
                     </div>
 
                     {/* Thumbnail Upload */}
