@@ -82,11 +82,11 @@ export const AuthProvider = ({ children }) => {
       );
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setUser(null);
       setToken(null);
       setRefreshToken(null);
-      showToast(data.message);
+      showToast(data.message || "Logout successful");
 
       localStorage.removeItem("user");
       localStorage.removeItem("accessToken");

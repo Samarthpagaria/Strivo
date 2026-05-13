@@ -48,6 +48,9 @@ export const VideoProvider = ({ children, username, userId }) => {
       return res.data.data.feed;
     },
     enabled: !!user?._id && !!isAuthenticated,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const likedVideosQuery = useQuery({
