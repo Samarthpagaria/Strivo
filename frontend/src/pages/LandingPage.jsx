@@ -38,7 +38,7 @@ const FeatureCard = ({ title, desc, col, index, showAllCorners }) => (
     whileInView={{ opacity: 1 }}
     viewport={{ once: true }}
     transition={{ delay: index * 0.1, duration: 0.8 }}
-    className={`${col} group relative border-r border-b border-dashed border-neutral-400/60 dark:border-neutral-700/60 p-8 md:p-12 hover:bg-white dark:hover:bg-neutral-900 transition-all duration-500 cursor-pointer`}
+    className={`${col} group relative border-r border-b border-dashed border-neutral-400/60 dark:border-neutral-700/60 p-[1.62rem] md:p-[2.43rem] hover:bg-white dark:hover:bg-neutral-900 transition-all duration-500 cursor-pointer`}
   >
     {/* Dynamic Crosshair Markers */}
     {[
@@ -60,11 +60,11 @@ const FeatureCard = ({ title, desc, col, index, showAllCorners }) => (
       </div>
     ))}
 
-    <div className="flex flex-col gap-4 relative">
-      <h3 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white tracking-tight font-satoshi group-hover:text-[#ff9d6c] transition-colors duration-500">
+    <div className="flex flex-col gap-[0.9rem] relative">
+      <h3 className="text-[1.215rem] md:text-[1.53rem] font-bold text-neutral-900 dark:text-white tracking-tight font-satoshi group-hover:text-[#ff9d6c] transition-colors duration-500">
         {title}
       </h3>
-      <p className="text-neutral-500 dark:text-neutral-400 font-medium leading-relaxed font-inter text-sm md:text-base max-w-md transition-colors duration-500 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
+      <p className="text-neutral-500 dark:text-neutral-400 font-medium leading-relaxed font-inter text-[0.72rem] md:text-[0.81rem] max-w-md transition-colors duration-500 group-hover:text-neutral-700 dark:group-hover:text-neutral-300">
         {desc}
       </p>
     </div>
@@ -72,26 +72,26 @@ const FeatureCard = ({ title, desc, col, index, showAllCorners }) => (
 );
 
 const ConvergenceSection = () => (
-  <section className="w-full max-w-7xl px-6 py-20 flex flex-col items-center gap-12 relative">
+  <section className="w-full max-w-7xl px-6 py-[4.05rem] flex flex-col items-center gap-[2.43rem] relative">
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="flex flex-col items-center gap-6 z-10"
+      className="flex flex-col items-center gap-[1.35rem] z-10"
     >
-      <h2 className="text-4xl md:text-6xl font-medium text-neutral-900 dark:text-white tracking-tighter font-satoshi">
+      <h2 className="text-[1.8rem] md:text-[3.0375rem] font-medium text-neutral-900 dark:text-white tracking-tighter font-satoshi">
         Why Strivo?
       </h2>
     </motion.div>
 
     <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-0 border border-dashed border-neutral-400/60 dark:border-neutral-700/60 relative">
       {/* Left Hero Column: Heading */}
-      <div className="col-span-12 md:col-span-6 p-8 md:p-16 lg:p-20 border-r border-dashed border-neutral-400/60 dark:border-neutral-700/60 flex flex-col justify-center gap-8 relative group">
-        <div className="flex flex-col gap-4">
+      <div className="col-span-12 md:col-span-6 p-[1.62rem] md:p-[3.24rem] lg:p-[4.05rem] border-r border-dashed border-neutral-400/60 dark:border-neutral-700/60 flex flex-col justify-center gap-[1.62rem] relative group">
+        <div className="flex flex-col gap-[0.9rem]">
           <span className="text-[10px] font-bold text-[#fe4524] tracking-[0.4em] uppercase font-satoshi">
             The Why
           </span>
-          <h2 className="text-3xl md:text-5xl font-bold text-neutral-900 dark:text-white tracking-tighter font-satoshi leading-[1.1]">
+          <h2 className="text-[1.53rem] md:text-[2.52rem] font-bold text-neutral-900 dark:text-white tracking-tighter font-satoshi leading-[1.1]">
             Why switch between platforms… <br />
             <span className="text-neutral-400 dark:text-neutral-500">
               when your content belongs together?
@@ -100,22 +100,22 @@ const ConvergenceSection = () => (
         </div>
 
         {/* Subtle Decorative Element */}
-        <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 w-12 h-12 border border-dashed border-neutral-300 dark:border-neutral-700 rounded-full flex items-center justify-center opacity-40">
-          <div className="w-6 h-6 border border-neutral-200 dark:border-neutral-700 rounded-full" />
+        <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 w-12 h-[2.7rem] border border-dashed border-neutral-300 dark:border-neutral-700 rounded-full flex items-center justify-center opacity-40">
+          <div className="w-6 h-[1.35rem] border border-neutral-200 dark:border-neutral-700 rounded-full" />
         </div>
       </div>
 
       {/* Right Column: Stacked Features */}
       <div className="col-span-12 md:col-span-6 flex flex-col">
         {/* Top Feature: Wide */}
-        <div className="p-8 md:p-12 border-b border-dashed border-neutral-400/60 dark:border-neutral-700/60 flex flex-col gap-4 hover:bg-neutral-50/50 dark:hover:bg-neutral-800/50 transition-colors group">
-          <div className="flex items-center gap-3">
+        <div className="p-[1.62rem] md:p-[2.43rem] border-b border-dashed border-neutral-400/60 dark:border-neutral-700/60 flex flex-col gap-[0.81rem] hover:bg-neutral-50/50 dark:hover:bg-neutral-800/50 transition-colors group">
+          <div className="flex items-center gap-[0.675rem]">
             <div className="w-1.5 h-1.5 rounded-full bg-[#fe4524] shadow-[0_0_8px_rgba(254,69,36,0.6)]" />
             <h3 className="text-[11px] font-bold text-neutral-900 dark:text-white font-satoshi uppercase tracking-[0.2em]">
               Unified Ecosystem
             </h3>
           </div>
-          <p className="text-sm md:text-base text-neutral-500 dark:text-neutral-400 font-medium font-inter leading-relaxed max-w-md">
+          <p className="text-[0.72rem] md:text-[0.81rem] text-neutral-500 dark:text-neutral-400 font-medium font-inter leading-relaxed max-w-md">
             Creators shouldn’t need one platform for videos and another for
             conversations. Strivo brings content, community, and audience growth
             into one seamless experience.
@@ -124,8 +124,8 @@ const ConvergenceSection = () => (
 
         {/* Bottom Features: Split */}
         <div className="flex-1 grid grid-cols-1 md:grid-cols-2">
-          <div className="p-8 md:p-10 border-r border-dashed border-neutral-400/60 dark:border-neutral-700/60 flex flex-col gap-4 hover:bg-neutral-50/50 dark:hover:bg-neutral-800/50 transition-colors group">
-            <div className="flex items-center gap-3">
+          <div className="p-[1.62rem] md:p-[2.025rem] border-r border-dashed border-neutral-400/60 dark:border-neutral-700/60 flex flex-col gap-[0.81rem] hover:bg-neutral-50/50 dark:hover:bg-neutral-800/50 transition-colors group">
+            <div className="flex items-center gap-[0.675rem]">
               <div className="w-1.5 h-1.5 rounded-full bg-[#fe4524] shadow-[0_0_8px_rgba(254,69,36,0.6)]" />
               <h3 className="text-[11px] font-bold text-neutral-900 dark:text-white font-satoshi uppercase tracking-[0.2em]">
                 Creative Momentum
@@ -136,8 +136,8 @@ const ConvergenceSection = () => (
               dispatches—everything happens in one place.
             </p>
           </div>
-          <div className="p-8 md:p-10 flex flex-col gap-4 bg-neutral-50/30 dark:bg-neutral-800/30 hover:bg-neutral-100/50 dark:hover:bg-neutral-800/80 transition-colors group">
-            <div className="flex items-center gap-3">
+          <div className="p-[1.62rem] md:p-[2.025rem] flex flex-col gap-[0.81rem] bg-neutral-50/30 dark:bg-neutral-800/30 hover:bg-neutral-100/50 dark:hover:bg-neutral-800/80 transition-colors group">
+            <div className="flex items-center gap-[0.675rem]">
               <div className="w-1.5 h-1.5 rounded-full bg-[#fe4524] shadow-[0_0_8px_rgba(254,69,36,0.6)]" />
               <h3 className="text-[11px] font-bold text-neutral-900 dark:text-white font-satoshi uppercase tracking-[0.2em] text-[#fe4524]">
                 The Paradigm
@@ -183,7 +183,7 @@ const ConvergenceSection = () => (
 const TechCard = ({ name, icon, color }) => (
   <motion.div
     whileHover={{ scale: 1.05, y: -5 }}
-    className="flex flex-col items-center justify-center gap-3 w-22 h-22 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm hover:border-neutral-300 dark:hover:border-neutral-700 transition-all cursor-default flex-shrink-0"
+    className="flex flex-col items-center justify-center gap-[0.6075rem] w-[4.455rem] h-[4.455rem] rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm hover:border-neutral-300 dark:hover:border-neutral-700 transition-all cursor-default flex-shrink-0"
   >
     <div
       style={{ color: color }}
@@ -199,7 +199,7 @@ const TechCard = ({ name, icon, color }) => (
 
 const InfiniteTechRow = ({ items, speed = 40, reverse = false }) => {
   return (
-    <div className="flex gap-6 overflow-hidden w-full relative py-4 mask-fade-horizontal isolate">
+    <div className="flex gap-[1.35rem] overflow-hidden w-full relative py-[0.9rem] mask-fade-horizontal isolate">
       <motion.div
         animate={{
           x: reverse ? ["-50%", "0%"] : ["0%", "-50%"],
@@ -209,7 +209,7 @@ const InfiniteTechRow = ({ items, speed = 40, reverse = false }) => {
           repeat: Infinity,
           ease: "linear",
         }}
-        className="flex gap-6 flex-nowrap w-max transform-gpu will-change-transform"
+        className="flex gap-[1.35rem] flex-nowrap w-max transform-gpu will-change-transform"
       >
         {[...items, ...items].map((item, i) => (
           <TechCard key={i} {...item} />
@@ -223,16 +223,16 @@ const BuiltOnSection = () => {
   const [isHovered, setIsHovered] = React.useState(false);
 
   const techStack = [
-    { name: "React", icon: <Layers size={24} />, color: "#61DAFB" },
-    { name: "Node.js", icon: <Server size={24} />, color: "#339933" },
-    { name: "MongoDB", icon: <Database size={24} />, color: "#47A248" },
-    { name: "Tailwind", icon: <Wind size={24} />, color: "#06B6D4" },
-    { name: "Framer", icon: <Zap size={24} />, color: "#0055FF" },
-    { name: "Express", icon: <Cpu size={24} />, color: "#555" },
-    { name: "Vite", icon: <Code size={24} />, color: "#646CFF" },
-    { name: "Lucide", icon: <Globe size={24} />, color: "#F7B93E" },
-    { name: "Redux", icon: <Shield size={24} />, color: "#764ABC" },
-    { name: "Socket.io", icon: <MessageSquare size={24} />, color: "#010101" },
+    { name: "React", icon: <Layers size={22} />, color: "#61DAFB" },
+    { name: "Node.js", icon: <Server size={22} />, color: "#339933" },
+    { name: "MongoDB", icon: <Database size={22} />, color: "#47A248" },
+    { name: "Tailwind", icon: <Wind size={22} />, color: "#06B6D4" },
+    { name: "Framer", icon: <Zap size={22} />, color: "#0055FF" },
+    { name: "Express", icon: <Cpu size={22} />, color: "#555" },
+    { name: "Vite", icon: <Code size={22} />, color: "#646CFF" },
+    { name: "Lucide", icon: <Globe size={22} />, color: "#F7B93E" },
+    { name: "Redux", icon: <Shield size={22} />, color: "#764ABC" },
+    { name: "Socket.io", icon: <MessageSquare size={22} />, color: "#010101" },
   ];
 
   const row1 = [...techStack].sort(() => Math.random() - 0.5);
@@ -240,12 +240,12 @@ const BuiltOnSection = () => {
   const row3 = [...techStack].sort(() => Math.random() - 0.5);
 
   return (
-    <section className="w-full py-40 flex flex-col items-center gap-16 relative">
+    <section className="w-full py-[8.1rem] flex flex-col items-center gap-[3.24rem] relative">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="flex flex-col items-center gap-4 z-10 text-center px-6"
+        className="flex flex-col items-center gap-[0.9rem] z-10 text-center px-6"
       >
         <span className="text-[10px] font-bold text-[#fe4524] tracking-[0.4em] uppercase font-satoshi">
           The Stack
@@ -272,7 +272,7 @@ const BuiltOnSection = () => {
             duration: 1,
             ease: [0.16, 1, 0.3, 1], // Smooth cubic-bezier
           }}
-          className="w-full max-w-5xl relative h-[600px] flex items-center justify-center overflow-hidden rounded-[4rem] transform-gpu backface-hidden will-change-transform"
+          className="w-full max-w-5xl relative h-[486px] flex items-center justify-center overflow-hidden rounded-[3.24rem] transform-gpu backface-hidden will-change-transform"
           style={{ transformStyle: "preserve-3d" }}
         >
           {/* Background Wrapper to handle oversizing and soft edges */}
@@ -295,7 +295,7 @@ const BuiltOnSection = () => {
           </div>
 
           {/* Layer 2: Scrolling Tech Rows */}
-          <div className="relative z-20 flex flex-col gap-6 w-full max-w-4xl px-6">
+          <div className="relative z-20 flex flex-col gap-[1.35rem] w-full max-w-4xl px-6">
             <InfiniteTechRow items={row1} speed={50} />
             <InfiniteTechRow items={row2} speed={40} reverse={true} />
             <InfiniteTechRow items={row3} speed={60} />
@@ -308,13 +308,13 @@ const BuiltOnSection = () => {
               className="relative p-4 md:p-10 rounded-4xl bg-white/5 dark:bg-black/20 saturate-[1.8] border border-white/60 dark:border-white/10 shadow-[0_8px_32px_rgba(31,38,135,0.1),inset_0_4px_20px_rgba(255,255,255,0.1)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_4px_20px_rgba(255,255,255,0.05)] transition-all duration-500 overflow-hidden"
             >
               {/* Liquid Refraction Layer (Ultra-Transparent) */}
-              <div className="absolute inset-0 z-0 pointer-events-none rounded-[2.5rem] bg-transparent shadow-[inset_-10px_-8px_20px_-15px_rgba(255,255,255,0.6),inset_0px_-9px_20px_-10px_rgba(255,255,255,0.6)] dark:shadow-[inset_-10px_-8px_20px_-15px_rgba(255,255,255,0.1),inset_0px_-9px_20px_-10px_rgba(255,255,255,0.1)] opacity-40" />
+              <div className="absolute inset-0 z-0 pointer-events-none rounded-[2.25rem] bg-transparent shadow-[inset_-10px_-8px_20px_-15px_rgba(255,255,255,0.6),inset_0px_-9px_20px_-10px_rgba(255,255,255,0.6)] dark:shadow-[inset_-10px_-8px_20px_-15px_rgba(255,255,255,0.1),inset_0px_-9px_20px_-10px_rgba(255,255,255,0.1)] opacity-40" />
 
               <div className="relative z-10">
                 <img
                   src={logo}
                   alt="Strivo"
-                  className="w-16 h-16 md:w-24 md:h-24 object-contain relative transition-transform duration-500 group-hover:scale-110 dark:invert"
+                  className="w-[3.24rem] h-[3.24rem] md:w-[4.86rem] md:h-[4.86rem] object-contain relative transition-transform duration-500 group-hover:scale-110 dark:invert"
                 />
               </div>
 
@@ -338,31 +338,53 @@ const BuiltOnSection = () => {
 };
 
 const Footer = () => (
-  <footer className="w-full max-w-7xl px-6 py-6 flex items-center justify-between border-t border-neutral-200 dark:border-neutral-800 mt-20 mb-8">
-    <div className="flex items-center gap-4">
-      <img src={logo} alt="Strivo" className="h-5 w-auto object-contain dark:invert" />
-      <div className="h-4 w-px bg-neutral-300 dark:bg-neutral-700" />
-      <p className="text-[13px] text-neutral-500 dark:text-neutral-400 font-inter">
-        Developed by <span className="text-neutral-900 dark:text-white font-bold">Samarth Pagaria</span>
+  <footer className="w-full max-w-7xl px-[1.215rem] py-[1.215rem] flex items-center justify-between border-t border-neutral-200 dark:border-neutral-800 mt-[4.05rem] mb-[1.62rem]">
+    <div className="flex items-center gap-[0.9rem]">
+      <img
+        src={logo}
+        alt="Strivo"
+        className="h-[1.0125rem] w-auto object-contain dark:invert"
+      />
+      <div className="h-[0.81rem] w-px bg-neutral-300 dark:bg-neutral-700" />
+      <p className="text-[12px] text-neutral-500 dark:text-neutral-400 font-inter">
+        Developed by{" "}
+        <span className="text-neutral-900 dark:text-white font-bold">
+          Samarth Pagaria
+        </span>
       </p>
     </div>
 
-    <div className="flex items-center gap-6">
-      <a href="https://x.com/SamarthPagaria" target="_blank" rel="noopener noreferrer" className="text-neutral-400 dark:text-neutral-500 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline">
-        <Twitter size={18} />
+    <div className="flex items-center gap-[1.215rem]">
+      <a
+        href="https://x.com/SamarthPagaria"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-neutral-400 dark:text-neutral-500 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline"
+      >
+        <Twitter size={16} />
         <span className="text-xs font-bold font-satoshi">Twitter</span>
       </a>
-      <a href="https://www.linkedin.com/in/samarth-pagaria-81a93b281/" target="_blank" rel="noopener noreferrer" className="text-neutral-400 dark:text-neutral-500 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline">
-        <Linkedin size={18} />
+      <a
+        href="https://www.linkedin.com/in/samarth-pagaria-81a93b281/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-neutral-400 dark:text-neutral-500 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline"
+      >
+        <Linkedin size={16} />
         <span className="text-xs font-bold font-satoshi">LinkedIn</span>
       </a>
-      <a href="https://github.com/Samarthpagaria" target="_blank" rel="noopener noreferrer" className="text-neutral-400 dark:text-neutral-500 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline">
-        <Github size={18} />
+      <a
+        href="https://github.com/Samarthpagaria"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-neutral-400 dark:text-neutral-500 hover:text-[#fe4524] transition-colors flex items-center gap-2 no-underline"
+      >
+        <Github size={16} />
         <span className="text-xs font-bold font-satoshi">GitHub</span>
       </a>
     </div>
 
-    <p className="hidden md:block text-xs font-medium text-neutral-400 dark:text-neutral-500 font-satoshi">
+    <p className="hidden md:block text-[0.6075rem] font-medium text-neutral-400 dark:text-neutral-500 font-satoshi">
       © 2026 strivo. all rights reserved.
     </p>
   </footer>
@@ -377,7 +399,9 @@ const LandingPage = () => {
   React.useEffect(() => {
     const fetchUpvotes = async () => {
       try {
-        const res = await axios.get(import.meta.env.VITE_API_URL + "/api/v1/sitestats/");
+        const res = await axios.get(
+          import.meta.env.VITE_API_URL + "/api/v1/sitestats/",
+        );
         if (res.data.success) {
           setUpvotes(res.data.data.upvotes);
         }
@@ -391,7 +415,9 @@ const LandingPage = () => {
   const handleUpvote = async () => {
     setUpvotes((prev) => prev + 1);
     try {
-      await axios.post(import.meta.env.VITE_API_URL + "/api/v1/sitestats/increment");
+      await axios.post(
+        import.meta.env.VITE_API_URL + "/api/v1/sitestats/increment",
+      );
     } catch (error) {
       console.error("Failed to increment upvote:", error);
       setUpvotes((prev) => prev - 1); // rollback on error
@@ -403,7 +429,7 @@ const LandingPage = () => {
     offset: ["start end", "end start"],
   });
 
-  const rotate = useTransform(scrollYProgress, [0, 0.4], [150, 0]);
+  const rotate = useTransform(scrollYProgress, [0, 0.4], [180, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], [1.05, 1]);
   const translate = useTransform(scrollYProgress, [0, 1], [0, -40]);
 
@@ -465,8 +491,12 @@ const LandingPage = () => {
         transition={{ type: "spring", stiffness: 200, damping: 30 }}
         className="fixed z-50 flex items-center justify-center cursor-pointer group -mt-[4px] whitespace-nowrap"
       >
-        <img src={logo} alt="Strivo" className="w-20 h-20 object-contain dark:invert" />
-        <span className="text-neutral-900 dark:text-white font-bold font-satoshi text-5xl tracking-tight pb-2 ">
+        <img
+          src={logo}
+          alt="Strivo"
+          className="w-[4.05rem] h-[4.05rem] object-contain dark:invert"
+        />
+        <span className="text-neutral-900 dark:text-white font-bold font-satoshi text-[2.43rem] tracking-tight pb-2 ">
           Strivo
         </span>
       </motion.div>
@@ -481,21 +511,21 @@ const LandingPage = () => {
           scale: scrolled ? 0.95 : 1,
         }}
         transition={{ type: "spring", stiffness: 200, damping: 30 }}
-        className="fixed z-50 flex items-center gap-4 px-1 py-1 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-full shadow-sm min-w-max"
+        className="fixed z-50 flex items-center gap-[0.9rem] px-1  bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-full shadow-sm min-w-max"
       >
         <div className="flex items-center gap-2">
           <div className="flex items-center overflow-hidden border border-neutral-200 dark:border-neutral-800 rounded-full bg-neutral-50/50 dark:bg-neutral-800/50 hover:border-neutral-300 dark:hover:border-neutral-700 transition-all group/upvote shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)] dark:shadow-[0_2px_10px_-3px_rgba(0,0,0,0.5)]">
             <button
               onClick={handleUpvote}
-              className="group/btn px-3 py-1.5 text-lg font-bold text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors font-satoshi border-r border-neutral-200 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700 rounded-l-full flex items-center gap-1.5 pl-3"
+              className="group/btn px-[0.6075rem] py-[0.30375rem] text-[0.9rem] font-bold text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors font-satoshi border-r border-neutral-200 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700 rounded-l-full flex items-center gap-1.5 pl-[0.6075rem]"
             >
               <ArrowUp
-                size={22}
+                size={20}
                 className="group-hover/btn:-translate-y-1 transition-transform duration-300"
               />
               Upvote
             </button>
-            <div className="px-3 py-1.5 min-w-[3.5rem] text-center flex items-center justify-center bg-white dark:bg-neutral-900">
+            <div className="px-3 py-1.5 min-w-[3.15rem] text-center flex items-center justify-center bg-white dark:bg-neutral-900">
               <AnimatePresence mode="wait">
                 <motion.span
                   key={upvotes}
@@ -503,7 +533,7 @@ const LandingPage = () => {
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -10, opacity: 0 }}
                   transition={{ duration: 0.15, ease: "easeOut" }}
-                  className="text-lg font-bold text-neutral-900 dark:text-white font-satoshi tabular-nums block"
+                  className="text-[0.9rem] font-bold text-neutral-900 dark:text-white font-satoshi tabular-nums block"
                 >
                   {upvotes}
                 </motion.span>
@@ -514,28 +544,28 @@ const LandingPage = () => {
             href="#"
             className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors p-2"
           >
-            <Github size={24} />
+            <Github size={22} />
           </a>
           <AnimatedThemeToggler className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors p-2 flex items-center justify-center rounded-full" />
         </div>
 
-        <div className="h-6 w-px bg-neutral-300 dark:bg-neutral-700" />
+        <div className="h-[1.35rem] w-px bg-neutral-300 dark:bg-neutral-700" />
 
         {/* Auth Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-[0.675rem]">
           <button
             onClick={() => navigate("/login")}
-            className="text-lg font-bold  text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white font-satoshi px-1 transition-colors"
+            className="text-[0.9rem] font-bold  text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white font-satoshi px-1 transition-colors"
           >
             Login
           </button>
           <button
             onClick={() => navigate("/register")}
-            className="group/signup bg-[#fe4524c2] border  text-[#f2f3f4] text-lg font-bold px-3 py-1.5 rounded-full hover:bg-[#fe4524] transition-all active:scale-95 shadow-lg shadow-blue-500/10 flex items-center gap-2"
+            className="group/signup bg-[#fe4524c2] border  text-[#f2f3f4] text-[0.9rem] font-bold px-[0.6075rem] py-[0.30375rem] rounded-full hover:bg-[#fe4524] transition-all active:scale-95 shadow-lg shadow-blue-500/10 flex items-center gap-2"
           >
             Sign up
             <ArrowRight
-              size={20}
+              size={18}
               className="group-hover/signup:translate-x-1 transition-transform duration-300"
             />
           </button>
@@ -543,14 +573,14 @@ const LandingPage = () => {
       </motion.nav>
 
       {/* Hero Section */}
-      <main className="flex-1 flex flex-col items-center pt-[20vh] text-center px-6 overflow-x-hidden">
-        <div className="flex flex-col items-center gap-4">
+      <main className="flex-1 flex flex-col items-center pt-[16.2vh] text-center px-6 overflow-x-hidden">
+        <div className="flex flex-col items-center gap-[0.9rem]">
           <AnimatePresence mode="wait">
             <motion.h1
               key={headlineIndex}
               exit={{ y: -50, opacity: 0 }}
               transition={{ duration: 0.4, ease: "easeIn" }}
-              className=" text-5xl md:text-5xl lg:text-[4rem] font-bold text-neutral-900 dark:text-white tracking-tight leading-[1.05] font-satoshi max-w-5xl flex flex-wrap justify-center min-h-[120px]"
+              className=" text-[2.43rem] md:text-[2.43rem] lg:text-[3.24rem] font-bold text-neutral-900 dark:text-white tracking-tight leading-[1.05] font-satoshi max-w-5xl flex flex-wrap justify-center min-h-[97px]"
             >
               {headlines[headlineIndex].split(" ").map((word, i) => (
                 <motion.span
@@ -578,7 +608,7 @@ const LandingPage = () => {
               delay: 0.8,
               ease: [0.16, 1, 0.3, 1],
             }}
-            className="text-lg md:text-3xl text-neutral-500 dark:text-neutral-400 font-medium tracking-tight font-inter max-w-2xl leading-snug mt-4"
+            className="text-[0.9rem] md:text-[1.53rem] text-neutral-500 dark:text-neutral-400 font-medium tracking-tight font-inter max-w-2xl leading-snug mt-[0.81rem]"
           >
             Turn content into conversations,
             <br /> and followers into a strong community.
@@ -600,9 +630,9 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="w-full max-w-6xl px-6 mt-20 relative group transform-gpu will-change-transform"
+            className="w-full max-w-[64.8rem] px-6 mt-12    relative group transform-gpu will-change-transform"
           >
-            <div className="relative rounded-[2.5rem] border border-neutral-200 dark:border-neutral-800 p-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.5)] bg-white/50 dark:bg-neutral-900/50 backdrop-blur-sm overflow-hidden">
+            <div className="relative rounded-[2.25rem] border border-neutral-200 dark:border-neutral-800 p-2 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.5)] bg-white/50 dark:bg-neutral-900/50 backdrop-blur-sm overflow-hidden">
               {/* Slant Gray Lines Pattern */}
               <div
                 className="absolute inset-0 opacity-[0.4] pointer-events-none"
@@ -610,7 +640,7 @@ const LandingPage = () => {
                   backgroundImage: `repeating-linear-gradient(45deg, #6b7280, #6b7280 1px, transparent 1px, transparent 5px)`,
                 }}
               />
-              <div className="rounded-[2rem] overflow-hidden aspect-video bg-neutral-900 flex items-center justify-center relative border border-neutral-200/50 dark:border-neutral-800/50 z-10">
+              <div className="rounded-[1.8rem] overflow-hidden aspect-video bg-neutral-900 flex items-center justify-center relative border border-neutral-200/50 dark:border-neutral-800/50 z-10">
                 <video
                   src={heroVideo}
                   autoPlay
@@ -627,42 +657,38 @@ const LandingPage = () => {
         </div>
 
         {/* Features Section */}
-        <section className="w-full max-w-7xl px-6 py-40 flex flex-col items-center gap-12 relative">
+        <section className="w-full max-w-7xl px-6 py-[8.1rem] flex flex-col items-center gap-[2.43rem] relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col items-center gap-6 z-10"
+            className="flex flex-col items-center gap-[1.35rem] z-10"
           >
-            <h2 className="text-4xl md:text-6xl font-medium text-neutral-900 dark:text-white tracking-tighter font-satoshi">
+            <h2 className="text-[1.8rem] md:text-[3.0375rem] font-medium text-neutral-900 dark:text-white tracking-tighter font-satoshi">
               Features
             </h2>
-            <p className="text-lg md:text-xl text-neutral-500 dark:text-neutral-400 font-medium max-w-2xl text-center leading-relaxed  font-inter">
+            <p className="text-[0.9rem] md:text-[1.0125rem] text-neutral-500 dark:text-neutral-400 font-medium max-w-2xl text-center leading-relaxed  font-inter">
               Upload videos, tweet instantly from content, manage playlists, and
               stay connected with your audience through one seamless experience.
             </p>
           </motion.div>
 
           {/* Crosshair Grid Features */}
-          <div className="w-full relative px-4 md:px-0 max-w-[90rem]">
+          <div className="w-full relative px-4 md:px-0 max-w-[81rem]">
             {/* Perimeter Masking (Reduced Size) */}
             <div className="absolute inset-0 pointer-events-none z-20">
-              {/* Left Column Buffer Mask */}
-              <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-neutral-50 dark:from-neutral-950 to-transparent" />
-              {/* Right Column Buffer Mask */}
-              <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-neutral-50 dark:from-neutral-950 to-transparent" />
               {/* Top Row Buffer Mask */}
-              <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-neutral-50 dark:from-neutral-950 to-transparent" />
+              <div className="absolute inset-x-0 top-0 h-[2.7rem] bg-gradient-to-b from-neutral-50 dark:from-neutral-950 to-transparent" />
               {/* Bottom Row Buffer Mask */}
-              <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-neutral-50 dark:from-neutral-950 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-[2.7rem] bg-gradient-to-t from-neutral-50 dark:from-neutral-950 to-transparent" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-0 border-l border-t border-dashed border-neutral-400/60 dark:border-neutral-700/60 relative">
               {/* Extra Top Row with Side Buffers */}
-              <div className="hidden md:block col-span-1 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
-              <div className="hidden md:block col-span-7 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
-              <div className="hidden md:block col-span-3 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
-              <div className="hidden md:block col-span-1 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-1 h-[3.6rem] border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-7 h-[3.6rem] border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-3 h-[3.6rem] border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-1 h-[3.6rem] border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
 
               {/* Row 1 Content with Buffer Columns */}
               <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30 h-full" />
@@ -719,10 +745,10 @@ const LandingPage = () => {
               <div className="hidden md:block col-span-1 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30 h-full" />
 
               {/* Extra Bottom Row with Side Buffers */}
-              <div className="hidden md:block col-span-1 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
-              <div className="hidden md:block col-span-5 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
-              <div className="hidden md:block col-span-5 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
-              <div className="hidden md:block col-span-1 h-16 border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-1 h-[3.6rem] border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-5 h-[3.6rem] border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-5 h-[3.6rem] border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
+              <div className="hidden md:block col-span-1 h-[3.6rem] border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
             </div>
           </div>
         </section>
