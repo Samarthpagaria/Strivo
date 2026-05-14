@@ -7,6 +7,8 @@ import TweetsList from "../project_components/TweetsList.jsx";
 // import { MOCK_TWEETS } from "../utils/mockData";
 import TweetSearchResults from "../pages/tweets/TweetsResults.Page.jsx";
 import { useTweet } from "../ContentApi/TweetContext";
+import Lenis from "lenis";
+import gsap from "gsap";
 
 const TweetsLayout = ({ width = 400, onResizeStart }) => {
   const { pathname, search } = useLocation();
@@ -44,6 +46,31 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
     params.delete("tweetId");
     navigate(`${pathname}?${params.toString()}`, { replace: true });
   };
+
+  useEffect(() => {
+    if (!tweetsContainerRef.current) return;
+
+    const lenis = new Lenis({
+      wrapper: tweetsContainerRef.current,
+      content: tweetsContainerRef.current.firstElementChild,
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      autoRaf: false,
+    });
+
+    const raf = (time) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(raf);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(raf);
+      lenis.destroy();
+    };
+  }, []);
 
   const renderContent = () => {
     if (isTweetDetails) {
@@ -97,28 +124,30 @@ const TweetsLayout = ({ width = 400, onResizeStart }) => {
       style={{ width: `${width}px` }}
       className="border-l border-gray-300 dark:border-white/10 bg-white dark:bg-black overflow-y-auto relative no-scrollbar transition-colors duration-300"
     >
-      {/* Resize Handle */}
-      <div
-        onMouseDown={onResizeStart}
-        className="absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-primary transition-colors z-50 group"
-        style={{ touchAction: "none" }}
-      >
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-transparent group-hover:bg-primary transition-colors" />
-        <div className="absolute left-[-3px] top-0 bottom-0 w-2 bg-transparent" />
-      </div>
+      <div className="w-full min-h-full">
+        {/* Resize Handle */}
+        <div
+          onMouseDown={onResizeStart}
+          className="absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-primary transition-colors z-50 group"
+          style={{ touchAction: "none" }}
+        >
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-transparent group-hover:bg-primary transition-colors" />
+          <div className="absolute left-[-3px] top-0 bottom-0 w-2 bg-transparent" />
+        </div>
 
-      <div className="sticky top-0 z-30 flex justify-center -mb-24">
-        <TweetNavbar scrollContainerRef={tweetsContainerRef} />
-      </div>
-      <div className="pt-28">
-        <TweetPost />
-      </div>
-      <div className="pt-2 pb-2">
-        {homeFeedTweetsQuery.isLoading || followingTweetsQuery.isLoading || myTweetsQuery.isLoading ? (
-          <div className="text-center py-20 text-muted-foreground/40 font-satoshi font-bold tracking-widest animate-pulse">
-            LOADING STREAMS...
-          </div>
-        ) : renderContent()}
+        <div className="sticky top-0 z-30 flex justify-center -mb-24">
+          <TweetNavbar scrollContainerRef={tweetsContainerRef} />
+        </div>
+        <div className="pt-28">
+          <TweetPost />
+        </div>
+        <div className="pt-2 pb-2">
+          {homeFeedTweetsQuery.isLoading || followingTweetsQuery.isLoading || myTweetsQuery.isLoading ? (
+            <div className="text-center py-20 text-muted-foreground/40 font-satoshi font-bold tracking-widest animate-pulse">
+              LOADING STREAMS...
+            </div>
+          ) : renderContent()}
+        </div>
       </div>
     </div>
   );

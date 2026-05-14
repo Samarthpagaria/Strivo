@@ -15,6 +15,7 @@ import { VideoDetailProvider } from "./ContentApi/VideoDetailContext";
 
 function App() {
   const queryClient = new QueryClient();
+
   return (
     <>
       <QueryClientProvider client={queryClient}>

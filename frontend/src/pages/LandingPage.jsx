@@ -31,7 +31,6 @@ import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import axios from "axios";
 import gsap from "gsap";
 import Lenis from "lenis";
-
 const FeatureCard = ({ title, desc, col, index, showAllCorners }) => (
   <motion.div
     initial={{ opacity: 0 }}
@@ -433,6 +432,7 @@ const LandingPage = () => {
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      autoRaf: false,
     });
 
     const raf = (time) => {

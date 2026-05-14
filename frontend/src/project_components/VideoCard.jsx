@@ -35,10 +35,15 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
   const queryClient = useQueryClient();
   const { likedVideosQuery } = useVideo();
 
-  // Check if this video is in the user's liked videos
-  const isLiked = likedVideosQuery.data?.data?.videos?.some(
+  const initialIsLiked = likedVideosQuery.data?.data?.videos?.some(
     (v) => v._id === _id,
   );
+
+  const [localIsLiked, setLocalIsLiked] = useState(false);
+
+  useEffect(() => {
+    setLocalIsLiked(initialIsLiked || false);
+  }, [initialIsLiked]);
 
   const toggleLikeMutation = useMutation({
     mutationFn: async () => {
@@ -54,10 +59,11 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
       return res.data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["likedVideos", user?.username]);
+      queryClient.invalidateQueries({ queryKey: ["likedVideos"] });
       showToast(data.message);
     },
     onError: (error) => {
+      setLocalIsLiked(initialIsLiked); // Rollback on error
       showToast(error.response?.data?.message || "Failed to toggle like");
     },
   });
@@ -68,6 +74,7 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
       showToast("Please login to like videos");
       return;
     }
+    setLocalIsLiked(!localIsLiked); // Optimistic update
     toggleLikeMutation.mutate();
   };
 
@@ -138,10 +145,10 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
             onClick={handleLikeClick}
             disabled={toggleLikeMutation.isPending}
             className={`p-2 rounded-full transition-all ${
-              isLiked ? "text-rose-600 bg-rose-50 dark:bg-rose-500/10" : "text-muted-foreground/40 hover:text-foreground dark:hover:text-white hover:bg-muted dark:hover:bg-white/10"
+              localIsLiked ? "text-rose-600 bg-rose-50 dark:bg-rose-500/10" : "text-muted-foreground/40 hover:text-foreground dark:hover:text-white hover:bg-muted dark:hover:bg-white/10"
             }`}
           >
-            <Heart size={16} fill={isLiked ? "currentColor" : "none"} />
+            <Heart size={16} fill={localIsLiked ? "currentColor" : "none"} />
           </button>
           <VideoCardMenu videoId={_id} />
         </div>

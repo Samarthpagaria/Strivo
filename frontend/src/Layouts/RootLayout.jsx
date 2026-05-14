@@ -8,6 +8,8 @@ import ScrollToTop from "../project_components/ScrollToTop";
 import { TweetProvider } from "../ContentApi/TweetContext";
 import { ProfileProvider } from "../ContentApi/ProfileContext";
 import { useGlobal } from "../ContentApi/GlobalContext";
+import Lenis from "lenis";
+import gsap from "gsap";
 
 const RootLayout = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
@@ -69,6 +71,32 @@ const RootLayout = () => {
     };
   }, [isResizing, tweetPanelWidth]);
 
+  // Lenis Smooth Scroll for the main content area
+  React.useEffect(() => {
+    if (!mainContentRef.current || (!user && isHomePage) || isAuthPage) return;
+
+    const lenis = new Lenis({
+      wrapper: mainContentRef.current,
+      content: mainContentRef.current.firstElementChild,
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      autoRaf: false,
+    });
+
+    const raf = (time) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(raf);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(raf);
+      lenis.destroy();
+    };
+  }, [user, isHomePage, isAuthPage]);
+
   // If on Auth pages (Login/Register), show just the page
   if (isAuthPage) {
     return <Outlet />;
@@ -105,8 +133,10 @@ const RootLayout = () => {
                 ref={mainContentRef}
                 className="flex-1 overflow-y-auto no-scrollbar relative"
               >
-                <Outlet context={{ scrollRef: mainContentRef }} />
-                <ScrollToTop containerRef={mainContentRef} />
+                <div className="w-full min-h-full">
+                  <Outlet context={{ scrollRef: mainContentRef }} />
+                  <ScrollToTop containerRef={mainContentRef} />
+                </div>
               </main>
             </div>
 

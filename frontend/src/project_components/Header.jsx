@@ -34,15 +34,21 @@ const Header = () => {
       console.error("Logout failed", error);
     }
   };
-const isDark = document.documentElement.classList.contains("dark");
+
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-black/90 backdrop-blur-md border-b border-gray-100 dark:border-white/10 shadow-sm transition-colors duration-300">
       <div className="flex justify-between items-center px-4 container mx-auto">
         <div onClick={() => navigate("/")} className="cursor-pointer">
           <img
-            src={isDark ? logo2 : logo}
+            src={logo}
             alt="strivo logo"
-            className="w-20 h-16"
+            className="w-20 h-16 dark:hidden"
+            draggable="false"
+          />
+          <img
+            src={logo2}
+            alt="strivo logo"
+            className="w-20 h-16 hidden dark:block"
             draggable="false"
           />
         </div>

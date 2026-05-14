@@ -88,6 +88,9 @@ export const TweetProvider = ({ children }) => {
       return res.data;
     },
     enabled: !!token,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     retry: 1,
   });
 
@@ -168,8 +171,6 @@ export const TweetProvider = ({ children }) => {
     },
     onSuccess: (data, tweetId) => {
       // Invalidate queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ["home-feed-tweets"] });
-      queryClient.invalidateQueries({ queryKey: ["tweets", userId] });
       queryClient.invalidateQueries({ queryKey: ["liked-tweets"] });
     },
     onError: (error) => {

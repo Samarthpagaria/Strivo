@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useParams, useOutletContext, useNavigate } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import confetti from "canvas-confetti";
 import {
@@ -53,7 +53,7 @@ const VideoDetailsPage = () => {
       queryClient.invalidateQueries(["watchHistory", user?.username]);
     }
   }, [videoData?._id, queryClient, user?.username]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [isSubscribedLocal, setIsSubscribedLocal] = useState(false);
 
@@ -76,18 +76,7 @@ const VideoDetailsPage = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
 
-  // Scroll Animations
-  const { scrollY } = useScroll({ container: scrollRef });
-  const width = useTransform(
-    scrollY,
-    [0, 50, 100, 150, 200, 300, 400, 500, 600, 800],
-    ["100%", "98%", "95%", "92%", "88%", "82%", "78%", "74%", "72%", "70%"],
-  );
-  const borderRadius = useTransform(
-    scrollY,
-    [0, 50, 100, 150, 200, 300, 400, 500, 600, 800],
-    [0, 4, 8, 12, 16, 20, 24, 28, 30, 32],
-  );
+  // Removed scroll animations per user request
 
   // Effects
   useEffect(() => {
@@ -188,12 +177,11 @@ const VideoDetailsPage = () => {
             {/* Main Content Column */}
             <div className="flex-1 min-w-0 w-full">
               {/* Sticky Animated Player */}
-              <div className="sticky top-4 z-40 bg-background/80 dark:bg-black/90 backdrop-blur-md py-2 mb-2 rounded-2xl transition-all duration-300">
+              <div className="sticky top-4 z-40 bg-background/80 dark:bg-black/90 backdrop-blur-md py-2 mb-2 rounded-2xl transition-colors duration-300">
                 <div className="flex justify-center origin-top">
-                  <motion.div
+                  <div
                     ref={playerRef}
-                    style={{ width, borderRadius }}
-                    className="max-w-full aspect-video bg-black shadow-2xl relative overflow-hidden group mx-auto"
+                    className="w-full rounded-2xl aspect-video bg-black shadow-2xl relative overflow-hidden group mx-auto"
                   >
                     <video
                       ref={videoRef}
@@ -343,7 +331,7 @@ const VideoDetailsPage = () => {
                         </div>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
               </div>
 

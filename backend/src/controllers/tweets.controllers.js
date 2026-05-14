@@ -465,9 +465,12 @@ const getHomeFeedTweets = asyncHandler(async (req, res) => {
   );
 
   const combinedFeed = [...subscribedTweets, ...filteredRandomTweets];
-
-
-  combinedFeed.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
+  // Randomly shuffle the feed using Fisher-Yates algorithm
+  for (let i = combinedFeed.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [combinedFeed[i], combinedFeed[j]] = [combinedFeed[j], combinedFeed[i]];
+  }
 
   return res
     .status(200)

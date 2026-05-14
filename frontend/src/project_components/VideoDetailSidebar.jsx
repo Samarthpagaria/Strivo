@@ -318,7 +318,7 @@ const VideoDetailSidebar = ({
                       Add to Playlist
                     </p>
                   </div>
-                  <div className="max-h-[240px] overflow-y-auto scrollbar-none">
+                  <div className="max-h-[240px] overflow-y-auto scrollbar-none" data-lenis-prevent="true">
                     {allPlaylists?.length > 0 ? (
                       <div className="grid grid-cols-1 border-t border-border relative">
                         {allPlaylists.map((playlist) => (
@@ -446,6 +446,7 @@ const VideoDetailSidebar = ({
               exit={{ opacity: 0, x: -10 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
               className="flex-1 overflow-y-auto scrollbar-none bg-transparent"
+              data-lenis-prevent="true"
             >
               {activeTab === "discussion" && (
                 <div className="flex flex-col">
