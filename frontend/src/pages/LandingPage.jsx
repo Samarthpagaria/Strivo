@@ -547,7 +547,9 @@ const LandingPage = () => {
             </div>
           </div>
           <a
-            href="#"
+            href="https://github.com/Samarthpagaria"
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors p-2"
           >
             <Github size={22} />
