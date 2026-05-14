@@ -98,11 +98,6 @@ const ConvergenceSection = () => (
             </span>
           </h2>
         </div>
-
-        {/* Subtle Decorative Element */}
-        <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 w-12 h-[2.7rem] border border-dashed border-neutral-300 dark:border-neutral-700 rounded-full flex items-center justify-center opacity-40">
-          <div className="w-6 h-[1.35rem] border border-neutral-200 dark:border-neutral-700 rounded-full" />
-        </div>
       </div>
 
       {/* Right Column: Stacked Features */}
