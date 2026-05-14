@@ -22,7 +22,7 @@ export const PlaylistProvider = ({ children }) => {
   const createPlaylistMutation = useMutation({
     mutationFn: async (playlistData) => {
       const res = await axios.post(
-        "http://localhost:8000/api/v1/playlist",
+        import.meta.env.VITE_API_URL + "/api/v1/playlist",
         playlistData,
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -48,7 +48,7 @@ export const PlaylistProvider = ({ children }) => {
   const addVideoToPlaylistMutation = useMutation({
     mutationFn: async ({ videoId, playlistId }) => {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/playlist/add/${videoId}/${playlistId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/playlist/add/${videoId}/${playlistId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -74,7 +74,7 @@ export const PlaylistProvider = ({ children }) => {
   const removeVideoFromPlaylistMutation = useMutation({
     mutationFn: async ({ videoId, playlistId }) => {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/playlist/remove/${videoId}/${playlistId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/playlist/remove/${videoId}/${playlistId}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -104,7 +104,7 @@ export const PlaylistProvider = ({ children }) => {
   const deletePlaylistMutation = useMutation({
     mutationFn: async (playlistId) => {
       const res = await axios.delete(
-        `http://localhost:8000/api/v1/playlist/${playlistId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/playlist/${playlistId}`,
         { headers: { Authorization: `Bearer ${token}` } },
       );
       return res.data;
@@ -128,7 +128,7 @@ export const PlaylistProvider = ({ children }) => {
   const updatePlaylistMutation = useMutation({
     mutationFn: async ({ playlistId, name, description }) => {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/playlist/${playlistId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/playlist/${playlistId}`,
         { name, description },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -159,7 +159,7 @@ export const PlaylistProvider = ({ children }) => {
     queryKey: ["allPlaylists", userId],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/playlist/user/${userId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/playlist/user/${userId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -193,7 +193,7 @@ export const PlaylistProvider = ({ children }) => {
     queryFn: async ({ queryKey }) => {
       const [_, id] = queryKey;
       const res = await axios.get(
-        `http://localhost:8000/api/v1/playlist/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/playlist/${id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },

@@ -25,7 +25,7 @@ export const VideoProvider = ({ children, username, userId }) => {
           }
         : {};
       const res = await axios.get(
-        `http://localhost:8000/api/v1/videos?userId=${userId}&page=${page}&limit=20`,
+        `${import.meta.env.VITE_API_URL}/api/v1/videos?userId=${userId}&page=${page}&limit=20`,
         config,
       );
       return res.data;
@@ -38,7 +38,7 @@ export const VideoProvider = ({ children, username, userId }) => {
     queryKey: ["homeFeed", user?.username],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/videos/home-feed`,
+        `${import.meta.env.VITE_API_URL}/api/v1/videos/home-feed`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -56,7 +56,7 @@ export const VideoProvider = ({ children, username, userId }) => {
   const likedVideosQuery = useQuery({
     queryKey: ["likedVideos", user?.username],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:8000/api/v1/likes/videos", {
+      const res = await axios.get(import.meta.env.VITE_API_URL + "/api/v1/likes/videos", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -70,7 +70,7 @@ export const VideoProvider = ({ children, username, userId }) => {
   const watchHistoryQuery = useQuery({
     queryKey: ["watchHistory", user?.username],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:8000/api/v1/users/history", {
+      const res = await axios.get(import.meta.env.VITE_API_URL + "/api/v1/users/history", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -82,7 +82,7 @@ export const VideoProvider = ({ children, username, userId }) => {
   
   const clearWatchHistoryMutation = useMutation({
     mutationFn: async () => {
-      const res = await axios.delete("http://localhost:8000/api/v1/users/history", {
+      const res = await axios.delete(import.meta.env.VITE_API_URL + "/api/v1/users/history", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

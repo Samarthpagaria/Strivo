@@ -18,7 +18,7 @@ export const SettingProvider = ({ children }) => {
   const changePasswordMutation = useMutation({
     mutationFn: async () => {
       const res = await axios.post(
-        `http://localhost:8000/api/v1/users/change-password`,
+        `${import.meta.env.VITE_API_URL}/api/v1/users/change-password`,
         {
           oldPassword: oldPassword,
           newPassword: newPassword,
@@ -47,7 +47,7 @@ export const SettingProvider = ({ children }) => {
   const updateUserMutation = useMutation({
     mutationFn: async ({ fullName, email }) => {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/users/update-account`,
+        `${import.meta.env.VITE_API_URL}/api/v1/users/update-account`,
         {
           fullName,
           email,
@@ -75,7 +75,7 @@ export const SettingProvider = ({ children }) => {
   const updateAvatarMutation = useMutation({
     mutationFn: async (formData) => {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/users/avatar`,
+        `${import.meta.env.VITE_API_URL}/api/v1/users/avatar`,
         formData,
         {
           headers: {
@@ -100,7 +100,7 @@ export const SettingProvider = ({ children }) => {
   const updateCoverImageMutation = useMutation({
     mutationFn: async (formData) => {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/users/cover-image`,
+        `${import.meta.env.VITE_API_URL}/api/v1/users/cover-image`,
         formData,
         {
           headers: {

@@ -25,7 +25,7 @@ export const useVideoDetail = (videoId) => {
           }
         : {};
       const res = await axios.get(
-        `http://localhost:8000/api/v1/videos/${videoId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/videos/${videoId}`,
         config
       );
       return res.data.data;
@@ -37,7 +37,7 @@ export const useVideoDetail = (videoId) => {
   const toggleVideoLikeMutation = useMutation({
     mutationFn: async (videoId) => {
       const res = await axios.post(
-        `http://localhost:8000/api/v1/likes/toggle/v/${videoId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/likes/toggle/v/${videoId}`,
         {},
         {
           headers: {
@@ -61,7 +61,7 @@ export const useVideoDetail = (videoId) => {
   const toggleSubscriptionMutation = useMutation({
     mutationFn: async (channelId) => {
       const res = await axios.post(
-        `http://localhost:8000/api/v1/subscriptions/c/${channelId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/subscriptions/c/${channelId}`,
         {},
         {
           headers: {
@@ -95,7 +95,7 @@ export const useVideoDetail = (videoId) => {
     queryKey: ["relatedVideos", videoId],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/videos/related/${videoId}`
+        `${import.meta.env.VITE_API_URL}/api/v1/videos/related/${videoId}`
       );
       return res.data.data;
     },

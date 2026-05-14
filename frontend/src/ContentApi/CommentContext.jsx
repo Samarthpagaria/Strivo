@@ -20,7 +20,7 @@ export const CommentProvider = ({ children, videoId }) => {
     queryKey: ["comments", videoId],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/comments/${videoId}?limit=10`,
+        `${import.meta.env.VITE_API_URL}/api/v1/comments/${videoId}?limit=10`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,7 +37,7 @@ export const CommentProvider = ({ children, videoId }) => {
   const createCommentMutation = useMutation({
     mutationFn: async ({ videoId, content, parent }) => {
       const res = await axios.post(
-        `http://localhost:8000/api/v1/comments/${videoId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/comments/${videoId}`,
         {
           content,
           parent,
@@ -84,7 +84,7 @@ export const CommentProvider = ({ children, videoId }) => {
   const removeCommentMutation = useMutation({
     mutationFn: async ({ commentId }) => {
       const res = await axios.delete(
-        `http://localhost:8000/api/v1/comments/c/${commentId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/comments/c/${commentId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -107,7 +107,7 @@ export const CommentProvider = ({ children, videoId }) => {
   const updateCommentMutation = useMutation({
     mutationFn: async ({ commentId, content }) => {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/comments/c/${commentId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/comments/c/${commentId}`,
         {
           content,
         },
@@ -133,7 +133,7 @@ export const CommentProvider = ({ children, videoId }) => {
   const likeCommentMutation = useMutation({
     mutationFn: async ({ commentId }) => {
       const res = await axios.post(
-        `http://localhost:8000/api/v1/likes/toggle/c/${commentId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/likes/toggle/c/${commentId}`,
         {},
         {
           headers: {
@@ -155,7 +155,7 @@ export const CommentProvider = ({ children, videoId }) => {
 
   const fetchReplies = async (parentId, page = 1) => {
     const res = await axios.get(
-      `http://localhost:8000/api/v1/comments/${videoId}?parent=${parentId}&page=${page}&limit=10`,
+      `${import.meta.env.VITE_API_URL}/api/v1/comments/${videoId}?parent=${parentId}&page=${page}&limit=10`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

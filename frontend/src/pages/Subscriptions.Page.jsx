@@ -26,7 +26,7 @@ const Subscriptions = () => {
     queryKey: ["subscriptions", user?._id],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/subscriptions/u/${user._id}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/subscriptions/u/${user._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

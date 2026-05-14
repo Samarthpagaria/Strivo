@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
   const loginMutation = useMutation({
     mutationFn: async (formData) => {
       const res = await axios.post(
-        "http://localhost:8000/api/v1/users/login",
+        import.meta.env.VITE_API_URL + "/api/v1/users/login",
 
         formData,
         {
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   const registerMutation = useMutation({
     mutationFn: async (formData) => {
       const res = await axios.post(
-        "http://localhost:8000/api/v1/users/register",
+        import.meta.env.VITE_API_URL + "/api/v1/users/register",
         formData,
         {
           withCredentials: true,
@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
   const logoutMutation = useMutation({
     mutationFn: async () => {
       const res = await axios.post(
-        "http://localhost:8000/api/v1/users/logout",
+        import.meta.env.VITE_API_URL + "/api/v1/users/logout",
         {}, // empty body
         {
           headers: {

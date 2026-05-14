@@ -26,7 +26,7 @@ const PlaylistDetails = () => {
           }
         : {};
       const res = await axios.get(
-        `http://localhost:8000/api/v1/playlist/${playlistId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/playlist/${playlistId}`,
         config,
       );
       // The backend returns { data: playlistObject } via ApiResponse

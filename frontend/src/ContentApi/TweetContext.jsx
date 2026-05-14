@@ -27,7 +27,7 @@ export const TweetProvider = ({ children }) => {
     queryKey: ["tweets", userId],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/tweets/user/${userId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/tweets/user/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -55,7 +55,7 @@ export const TweetProvider = ({ children }) => {
       }
 
       const res = await axios.post(
-        `http://localhost:8000/api/v1/tweets`,
+        `${import.meta.env.VITE_API_URL}/api/v1/tweets`,
         formData,
         {
           headers: {
@@ -109,7 +109,7 @@ export const TweetProvider = ({ children }) => {
   const homeFeedTweetsQuery = useQuery({
     queryKey: ["home-feed-tweets"],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:8000/api/v1/tweets/feed`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/tweets/feed`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -127,7 +127,7 @@ export const TweetProvider = ({ children }) => {
     queryKey: ["my-tweets", user?._id],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/tweets/user/${user._id}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/tweets/user/${user._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -143,7 +143,7 @@ export const TweetProvider = ({ children }) => {
   const updateTweetMutation = useMutation({
     mutationFn: async ({ tweetId, content }) => {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/tweets/${tweetId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/tweets/${tweetId}`,
         { content },
         {
           headers: {
@@ -167,7 +167,7 @@ export const TweetProvider = ({ children }) => {
   const deleteTweetMutation = useMutation({
     mutationFn: async (tweetId) => {
       const res = await axios.delete(
-        `http://localhost:8000/api/v1/tweets/${tweetId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/tweets/${tweetId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -190,7 +190,7 @@ export const TweetProvider = ({ children }) => {
   const toggleTweetLikeMutation = useMutation({
     mutationFn: async (tweetId) => {
       const res = await axios.post(
-        `http://localhost:8000/api/v1/likes/toggle/t/${tweetId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/likes/toggle/t/${tweetId}`,
         {},
         {
           headers: {
@@ -214,7 +214,7 @@ export const TweetProvider = ({ children }) => {
   const followingTweetsQuery = useQuery({
     queryKey: ["following-tweets"],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:8000/api/v1/tweets/following`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/tweets/following`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -228,7 +228,7 @@ export const TweetProvider = ({ children }) => {
   const likedTweetsQuery = useQuery({
     queryKey: ["liked-tweets"],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:8000/api/v1/likes/tweets`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/likes/tweets`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -240,7 +240,7 @@ export const TweetProvider = ({ children }) => {
   });
 
   const getTweetComments = async (tweetId) => {
-    const res = await axios.get(`http://localhost:8000/api/v1/tweets/comments/${tweetId}`, {
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/tweets/comments/${tweetId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

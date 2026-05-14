@@ -13,7 +13,7 @@ export const useInfiniteSearchVideos = (searchQuery, sortBy = "createdAt") => {
   return useInfiniteQuery({
     queryKey: ["videos", "infinite", searchQuery, sortBy],
     queryFn: async ({ pageParam = 1 }) => {
-      const { data } = await axios.get("http://localhost:8000/api/v1/videos", {
+      const { data } = await axios.get(import.meta.env.VITE_API_URL + "/api/v1/videos", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

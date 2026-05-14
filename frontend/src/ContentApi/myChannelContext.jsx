@@ -16,7 +16,7 @@ export const MyChannelProvider = ({ children }) => {
     queryKey: ["mychannel", "videos", user?.username],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/videos?userId=${user._id}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/videos?userId=${user._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -31,7 +31,7 @@ export const MyChannelProvider = ({ children }) => {
   const myChannelStatsQuery = useQuery({
     queryKey: ["mychannel", "stats", user?.username],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:8000/api/v1/dashboard/stats`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/dashboard/stats`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -45,7 +45,7 @@ export const MyChannelProvider = ({ children }) => {
     queryKey: ["mychannel", "subscriptions", user?.username],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/subscriptions/u/${user._id}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/subscriptions/u/${user._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -61,7 +61,7 @@ export const MyChannelProvider = ({ children }) => {
     queryKey: ["mychannel", "playlists", user?.username],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/playlist/user/${user._id}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/playlist/user/${user._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -77,7 +77,7 @@ export const MyChannelProvider = ({ children }) => {
     queryKey: ["mychannel", "tweets", user?.username],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/tweets/user/${user._id}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/tweets/user/${user._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -92,7 +92,7 @@ export const MyChannelProvider = ({ children }) => {
   const myChannelAddvideoMutation = useMutation({
     mutationFn: async (formData) => {
       const res = await axios.post(
-        `http://localhost:8000/api/v1/videos`,
+        `${import.meta.env.VITE_API_URL}/api/v1/videos`,
         formData,
         {
           headers: {
@@ -118,7 +118,7 @@ export const MyChannelProvider = ({ children }) => {
     mutationFn: async (data) => {
       // data: { name, description }
       const res = await axios.post(
-        `http://localhost:8000/api/v1/playlist`,
+        `${import.meta.env.VITE_API_URL}/api/v1/playlist`,
         data,
         {
           headers: {
@@ -142,7 +142,7 @@ export const MyChannelProvider = ({ children }) => {
   const myChannelTogglePublishMutation = useMutation({
     mutationFn: async (videoId) => {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/videos/toggle/publish/${videoId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/videos/toggle/publish/${videoId}`,
         {},
         {
           headers: {
@@ -166,7 +166,7 @@ export const MyChannelProvider = ({ children }) => {
   const myChannelDeleteVideoMutation = useMutation({
     mutationFn: async (videoId) => {
       const res = await axios.delete(
-        `http://localhost:8000/api/v1/videos/${videoId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/videos/${videoId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -189,7 +189,7 @@ export const MyChannelProvider = ({ children }) => {
   const myChannelUpdateVideoMutation = useMutation({
     mutationFn: async ({ videoId, formData }) => {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/videos/${videoId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/videos/${videoId}`,
         formData,
         {
           headers: {
@@ -214,7 +214,7 @@ export const MyChannelProvider = ({ children }) => {
   const myChannelDeletePlaylistMutation = useMutation({
     mutationFn: async (playlistId) => {
       const res = await axios.delete(
-        `http://localhost:8000/api/v1/playlist/${playlistId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/playlist/${playlistId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -237,7 +237,7 @@ export const MyChannelProvider = ({ children }) => {
   const myChannelAddVideoToPlaylistMutation = useMutation({
     mutationFn: async ({ videoId, playlistId }) => {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/playlist/add/${videoId}/${playlistId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/playlist/add/${videoId}/${playlistId}`,
         {},
         {
           headers: {
@@ -261,7 +261,7 @@ export const MyChannelProvider = ({ children }) => {
   const myChannelRemoveVideoFromPlaylistMutation = useMutation({
     mutationFn: async ({ videoId, playlistId }) => {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/playlist/remove/${videoId}/${playlistId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/playlist/remove/${videoId}/${playlistId}`,
         {},
         {
           headers: {

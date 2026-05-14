@@ -24,7 +24,7 @@ export const ProfileProvider = ({ children, username }) => {
         : {};
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/v1/users/c/${username}`,
+          `${import.meta.env.VITE_API_URL}/api/v1/users/c/${username}`,
           config,
         );
         return res.data.data;

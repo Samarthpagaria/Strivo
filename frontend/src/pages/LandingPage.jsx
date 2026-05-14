@@ -377,7 +377,7 @@ const LandingPage = () => {
   React.useEffect(() => {
     const fetchUpvotes = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/v1/sitestats/");
+        const res = await axios.get(import.meta.env.VITE_API_URL + "/api/v1/sitestats/");
         if (res.data.success) {
           setUpvotes(res.data.data.upvotes);
         }
@@ -391,7 +391,7 @@ const LandingPage = () => {
   const handleUpvote = async () => {
     setUpvotes((prev) => prev + 1);
     try {
-      await axios.post("http://localhost:8000/api/v1/sitestats/increment");
+      await axios.post(import.meta.env.VITE_API_URL + "/api/v1/sitestats/increment");
     } catch (error) {
       console.error("Failed to increment upvote:", error);
       setUpvotes((prev) => prev - 1); // rollback on error

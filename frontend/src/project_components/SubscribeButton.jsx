@@ -23,7 +23,7 @@ const SubscribeButton = ({
   const toggleSubscriptionMutation = useMutation({
     mutationFn: async () => {
       const res = await axios.post(
-        `http://localhost:8000/api/v1/subscriptions/c/${channelId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/subscriptions/c/${channelId}`,
         {},
         {
           headers: {

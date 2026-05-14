@@ -48,7 +48,7 @@ const VideoCard = ({ _id, title, owner, views, createdAt, thumbnail }) => {
   const toggleLikeMutation = useMutation({
     mutationFn: async () => {
       const res = await axios.post(
-        `http://localhost:8000/api/v1/likes/toggle/v/${_id}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/likes/toggle/v/${_id}`,
         {},
         {
           headers: {

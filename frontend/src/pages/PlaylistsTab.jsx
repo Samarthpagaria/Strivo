@@ -20,7 +20,7 @@ const PlaylistsTab = ({ userId }) => {
           }
         : {};
       const res = await axios.get(
-        `http://localhost:8000/api/v1/playlist/user/${userId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/playlist/user/${userId}`,
         config,
       );
       return res.data.data;
