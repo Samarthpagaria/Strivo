@@ -27,6 +27,7 @@ import {
   useTransform,
 } from "framer-motion";
 import logo from "../assets/strivo_black_logo.png";
+import heroVideo from "../assets/video.mp4";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import axios from "axios";
 import gsap from "gsap";
@@ -610,15 +611,16 @@ const LandingPage = () => {
                 }}
               />
               <div className="rounded-[2rem] overflow-hidden aspect-video bg-neutral-900 flex items-center justify-center relative border border-neutral-200/50 dark:border-neutral-800/50 z-10">
-                <div className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-900" />
-                <div className="relative flex flex-col items-center gap-4 text-neutral-400">
-                  <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md">
-                    <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[12px] border-l-white border-b-[8px] border-b-transparent ml-1" />
-                  </div>
-                  <span className="font-medium tracking-wide text-sm uppercase">
-                    Project Preview
-                  </span>
-                </div>
+                <video
+                  src={heroVideo}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover relative z-10"
+                />
+                {/* Fallback gradient behind the video */}
+                <div className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-900 opacity-50 pointer-events-none" />
               </div>
             </div>
           </motion.section>

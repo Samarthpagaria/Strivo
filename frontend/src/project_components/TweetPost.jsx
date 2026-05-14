@@ -20,6 +20,7 @@ const TweetPost = ({
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const [videoMention, setVideoMention] = useState(null);
+  const [videoMentionDetails, setVideoMentionDetails] = useState(null);
   const maxLength = 500;
 
   const { user } = useGlobal();
@@ -30,6 +31,9 @@ const TweetPost = ({
       setTweetText(prefillTweet.content || "");
       if (prefillTweet.videoMention) {
         setVideoMention(prefillTweet.videoMention);
+        if (prefillTweet.videoMentionDetails) {
+          setVideoMentionDetails(prefillTweet.videoMentionDetails);
+        }
       }
       setPrefillTweet(null); // Clear context once we've grabbed it
     }
@@ -47,12 +51,14 @@ const TweetPost = ({
         images,
         videos,
         videoMention,
+        videoMentionDetails,
         parentTweetId,
       });
       setTweetText("");
       setImages([]);
       setVideos([]);
       setVideoMention(null);
+      setVideoMentionDetails(null);
       if (onPostSuccess) onPostSuccess();
     }
   };
@@ -136,7 +142,10 @@ const TweetPost = ({
                 <PlaySquare className="w-4 h-4" />
                 <span>Video Attached</span>
                 <button
-                  onClick={() => setVideoMention(null)}
+                  onClick={() => {
+                    setVideoMention(null);
+                    setVideoMentionDetails(null);
+                  }}
                   className="ml-2 hover:bg-blue-100 dark:hover:bg-blue-500/20 p-0.5 rounded-full"
                 >
                   <X className="w-3 h-3" />

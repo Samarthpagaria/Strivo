@@ -97,6 +97,14 @@ const RootLayout = () => {
     };
   }, [user, isHomePage, isAuthPage]);
 
+  // Reset scroll position on route change
+  React.useEffect(() => {
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [location.pathname]);
+
   // If on Auth pages (Login/Register), show just the page
   if (isAuthPage) {
     return <Outlet />;

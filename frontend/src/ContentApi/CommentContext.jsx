@@ -51,8 +51,28 @@ export const CommentProvider = ({ children, videoId }) => {
       return res.data.data;
     },
     onSuccess: (data) => {
-      // Refresh the comments list after adding a new one
-      queryClient.invalidateQueries(["comments", videoId]);
+      const newComment = data?.data;
+      if (newComment && !newComment.parent) {
+        // Optimistically populate owner if needed
+        if (!newComment.owner || typeof newComment.owner === "string") {
+          const user = JSON.parse(localStorage.getItem("user")) || {};
+          newComment.owner = {
+            _id: user._id,
+            username: user.username,
+            fullName: user.fullName,
+            avatar: user.avatar,
+          };
+        }
+
+        queryClient.setQueryData(["comments", videoId], (oldData) => {
+          if (!oldData) return oldData;
+          // oldData is the array of comments directly based on the queryFn return: res.data.data.docs
+          return [newComment, ...oldData];
+        });
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["comments", videoId] });
+      }
+
       showToast(data?.message || "Comment added successfully!");
     },
     onError: (error) => {
@@ -75,7 +95,7 @@ export const CommentProvider = ({ children, videoId }) => {
     },
     onSuccess: (data) => {
       // Refresh the comments list after deleting a comment
-      queryClient.invalidateQueries(["comments", videoId]);
+      queryClient.invalidateQueries({ queryKey: ["comments", videoId] });
       showToast(data?.message || "Comment deleted successfully!");
     },
     onError: (error) => {
@@ -101,7 +121,7 @@ export const CommentProvider = ({ children, videoId }) => {
     },
     onSuccess: (data) => {
       // Refresh the comments list after updating
-      queryClient.invalidateQueries(["comments", videoId]);
+      queryClient.invalidateQueries({ queryKey: ["comments", videoId] });
       showToast(data?.message || "Comment updated successfully!");
     },
     onError: (error) => {
@@ -125,7 +145,7 @@ export const CommentProvider = ({ children, videoId }) => {
     },
     onSuccess: (data) => {
       // Refresh the comments list after liking a comment
-      queryClient.invalidateQueries(["comments", videoId]);
+      queryClient.invalidateQueries({ queryKey: ["comments", videoId] });
       showToast(data?.message || "Operation successful!");
     },
     onError: (error) => {

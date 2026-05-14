@@ -230,6 +230,11 @@ const VideoDetailSidebar = ({
     setPrefillTweet({
       content: `Check out this awesome video: ${videoData?.title}!`,
       videoMention: videoId,
+      videoMentionDetails: {
+        _id: videoId,
+        title: videoData?.title,
+        thumbnail: videoData?.thumbnail,
+      },
     });
 
     showToast("Video pinned to your next post!", "success");

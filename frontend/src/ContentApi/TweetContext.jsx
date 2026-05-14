@@ -40,7 +40,7 @@ export const TweetProvider = ({ children }) => {
     retry: 1,
   });
   const createTweetMutation = useMutation({
-    mutationFn: async ({ tweetText, images = [], videos = [], videoMention = null, parentTweetId = null }) => {
+    mutationFn: async ({ tweetText, images = [], videos = [], videoMention = null, videoMentionDetails = null, parentTweetId = null }) => {
       const formData = new FormData();
       formData.append("content", tweetText);
       images.forEach((file) => formData.append("images", file));
@@ -64,12 +64,41 @@ export const TweetProvider = ({ children }) => {
           },
         },
       );
+      
+      // Attach videoMentionDetails for the optimistic cache update so the video card renders immediately
+      if (videoMentionDetails && res.data && res.data.data) {
+        res.data.data.videoMentionDetails = videoMentionDetails;
+      }
+      
       return res.data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["home-feed-tweets"] });
-      queryClient.invalidateQueries({ queryKey: ["tweets", userId] });
-      const message = data?.data?.message || "Tweet posted successfully!";
+      const newTweet = data?.data;
+      if (newTweet) {
+        // Optimistically populate ownerDetails if backend doesn't return it fully
+        if (!newTweet.ownerDetails || typeof newTweet.ownerDetails === "string") {
+          newTweet.ownerDetails = {
+            _id: user?._id,
+            username: user?.username,
+            fullName: user?.fullName,
+            avatar: user?.avatar,
+          };
+        }
+
+        const updateCache = (oldData) => {
+          if (!oldData || !oldData.data) return oldData;
+          return {
+            ...oldData,
+            data: [newTweet, ...oldData.data],
+          };
+        };
+
+        queryClient.setQueryData(["home-feed-tweets"], updateCache);
+        queryClient.setQueryData(["tweets", userId], updateCache);
+        queryClient.setQueryData(["my-tweets", user?._id], updateCache);
+      }
+
+      const message = data?.message || "Tweet posted successfully!";
       showToast(message);
     },
     onError: (error) => {
@@ -127,6 +156,7 @@ export const TweetProvider = ({ children }) => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["home-feed-tweets"] });
       queryClient.invalidateQueries({ queryKey: ["tweets", userId] });
+      queryClient.invalidateQueries({ queryKey: ["my-tweets", user?._id] });
       showToast(data?.message || "Tweet updated successfully!");
     },
     onError: (error) => {
@@ -149,6 +179,7 @@ export const TweetProvider = ({ children }) => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["home-feed-tweets"] });
       queryClient.invalidateQueries({ queryKey: ["tweets", userId] });
+      queryClient.invalidateQueries({ queryKey: ["my-tweets", user?._id] });
       showToast(data?.message || "Tweet deleted successfully!");
     },
     onError: (error) => {
