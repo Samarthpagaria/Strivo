@@ -100,7 +100,8 @@ const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
+    sameSite: "None",
   };
 
   return res
@@ -152,7 +153,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
+    sameSite: "None",
   };
   return res
     .status(200)
@@ -189,7 +191,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
     const options = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
+      sameSite: "None",
     };
     // ✅ Consistent with registerUser and loginUser
     const { accesstoken, refreshToken: newRefreshToken } =
@@ -477,7 +480,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
+    sameSite: "None",
   };
 
   return res
