@@ -405,6 +405,17 @@ const LandingPage = () => {
       }
     };
     fetchUpvotes();
+
+    // Backend Warm-up Ping
+    const hasPinged = sessionStorage.getItem("backend-warmup");
+    if (!hasPinged) {
+      fetch(import.meta.env.VITE_API_URL + "/api/v1/healthcheck")
+        .then(() => {
+          console.log("Backend warmed up 🔥");
+          sessionStorage.setItem("backend-warmup", "true");
+        })
+        .catch(() => console.log("Backend wake-up failed ❄️"));
+    }
   }, []);
 
   const handleUpvote = async () => {
