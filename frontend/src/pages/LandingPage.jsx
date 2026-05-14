@@ -683,14 +683,14 @@ const LandingPage = () => {
 
           {/* Crosshair Grid Features */}
           <div className="w-full relative px-4 md:px-0 max-w-[81rem]">
-
-
-            <div 
-              style={{ 
-                maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent), linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)',
-                WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent), linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)',
-                maskComposite: 'intersect',
-                WebkitMaskComposite: 'source-in'
+            <div
+              style={{
+                maskImage:
+                  "linear-gradient(to right, transparent, black 10%, black 90%, transparent), linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",
+                WebkitMaskImage:
+                  "linear-gradient(to right, transparent, black 10%, black 90%, transparent), linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",
+                maskComposite: "intersect",
+                WebkitMaskComposite: "source-in",
               }}
               className="grid grid-cols-1 md:grid-cols-12 gap-0 border-l border-t border-dashed border-neutral-400/60 dark:border-neutral-700/60 relative"
             >
