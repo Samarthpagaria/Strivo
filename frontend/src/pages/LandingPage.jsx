@@ -675,15 +675,17 @@ const LandingPage = () => {
 
           {/* Crosshair Grid Features */}
           <div className="w-full relative px-4 md:px-0 max-w-[81rem]">
-            {/* Perimeter Masking (Reduced Size) */}
-            <div className="absolute inset-0 pointer-events-none z-20">
-              {/* Top Row Buffer Mask */}
-              <div className="absolute inset-x-0 top-0 h-[2.7rem] bg-gradient-to-b from-neutral-50 dark:from-neutral-950 to-transparent" />
-              {/* Bottom Row Buffer Mask */}
-              <div className="absolute inset-x-0 bottom-0 h-[2.7rem] bg-gradient-to-t from-neutral-50 dark:from-neutral-950 to-transparent" />
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-0 border-l border-t border-dashed border-neutral-400/60 dark:border-neutral-700/60 relative">
+
+            <div 
+              style={{ 
+                maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent), linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)',
+                WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent), linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)',
+                maskComposite: 'intersect',
+                WebkitMaskComposite: 'source-in'
+              }}
+              className="grid grid-cols-1 md:grid-cols-12 gap-0 border-l border-t border-dashed border-neutral-400/60 dark:border-neutral-700/60 relative"
+            >
               {/* Extra Top Row with Side Buffers */}
               <div className="hidden md:block col-span-1 h-[3.6rem] border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
               <div className="hidden md:block col-span-7 h-[3.6rem] border-r border-b border-dashed border-neutral-400/30 dark:border-neutral-700/30" />
