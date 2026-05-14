@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-import strivoWhiteLogo from "@/assets/strivo_white_logo.png";
+import strivoBlackLogo from "@/assets/strivo_black_logo.png";
 import { useState } from "react";
 import { useAuth } from "../ContentApi/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -31,23 +31,23 @@ export function LoginForm({ className, ...props }) {
   return (
     <div
       className={cn(
-        "flex flex-col items-center w-full max-w-[350px] gap-10 py-4",
+        "flex flex-col items-center w-full max-w-[360px] gap-6 p-8 bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)]",
         className,
       )}
       {...props}
     >
       {/* Header Section */}
-      <div className="flex flex-col items-center text-center gap-2">
+      <div className="flex flex-col items-center text-center gap-1">
         <img
-          src={strivoWhiteLogo}
+          src={strivoBlackLogo}
           alt="Strivo Logo"
-          className="w-40 h-40 object-contain"
+          className="w-20 h-20 object-contain mb-2"
         />
         <div className="space-y-1">
-          <h1 className="font-satoshi text-3xl  tracking-tight text-white drop-shadow-sm">
-            Yoo, Welcome Back!
+          <h1 className="font-satoshi text-2xl tracking-tight text-neutral-900 font-medium">
+            Welcome Back
           </h1>
-          <p className="font-inter text-white/60 font-medium text-sm">
+          <p className="font-inter text-neutral-500 font-light text-sm">
             Where ideas post, and stories stream.
           </p>
         </div>
@@ -55,7 +55,7 @@ export function LoginForm({ className, ...props }) {
 
       <form
         onSubmit={handleSubmit}
-        className="w-full flex flex-col items-center gap-6"
+        className="w-full flex flex-col items-center gap-8 mt-2"
       >
         <div className="w-full space-y-4">
           <Input
@@ -64,7 +64,7 @@ export function LoginForm({ className, ...props }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email address"
-            className="h-11 rounded-2xl border-none bg-white/10 px-6 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-white/50 transition-all font-bold"
+            className="h-10 rounded-none border-0 border-b border-neutral-200 bg-transparent px-1 text-neutral-900 placeholder:text-neutral-400 focus-visible:ring-0 focus-visible:border-neutral-900 transition-all font-light shadow-none text-sm"
             required
           />
           <Input
@@ -73,7 +73,7 @@ export function LoginForm({ className, ...props }) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Username"
-            className="h-11 rounded-2xl border-none bg-white/10 px-6 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-white/50 transition-all font-bold"
+            className="h-10 rounded-none border-0 border-b border-neutral-200 bg-transparent px-1 text-neutral-900 placeholder:text-neutral-400 focus-visible:ring-0 focus-visible:border-neutral-900 transition-all font-light shadow-none text-sm"
             required
           />
           <Input
@@ -82,7 +82,7 @@ export function LoginForm({ className, ...props }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="h-11 rounded-2xl border-none bg-white/10 px-6 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-white/50 transition-all font-bold"
+            className="h-10 rounded-none border-0 border-b border-neutral-200 bg-transparent px-1 text-neutral-900 placeholder:text-neutral-400 focus-visible:ring-0 focus-visible:border-neutral-900 transition-all font-light shadow-none text-sm"
             required
           />
         </div>
@@ -90,19 +90,19 @@ export function LoginForm({ className, ...props }) {
         <Button
           type="submit"
           disabled={isLoggingIn}
-          className="px-12 h-12 rounded-2xl bg-[#f18d40] hover:bg-[#fd8732] text-white font-bold text-base transition-all duration-300 border-none w-fit shadow-none"
+          className="w-full h-11 rounded-xl bg-[#fe4524] hover:bg-[#e03c1f] text-white font-medium text-sm transition-all duration-300 border-none shadow-sm"
         >
           {isLoggingIn ? "Logging in..." : "Login"}
         </Button>
       </form>
 
       {/* Footer Section */}
-      <div className="w-full flex flex-col gap-4">
-        <p className="text-center text-white/60 font-medium text-sm">
+      <div className="w-full flex flex-col gap-2 mt-2">
+        <p className="text-center text-neutral-500 font-light text-sm">
           Don&apos;t have an account?{" "}
           <Link
             to="/register"
-            className="text-white font-light hover:underline opacity-60 hover:opacity-100 transition-all duration-300"
+            className="text-neutral-900 font-medium hover:underline transition-all duration-300"
           >
             Sign up
           </Link>
