@@ -3,6 +3,7 @@ import { Outlet, useLocation, useMatch } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Header from "../project_components/Header";
 import Sidebar from "../project_components/Sidebar";
+import UmamiTracker from "../project_components/UmamiTracker";
 import TweetsLayout from "./TweetsLayout";
 import ScrollToTop from "../project_components/ScrollToTop";
 import { TweetProvider } from "../ContentApi/TweetContext";
@@ -107,13 +108,19 @@ const RootLayout = () => {
 
   // If on Auth pages (Login/Register), show just the page
   if (isAuthPage) {
-    return <Outlet />;
+    return (
+      <>
+        <UmamiTracker />
+        <Outlet />
+      </>
+    );
   }
 
   // If NOT logged in and on HOME page, show ONLY the Home page (which renders LandingPage)
   if (!user && isHomePage) {
     return (
       <main className="w-full">
+        <UmamiTracker />
         <Outlet context={{ scrollRef: mainContentRef }} />
       </main>
     );
@@ -121,6 +128,7 @@ const RootLayout = () => {
 
   return (
     <div className="container">
+      <UmamiTracker />
       <Header />
       <div className="flex h-screen w-[100%] pt-16">
         {/* Sidebar Section */}
