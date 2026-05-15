@@ -408,23 +408,21 @@ const LandingPage = () => {
 
     // Backend Warm-up Ping
     const hasPinged = sessionStorage.getItem("backend-warmup");
-    console.log("Health check status:", hasPinged ? "Already pinged this session" : "Not yet pinged");
     
     if (!hasPinged) {
       const apiUrl = import.meta.env.VITE_API_URL;
-      console.log(`Initiating backend health check ping to: ${apiUrl}/api/v1/healthcheck`);
       
       fetch(apiUrl + "/api/v1/healthcheck")
         .then((res) => {
           if (res.ok) {
-            console.log("Backend warmed up successfully 🔥");
+            console.log("[HealthCheck] Backend connection established successfully.");
             sessionStorage.setItem("backend-warmup", "true");
           } else {
-            console.error("Backend health check returned non-200 status:", res.status);
+            console.error(`[HealthCheck] Failed with status: ${res.status}`);
           }
         })
         .catch((err) => {
-          console.error("Backend wake-up failed ❄️", err);
+          console.error("[HealthCheck] Service unreachable:", err.message);
         });
     }
   }, []);
