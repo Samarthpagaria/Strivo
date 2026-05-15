@@ -390,6 +390,25 @@ const LandingPage = () => {
   const containerRef = React.useRef(null);
 
   const [upvotes, setUpvotes] = React.useState(0);
+  const [isDark, setIsDark] = React.useState(
+    document.documentElement.classList.contains("dark"),
+  );
+
+  React.useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  const badgeSrc = isDark
+    ? "https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1147093&theme=dark&t=1778868823895"
+    : "https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1147093&theme=light&t=1778868595649";
+
 
   React.useEffect(() => {
     const fetchUpvotes = async () => {
@@ -776,6 +795,28 @@ const LandingPage = () => {
         <BuiltOnSection />
         <Footer />
       </main>
+
+      {/* Fixed Product Hunt Badge */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ delay: 1.2, duration: 0.5 }}
+        className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-[9999]"
+      >
+        <a
+          href="https://www.producthunt.com/products/strivo?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-strivo"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            alt="Strivo - Stop Posting Everywhere. Start Growing Here | Product Hunt"
+            width="150"
+            height="32"
+            src={badgeSrc}
+            className="w-[110px] md:w-[150px] h-auto opacity-70 hover:opacity-100 transition-all duration-300 drop-shadow-xl"
+          />
+        </a>
+      </motion.div>
     </div>
   );
 };
