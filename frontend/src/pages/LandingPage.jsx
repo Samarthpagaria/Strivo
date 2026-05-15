@@ -409,6 +409,7 @@ const LandingPage = () => {
     // Backend Warm-up Ping
     const hasPinged = sessionStorage.getItem("backend-warmup");
     if (!hasPinged) {
+      console.log("Initiating backend health check ping...");
       fetch(import.meta.env.VITE_API_URL + "/api/v1/healthcheck")
         .then(() => {
           console.log("Backend warmed up 🔥");
