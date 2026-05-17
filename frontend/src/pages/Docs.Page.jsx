@@ -563,9 +563,10 @@ function Docs() {
             </p>
 
             {/* Database Schema Vector Diagram */}
-            <div className="p-5 bg-neutral-950 border border-neutral-900 rounded-xl flex items-center justify-center overflow-hidden shadow-sm hover:shadow-md transition duration-300 w-full">
+            <div className="p-5 bg-neutral-950 border border-neutral-900 rounded-xl flex items-start justify-start overflow-hidden shadow-sm hover:shadow-md transition duration-300 w-full">
               <div 
-                className="w-full max-h-[600px] overflow-auto flex items-center justify-center [&>svg]:max-w-full [&>svg]:h-auto [&>svg]:mx-auto select-none [&>svg]:pointer-events-none hover:scale-[1.015] transition-transform duration-500 ease-out"
+                data-lenis-prevent="true"
+                className="w-full max-h-[600px] overflow-auto no-scrollbar flex items-start justify-start [&>svg]:min-w-[1200px] [&>svg]:h-auto select-none [&>svg]:pointer-events-none hover:scale-[1.005] transition-transform duration-500 ease-out"
                 dangerouslySetInnerHTML={{ __html: dbDiagramSvg }}
               />
             </div>

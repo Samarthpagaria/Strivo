@@ -23,6 +23,7 @@ const RootLayout = () => {
   const path = location.pathname;
   const isAuthPage = path === "/login" || path === "/register";
   const isHomePage = path === "/";
+  const isDocsPage = path === "/docs";
 
   // Check if we are on a profile route and get the username
   const match = useMatch("/c/:username");
@@ -157,10 +158,12 @@ const RootLayout = () => {
             </div>
 
             {/* Tweets Section */}
-            <TweetsLayout
-              width={tweetPanelWidth}
-              onResizeStart={handleMouseDown}
-            />
+            {!isDocsPage && (
+              <TweetsLayout
+                width={tweetPanelWidth}
+                onResizeStart={handleMouseDown}
+              />
+            )}
           </TweetProvider>
         </ProfileProvider>
       </div>
