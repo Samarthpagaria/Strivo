@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Target, Sliders, Users, Rocket, Layout, Server, Database } from "lucide-react";
 import flowImg from "../assets/flow.png";
 import dbDiagramSvg from "../assets/dbDark.svg?raw";
 
@@ -319,7 +320,7 @@ function Docs() {
               {/* Purpose */}
               <div className="bg-neutral-50 dark:bg-neutral-950 border border-neutral-100 dark:border-neutral-900 p-6 rounded-xl">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-black dark:text-white mb-2 flex items-center gap-2">
-                  <span>🎯</span> Purpose
+                  <Target size={16} className="text-[#fe4524]" /> Purpose
                 </h3>
                 <p className="text-neutral-600 dark:text-neutral-300 leading-relaxed text-sm">
                   Strivo aims to simplify the way users interact with digital content by bringing together media viewing and social engagement into one cohesive environment. It is built to support both content creators and viewers by offering tools for content management, discovery, and communication.
@@ -331,7 +332,7 @@ function Docs() {
                 {/* Core Functionalities */}
                 <div className="bg-neutral-50 dark:bg-neutral-950 border border-neutral-100 dark:border-neutral-900 p-6 rounded-xl space-y-4">
                   <h3 className="text-sm font-bold uppercase tracking-wider text-black dark:text-white flex items-center gap-2">
-                    <span>⚙️</span> Core Functionalities
+                    <Sliders size={16} className="text-neutral-500 dark:text-neutral-400" /> Core Functionalities
                   </h3>
                   <ul className="space-y-2 text-xs text-neutral-500 dark:text-neutral-400">
                     <li className="flex items-center gap-2">
@@ -360,7 +361,7 @@ function Docs() {
                 {/* Target Users */}
                 <div className="bg-neutral-50 dark:bg-neutral-950 border border-neutral-100 dark:border-neutral-900 p-6 rounded-xl space-y-4">
                   <h3 className="text-sm font-bold uppercase tracking-wider text-black dark:text-white flex items-center gap-2">
-                    <span>👥</span> Target Users
+                    <Users size={16} className="text-neutral-500 dark:text-neutral-400" /> Target Users
                   </h3>
                   <ul className="space-y-2 text-xs text-neutral-500 dark:text-neutral-400">
                     <li className="flex items-center gap-2">
@@ -382,7 +383,7 @@ function Docs() {
               {/* Value Proposition */}
               <div className="bg-neutral-50 dark:bg-neutral-950 border border-neutral-100 dark:border-neutral-900 p-6 rounded-xl">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-black dark:text-white mb-2 flex items-center gap-2">
-                  <span>🚀</span> Value Proposition
+                  <Rocket size={16} className="text-[#fe4524]" /> Value Proposition
                 </h3>
                 <p className="text-neutral-600 dark:text-neutral-300 leading-relaxed text-sm">
                   Strivo eliminates the need to juggle multiple platforms by combining content consumption and communication into a single-page experience. This results in better user engagement, improved accessibility, and a more connected digital ecosystem.
@@ -401,7 +402,7 @@ function Docs() {
               {/* Frontend Architecture */}
               <div className="space-y-4">
                 <h3 className="text-lg font-bold text-black dark:text-white flex items-center gap-2">
-                  <span>💻</span> Frontend Architecture
+                  <Layout size={18} className="text-[#fe4524]" /> Frontend Architecture
                 </h3>
                 <div className="border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 bg-neutral-50 dark:bg-neutral-950 space-y-4">
                   <div className="space-y-1">
@@ -438,7 +439,7 @@ function Docs() {
               {/* Backend Architecture */}
               <div className="space-y-4">
                 <h3 className="text-lg font-bold text-black dark:text-white flex items-center gap-2">
-                  <span>🔌</span> Backend Architecture
+                  <Server size={18} className="text-[#fe4524]" /> Backend Architecture
                 </h3>
                 <div className="border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 bg-neutral-50 dark:bg-neutral-950 space-y-4">
                   <div className="space-y-1">
@@ -484,7 +485,7 @@ function Docs() {
             {/* Database & Infrastructure */}
             <div className="space-y-4">
               <h3 className="text-lg font-bold text-black dark:text-white flex items-center gap-2">
-                <span>🗄️</span> Database & Infrastructure
+                <Database size={18} className="text-[#fe4524]" /> Database & Infrastructure
               </h3>
               <div className="border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 bg-neutral-50 dark:bg-neutral-950 grid sm:grid-cols-2 md:grid-cols-3 gap-6">
                 <div className="space-y-1">

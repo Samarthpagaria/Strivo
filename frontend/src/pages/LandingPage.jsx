@@ -19,6 +19,7 @@ import {
   Code,
   Twitter,
   Linkedin,
+  BookOpen,
 } from "lucide-react";
 import {
   motion,
@@ -582,6 +583,13 @@ const LandingPage = () => {
           >
             <Github size={22} />
           </a>
+          <button
+            onClick={() => navigate("/docs")}
+            className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors p-2 flex items-center justify-center rounded-full"
+            title="Documentation"
+          >
+            <BookOpen size={22} />
+          </button>
           <AnimatedThemeToggler className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors p-2 flex items-center justify-center rounded-full" />
         </div>
 

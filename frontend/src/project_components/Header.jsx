@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "../assets/strivo_black_logo.png";
 import logo2 from "../assets/strivo_white_logo.png";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { HoverBorderGradient } from "../components/ui/hover-border-gradient";
@@ -147,22 +147,24 @@ const Header = () => {
                 <UserProfile user={user} onLogout={handleLogout} />
               </div>
             ) : (
-              <>
-                <HoverBorderGradient
-                  containerClassName="rounded-full"
-                  className="px-6 py-2 bg-white dark:bg-black text-sm font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer"
+              <div className="flex items-center gap-[0.675rem]">
+                <button
                   onClick={() => navigate("/login")}
+                  className="text-[0.9rem] font-bold text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white font-satoshi px-1 transition-colors bg-transparent border-none outline-none cursor-pointer"
                 >
-                  Sign In
-                </HoverBorderGradient>
-                <HoverBorderGradient
-                  containerClassName="rounded-full"
-                  className="px-6 py-2 bg-black dark:bg-white text-sm font-medium text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 cursor-pointer"
+                  Login
+                </button>
+                <button
                   onClick={() => navigate("/register")}
+                  className="group/signup bg-[#fe4524c2] border border-transparent text-[#f2f3f4] text-[0.9rem] font-bold px-[0.6075rem] py-[0.30375rem] rounded-full hover:bg-[#fe4524] transition-all active:scale-95 shadow-lg shadow-blue-500/10 flex items-center gap-2 cursor-pointer"
                 >
-                  Sign Up
-                </HoverBorderGradient>
-              </>
+                  Sign up
+                  <ArrowRight
+                    size={18}
+                    className="group-hover/signup:translate-x-1 transition-transform duration-300"
+                  />
+                </button>
+              </div>
             )}
           </div>
         </div>
