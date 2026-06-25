@@ -5,7 +5,7 @@
 **A full-stack video platform with an integrated micro-blog social feed.**
 
 <br />
-<video src="https://github.com/Samarthpagaria/Strivo/raw/main/frontend/src/assets/video.mp4" controls="controls" muted="muted" width="100%"></video>
+<video src="./frontend/src/assets/video.mp4" controls="controls" muted="muted" width="100%"></video>
 <br />
 
 [![Deployed on Render](https://img.shields.io/badge/Backend-Render-46E3B7?style=flat-square&logo=render)](https://strivo.onrender.com)
