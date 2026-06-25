@@ -258,7 +258,7 @@ strivo/
 
 Hover over each collection card to reveal the structured properties (all password references and sensitive data keys are strictly hidden for complete privacy).
 
-![Database Schema](./frontend/src/assets/dbDark.svg)
+![Database Schema](./frontend/src/assets/image%20copy.png)
 
 **Database Name:** `strivoDB` (defined in `backend/src/constants.js`)
 
@@ -777,7 +777,7 @@ This component fires `window.umami.track()` on every client-side navigation (Rea
 ## 🏗️ Architecture Deep Dive
 
 ### High-Level Flow Diagram
-![High-Level Flow Diagram](./frontend/src/assets/flow.png)
+![High-Level Flow Diagram](./frontend/src/assets/image.png)
 
 ### Cold-Start Mitigation
 To combat Render’s free-tier container sleep cycle, the frontend landing page fires a `GET /api/v1/healthcheck` warm-up ping immediately on mounting, ensuring a fast sign-in response for incoming users.
