@@ -4,6 +4,10 @@
 
 **A full-stack video platform with an integrated micro-blog social feed.**
 
+<br />
+<video src="https://github.com/Samarthpagaria/Strivo/raw/main/frontend/src/assets/video.mp4" controls="controls" muted="muted" width="100%"></video>
+<br />
+
 [![Deployed on Render](https://img.shields.io/badge/Backend-Render-46E3B7?style=flat-square&logo=render)](https://strivo.onrender.com)
 [![Deployed on Vercel](https://img.shields.io/badge/Frontend-Vercel-000000?style=flat-square&logo=vercel)](https://strivo-app.vercel.app)
 [![MongoDB Atlas](https://img.shields.io/badge/Database-MongoDB%20Atlas-47A248?style=flat-square&logo=mongodb)](https://www.mongodb.com/atlas)
@@ -248,7 +252,11 @@ strivo/
 
 ---
 
-## 🗄️ Database Schemas
+## 🗄️ Database Structure
+
+Hover over each collection card to reveal the structured properties (all password references and sensitive data keys are strictly hidden for complete privacy).
+
+![Database Schema](./frontend/src/assets/dbDark.svg)
 
 **Database Name:** `strivoDB` (defined in `backend/src/constants.js`)
 
@@ -766,23 +774,17 @@ This component fires `window.umami.track()` on every client-side navigation (Rea
 
 ## 🏗️ Architecture Deep Dive
 
-### Media Upload Pipeline
+### High-Level Flow Diagram
+![High-Level Flow Diagram](./frontend/src/assets/flow.png)
 
-```
-Frontend (PublishVideoModal.jsx)
-  --> FormData with videoFile + thumbnail + title + description
-      --> POST /api/v1/videos (multipart/form-data)
-          --> Multer middleware
-              | Saves to backend/public/temp/<filename>
-              --> videos.controllers.js -> publishAVideo()
-                  --> uploadOnCloudinary(videoFileLocalPath)
-                  |   | cloudinary.uploader.upload_large() with resource_type: "auto"
-                  |   | Returns: { url, duration, public_id, ... }
-                  |   --> Deletes local temp file (fs.unlinkSync)
-                  --> uploadOnCloudinary(thumbnailLocalPath)
-                  --> Video.create({ videoFile: url, thumbnail: url, duration: video.duration, ... })
-                  --> 201 response with video document
-```
+### Cold-Start Mitigation
+To combat Render’s free-tier container sleep cycle, the frontend landing page fires a `GET /api/v1/healthcheck` warm-up ping immediately on mounting, ensuring a fast sign-in response for incoming users.
+
+### Media Upload Pipeline
+Video uploads use a Multer-to-Cloudinary staging model. Client files hit `POST /api/v1/videos`, get stored temporarily under `./public/temp/`, and are immediately pushed to Cloudinary via `cloudinary.uploader.upload_large`. The temp local files are cleared synchronously immediately after, ensuring zero server storage bloat.
+
+### Discover Feed
+To keep the video and micro-post feeds engaging and stable, the backend implements a randomized discovery model utilizing the Fisher-Yates shuffle algorithm on compiled subscriptions and public videos.
 
 **File Limits:**
 - Max file size: **100 MB** per file (set in `multer.middleware.js`)
